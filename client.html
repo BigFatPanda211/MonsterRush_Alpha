@@ -79,6 +79,9 @@
     #room-label {color:#efd3a4;font-weight:bold;padding:8px 0;} #room-roster {font-size:.78rem;line-height:1.8;color:#c4d6de;} #room-message {min-height:2em}
     #start-game,#ready-choice,.level-controls {display:none!important;}
     body.run-ended .hunters {display:grid!important;} body.run-ended .hunter-note {display:block!important;}
+    #leave-dialog {max-width:420px;background:#17121b;color:#f3f1ff;border:1px solid #c7a064;border-radius:10px;padding:24px;}
+    #leave-dialog::backdrop {background:#08090faa;}
+    #leave-dialog p {line-height:1.6;color:#c5b7bf;}
   </style>
 </head>
 <body class="menu-mode">
@@ -97,12 +100,12 @@
     <section id="ready-room" class="ready-room">
       <div class="step">BLACKTHORN EXPEDITIONS</div><h2>Pick your hunter. Ready up together.</h2>
       <p>Select a character and a level below. Survive three rising waves, then survive the Amalgam.</p>
-      <p>WASD / move / Mouse / aim / Hold left click / fire / R / retry / Esc / leave room</p>
+      <p>WASD / move / Mouse / aim / Hold left click / fire / R / retry / Esc / room menu</p>
       <button id="start-game" class="start-button">Start expedition</button>
       <span id="ready-choice">THE WARDEN / MOONLIT COURTYARD</span>
     </section>
     <label class="atmosphere-controls"><input id="ambient-motion" type="checkbox" checked> Candle flicker and drifting dust</label>
-    <button id="return-menu" class="return-menu">Leave room / Esc</button>
+    <button id="return-menu" class="return-menu">Room menu / Esc</button>
     <div class="level-controls">
       <label for="level-select">LEVEL</label>
       <select id="level-select" aria-label="Choose level (starts a fresh run)">
@@ -139,6 +142,7 @@
       <div class="tip"><b>COMBAT</b> Ghosts pursue, Wraiths pause then dash, Brutes endure. Survive three rising waves, then defeat the Amalgam boss to win. Magenta Ghosts pursue; purple Wraiths dash; cyan Brutes endure. After the hunt, ready up above so the host can restart or choose another level.</div>
     </section>
   </main>
+  <dialog id="leave-dialog" aria-labelledby="leave-title" aria-describedby="leave-description"><h2 id="leave-title">Leave this hunt?</h2><p id="leave-description">The multiplayer match keeps running. Leaving removes you from this room; your teammates can continue.</p><button id="stay-in-hunt" autofocus>Stay in hunt</button> <button id="confirm-leave">Leave room</button></dialog>
 <script>
 (() => {
   "use strict";
@@ -220,6 +224,13 @@
     x: 112, y: 156, radius: 10, speed: 210,
     aimX: 1, aimY: 0, moving: false
   };
+  const leaveDialog=document.getElementById('leave-dialog');
+  function clearControls(){input.up=input.down=input.left=input.right=input.fire=false;}
+  function openLeaveDialog(){if(leaveDialog.open)return;clearControls();leaveDialog.showModal();document.getElementById('stay-in-hunt').focus();}
+  function closeLeaveDialog(){if(leaveDialog.open)leaveDialog.close();clearControls();canvas.focus();}
+  leaveDialog.addEventListener('cancel',event=>{event.preventDefault();closeLeaveDialog();});
+  document.getElementById('stay-in-hunt').addEventListener('click',closeLeaveDialog);
+  document.getElementById('confirm-leave').addEventListener('click',()=>{closeLeaveDialog();network.leave();});
   const input = { up: false, down: false, left: false, right: false, fire: false };
   const mouse = { x: player.x + 100, y: player.y, inside: false };
   let runState="menu";
@@ -229,7 +240,7 @@
   function shuffle(list) {const copy=[...list];for(let i=copy.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;}
   function refreshReadyChoice() {document.getElementById("ready-choice").textContent=HUNTERS[player.hunter].name+" / "+LEVELS[levelIndex].name;}
   function showMenu() {
-    if(network.session){network.leave();return;}
+    if(network.session){openLeaveDialog();return;}
     runState="menu";input.up=input.down=input.left=input.right=input.fire=false;
     document.body.classList.add("menu-mode");refreshReadyChoice();
   }
@@ -547,7 +558,8 @@
     if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(event.key.toLowerCase())) {
       event.preventDefault();
     }
-    if(event.key === "Escape"){showMenu();return;}
+    if(event.key === "Escape"){event.preventDefault();if(event.repeat)return;if(leaveDialog.open)closeLeaveDialog();else showMenu();return;}
+    if(leaveDialog.open)return;
     if(runState !== "playing")return;
     if (event.key.toLowerCase() === "r") {if(network.session)network.notice("The host restarts the whole team after a run.");else resetCombat();}
     if(event.key.toLowerCase() === "n" && !event.repeat) nextLevel();
@@ -1304,14 +1316,14 @@
     },
     async ready(value){if(!this.session)return;try{await this.request('/api/rooms/'+this.session.code+'/ready',{ready:value,hunter:this.selectedHunter||player.hunter});this.notice(value?'Ready. Waiting for host.':'Select hunter, then Ready.');}catch(e){this.notice(e.message);}},
     async start(){if(!this.session)return;try{await this.request('/api/rooms/'+this.session.code+'/start',{level:Number(document.getElementById('room-level').value)});}catch(e){this.notice(e.message);}},
-    async leave(send=true){const session=this.session;if(!session)return;this.stream?.close();this.stream=null;if(send)try{await this.request('/api/rooms/'+session.code+'/leave');}catch{}
+    async leave(send=true){if(leaveDialog.open)leaveDialog.close();const session=this.session;if(!session)return;this.stream?.close();this.stream=null;if(send)try{await this.request('/api/rooms/'+session.code+'/leave');}catch{}
       sessionStorage.removeItem('monster-rush-room');this.session=null;this.world=null;this.readyState=false;input.up=input.down=input.left=input.right=input.fire=false;runState='menu';document.body.classList.add('menu-mode');
       for(const id of ['create-room','join-room'])document.getElementById(id).disabled=false;for(const id of ['room-ready','room-start'])document.getElementById(id).disabled=true;
       document.getElementById('leave-room').hidden=true;document.getElementById('room-label').textContent='Not connected';document.getElementById('room-roster').textContent='';this.notice('Left room. Create or join another hunt.');
     }
   };
   document.getElementById('create-room').addEventListener('click',()=>network.connect(true));document.getElementById('join-room').addEventListener('click',()=>network.connect(false));
-  document.getElementById('leave-room').addEventListener('click',()=>network.leave());document.getElementById('room-ready').addEventListener('click',()=>network.ready(!network.readyState));document.getElementById('room-start').addEventListener('click',()=>network.start());
+  document.getElementById('leave-room').addEventListener('click',openLeaveDialog);document.getElementById('room-ready').addEventListener('click',()=>network.ready(!network.readyState));document.getElementById('room-start').addEventListener('click',()=>network.start());
   async function restoreRoom(){
     let saved;try{saved=JSON.parse(sessionStorage.getItem('monster-rush-room'));}catch{}if(!saved?.token||!saved?.code)return;
     network.session=saved;
