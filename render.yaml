@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: monster-rush
+    runtime: node
+    plan: free
+    buildCommand: npm install --ignore-scripts
+    startCommand: node server.cjs
+    healthCheckPath: /health
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: NODE_VERSION
+        value: 22

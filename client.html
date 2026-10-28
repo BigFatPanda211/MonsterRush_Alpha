@@ -1,0 +1,1341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monster Rush | Step 8 Shared Hunt</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #08090f;
+      --panel: #17121b;
+      --text: #f3f1ff;
+      --muted: #aaa7c4;
+      --cyan: #42f5ff;
+      --pink: #ff3bd4;
+      --purple: #9a5bff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    body { display: grid; place-items: center; padding: 16px; }
+    body {background:radial-gradient(ellipse at 15% 10%,#271624 0,transparent 45%),radial-gradient(ellipse at 90% 90%,#131f31 0,transparent 45%),#08090f;}
+    h1 {font-family:Georgia,serif;letter-spacing:.16em;color:#e8c58a;text-shadow:0 0 18px #dca45344;}
+    .step {color:#c6a1a2;}
+    .game-frame {border-color:#80603f;box-shadow:0 0 30px #d99b2820;}
+    .ready-room {border-color:#80603f;background:linear-gradient(120deg,#171c29,#2a1520);}
+    .ready-room h2 {font-family:Georgia,serif;color:#f6dfb7;}
+    .start-button {border-color:#c7a064;background:#473020;color:#fff0d6;}
+    .shell { width: min(1100px, 100%); }
+    header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 12px; flex-wrap: wrap; }
+    h1 { margin: 0; font-size: clamp(1.3rem, 3vw, 2rem); letter-spacing: .14em; color: var(--cyan); text-shadow: 0 0 12px #42f5ff88; }
+    .step { color: var(--pink); font-size: .8rem; letter-spacing: .12em; }
+    .game-frame { border: 1px solid #42f5ff80; border-radius: 10px; overflow: hidden; box-shadow: 0 0 24px #42f5ff20, inset 0 0 20px #ff3bd410; background: #07070d; }
+    canvas { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; cursor: crosshair; outline: none; }
+    .hud { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; background: #0c0c15; border-top: 1px solid #28283b; color: var(--muted); font-size: .8rem; flex-wrap: wrap; }
+    .hud strong { color: var(--cyan); font-weight: 600; }
+    .instructions { margin-top: 12px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .tip { border: 1px solid #29283c; border-radius: 8px; padding: 10px 12px; background: var(--panel); color: var(--muted); font-size: .8rem; line-height: 1.5; }
+    .tip b { display: block; margin-bottom: 3px; color: var(--pink); font-size: .75rem; letter-spacing: .08em; }
+    .level-controls {display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;color:var(--muted);font-size:.75rem;}
+    select,button {background:#101019;color:var(--cyan);border:1px solid #36545d;border-radius:5px;padding:8px;font:inherit;}
+    button:disabled {opacity:.4;} button:not(:disabled),select{cursor:pointer;}
+    .ready-room {padding:24px;border:1px solid #42f5ff66;background:linear-gradient(120deg,#101b26,#170f24);border-radius:10px;margin-bottom:16px;}
+    .ready-room h2 {font-size:clamp(1.2rem,3vw,1.8rem);color:#f3f1ff;margin:10px 0;}
+    .ready-room p {color:var(--muted);font-size:.8rem;line-height:1.6;}
+    .start-button {border-color:var(--cyan);background:#113b42;color:#eaffff;font-weight:bold;padding:12px 22px;margin:8px 12px 8px 0;}
+    #ready-choice {font-size:.75rem;color:var(--cyan);}
+    .return-menu {margin-bottom:12px;}
+    body.menu-mode .game-frame,body.menu-mode .bestiary,body.menu-mode .instructions,body.menu-mode .return-menu {display:none;}
+    body:not(.menu-mode) .ready-room,body:not(.menu-mode) .hunters,body:not(.menu-mode) .hunter-note,body:not(.menu-mode) .level-controls {display:none;}
+    .hunters {display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+    .hunter-card {display:grid;justify-items:center;padding:6px;background:#0a0a13;border:1px solid #343048;color:var(--hunter);transition:border-color .15s,background .15s;}
+    .hunter-card[aria-pressed="true"] {border-color:var(--hunter);background:#161522;box-shadow:inset 0 -3px var(--hunter);}
+    .hunter-card:focus-visible {outline:2px solid white;outline-offset:2px;}
+    .hunter-card canvas {width:140px;max-width:100%;height:90px;aspect-ratio:auto;cursor:pointer;}
+    .hunter-card b {font-size:.72rem;letter-spacing:.06em}.hunter-card span {font-size:.58rem;color:#b0abc4;margin-top:5px}
+    .hunter-note {color:var(--muted);font-size:.72rem;line-height:1.5;margin:8px 0 14px;}
+    @media(max-width:650px){.hunters{grid-template-columns:repeat(2,1fr)}}
+    .bestiary { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px; }
+    .enemy-card { display:grid; justify-items:center; padding:8px; background:#0a0a13; border:1px solid #29283c; border-radius:8px; text-align:center; }
+    .enemy-card canvas { width:160px; max-width:100%; height:90px; aspect-ratio:auto; cursor:default; }
+    .enemy-card b { font-size:.75rem; letter-spacing:.1em; color:var(--pink); }
+    .enemy-card:nth-child(2) b {color:var(--purple)}
+    .enemy-card:nth-child(3) b {color:var(--cyan)}
+    .enemy-card span {color:var(--muted);font-size:.65rem;margin-top:5px;line-height:1.5;}
+    @media(max-width:480px){.bestiary{gap:5px}.enemy-card{padding:4px}.enemy-card span{font-size:.58rem}.enemy-card b{font-size:.64rem}}
+    kbd { display: inline-block; min-width: 1.6em; text-align: center; padding: 1px 5px; border: 1px solid #55516e; border-radius: 4px; color: var(--text); background: #1a1927; }
+    @media (max-width: 650px) { .instructions { grid-template-columns: 1fr; } .hud { font-size: .72rem; } }
+    h1 {color:#e8c58a;text-shadow:0 0 18px #dca45344;}
+    .step {color:#c6a1a2;}
+    .game-frame {border-color:#80603f;box-shadow:0 0 30px #d99b2820;}
+    .ready-room {border-color:#80603f;background:linear-gradient(120deg,#171c29,#2a1520);}
+    .ready-room h2 {font-family:Georgia,serif;color:#f6dfb7;}
+    .start-button {border-color:#c7a064;background:#473020;color:#fff0d6;}
+    .atmosphere-controls {font-size:.72rem;color:#bdb5c3;display:flex;align-items:center;gap:8px;margin:0 0 12px;}
+    .room-panel {margin-bottom:16px;padding:18px;border:1px solid #80603f;border-radius:10px;background:#15141f;}
+    .room-panel h2 {font-family:Georgia,serif;color:#efd3a4;margin:0 0 8px}.room-panel p,.room-panel a {color:#c5b7bf;font-size:.76rem;line-height:1.6;}
+    .room-actions {display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0;}
+    .room-panel input {background:#090c14;color:#f2ddbd;border:1px solid #80603f;padding:9px;font:inherit;width:140px;text-transform:uppercase;}
+    #room-label {color:#efd3a4;font-weight:bold;padding:8px 0;} #room-roster {font-size:.78rem;line-height:1.8;color:#c4d6de;} #room-message {min-height:2em}
+    #start-game,#ready-choice,.level-controls {display:none!important;}
+    body.run-ended .hunters {display:grid!important;} body.run-ended .hunter-note {display:block!important;}
+  </style>
+</head>
+<body class="menu-mode">
+  <main class="shell">
+    <header>
+      <h1>MONSTER RUSH</h1>
+      <div class="step">STEP 08 // SHARED HUNT</div>
+    </header>
+    <section class="room-panel" aria-label="Multiplayer room">
+      <h2>Hunt together</h2><p>Choose a hunter, create or join a room, then ready up. Two to four players.</p>
+      <div class="room-actions"><button id="create-room">Create room</button><input id="room-code" maxlength="6" placeholder="Room code" aria-label="Room code"><button id="join-room">Join room</button><button id="leave-room" hidden>Leave room</button></div>
+      <div id="room-label">Not connected</div><div id="room-roster" aria-live="polite"></div>
+      <div class="room-actions"><button id="room-ready" disabled>Ready</button><label>Level <select id="room-level"><option value="0">Moonlit Courtyard</option><option value="1">Shattered Archives</option><option value="2">Blackthorn Manor</option></select></label><button id="room-start" disabled>Host: start hunt</button></div>
+      <p id="room-message" role="status">Run the included server. Friends need the same server address and room code.</p><a href="/solo">Play preserved solo build</a>
+    </section>
+    <section id="ready-room" class="ready-room">
+      <div class="step">BLACKTHORN EXPEDITIONS</div><h2>Pick your hunter. Ready up together.</h2>
+      <p>Select a character and a level below. Survive three rising waves, then survive the Amalgam.</p>
+      <p>WASD / move / Mouse / aim / Hold left click / fire / R / retry / Esc / leave room</p>
+      <button id="start-game" class="start-button">Start expedition</button>
+      <span id="ready-choice">THE WARDEN / MOONLIT COURTYARD</span>
+    </section>
+    <label class="atmosphere-controls"><input id="ambient-motion" type="checkbox" checked> Candle flicker and drifting dust</label>
+    <button id="return-menu" class="return-menu">Leave room / Esc</button>
+    <div class="level-controls">
+      <label for="level-select">LEVEL</label>
+      <select id="level-select" aria-label="Choose level (starts a fresh run)">
+        <option value="0">01 / Moonlit Courtyard</option><option value="1">02 / Shattered Archives</option><option value="2">03 / Blackthorn Manor</option>
+      </select>
+      <button id="next-level" disabled>Next level / N</button>
+      <span id="level-description">Tight rooms and winding doorways.</span>
+    </div>
+    <section class="hunters" aria-label="Choose your hunter">
+      <button class="hunter-card" data-hunter="warden" aria-pressed="true"><canvas id="hunter-warden" width="160" height="100"></canvas><b>THE WARDEN</b><span>AMBER / ARMORED SHIELD</span></button>
+      <button class="hunter-card" data-hunter="riftwalker" aria-pressed="false"><canvas id="hunter-riftwalker" width="160" height="100"></canvas><b>THE RIFTWALKER</b><span>BLUE / SPLIT CLOAK</span></button>
+      <button class="hunter-card" data-hunter="hexkeeper" aria-pressed="false"><canvas id="hunter-hexkeeper" width="160" height="100"></canvas><b>THE HEXKEEPER</b><span>EMERALD / RUNIC HOOD</span></button>
+      <button class="hunter-card" data-hunter="revenant" aria-pressed="false"><canvas id="hunter-revenant" width="160" height="100"></canvas><b>THE REVENANT</b><span>CORAL / HAUNTED DUELIST</span></button>
+    </section>
+    <p class="hunter-note">Choose your hunter / Same abilities / Distinct silhouettes identify your team.</p>
+    <section class="game-frame" aria-label="Monster Rush game">
+      <canvas id="game" width="960" height="600" tabindex="0" aria-label="Game canvas. Move with WASD, aim with the mouse, and click to shoot."></canvas>
+      <div class="hud">
+        <span>LOCATION: <strong id="location">BLACKTHORN MANOR</strong></span>
+        <span>PLAYER: <strong id="player-pos">X 0 / Y 0</strong></span>
+        <span>HP: <strong id="player-hp">100</strong> <meter id="health-meter" min="0" max="100" low="35" high="70" optimum="100" value="100" aria-label="Health"></meter> <strong id="health-warning" aria-live="polite"></strong></span>
+        <span>STAGE: <strong id="stage">WAVE 1</strong></span><span>REMAINING: <strong id="defeated">0 / 5</strong></span>
+        <span>SCORE: <strong id="score">0</strong></span><span>STATUS: <strong id="status">EXPLORING</strong></span>
+      </div>
+    </section>
+    <section class="bestiary" aria-label="Enemy visual guide">
+      <div class="enemy-card"><canvas id="guide-ghost" width="160" height="90" aria-label="Ghost: rounded magenta shroud with cyan eyes"></canvas><b>01 / GHOST</b><span>STANDARD PURSUER / RELENTLESS</span></div>
+      <div class="enemy-card"><canvas id="guide-wraith" width="160" height="90" aria-label="Wraith: jagged purple spirit with cyan eyes"></canvas><b>02 / WRAITH</b><span>FAST FLANKER / PAUSE / DASH</span></div>
+      <div class="enemy-card"><canvas id="guide-brute" width="160" height="90" aria-label="Brute: cyan armored head with magenta horns"></canvas><b>03 / BRUTE</b><span>HEAVY TANK / RESISTS KNOCKBACK</span></div>
+    </section>
+    <section class="instructions">
+      <div class="tip"><b>MOVEMENT</b><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to move. You cannot walk through walls.</div>
+      <div class="tip"><b>AIM + SHOOT</b> Move the mouse to aim. Hold left mouse to fire (0.18s cooldown).</div>
+      <div class="tip"><b>COMBAT</b> Ghosts pursue, Wraiths pause then dash, Brutes endure. Survive three rising waves, then defeat the Amalgam boss to win. Magenta Ghosts pursue; purple Wraiths dash; cyan Brutes endure. After the hunt, ready up above so the host can restart or choose another level.</div>
+    </section>
+  </main>
+<script>
+(() => {
+  "use strict";
+
+  // All world coordinates use the 960 x 600 canvas coordinate system.
+  // Keep map geometry and player logic separate so multiplayer can be added later.
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
+  const posLabel = document.getElementById("player-pos");
+  const statusLabel = document.getElementById("status");
+  const hpLabel = document.getElementById("player-hp");
+  const defeatedLabel = document.getElementById("defeated");
+
+  const WORLD = { width: 960, height: 600, wall: 14 };
+  const COLORS = {
+    floor: "#0b0b14", grid: "#171728", wall: "#42f5ff",
+    wallCore: "#18353d", pink: "#ff3bd4", purple: "#9a5bff",
+    player: "#eaffff", text: "#7b789b"
+  };
+
+  // Rooms are visual floor regions. Walls below define the actual walkable boundaries.
+  let rooms = [
+    { x: 28, y: 28, w: 230, h: 170, name: "FOYER" },
+    { x: 272, y: 28, w: 190, h: 170, name: "WEST HALL" },
+    { x: 476, y: 28, w: 210, h: 170, name: "GRAND HALL" },
+    { x: 700, y: 28, w: 232, h: 170, name: "LIBRARY" },
+    { x: 28, y: 222, w: 230, h: 156, name: "DINING ROOM" },
+    { x: 272, y: 222, w: 190, h: 156, name: "CRYPT HALL" },
+    { x: 476, y: 222, w: 210, h: 156, name: "BALLROOM" },
+    { x: 700, y: 222, w: 232, h: 156, name: "STUDY" },
+    { x: 28, y: 402, w: 230, h: 170, name: "KITCHEN" },
+    { x: 272, y: 402, w: 190, h: 170, name: "SERVANTS' HALL" },
+    { x: 476, y: 402, w: 210, h: 170, name: "ARMORY" },
+    { x: 700, y: 402, w: 232, h: 170, name: "CHAPEL" }
+  ];
+
+  // Each wall is a rectangle. Gaps in long walls act as doorways.
+  let walls = [
+    // Outer boundary
+    {x:14,y:14,w:932,h:14}, {x:14,y:572,w:932,h:14},
+    {x:14,y:14,w:14,h:572}, {x:932,y:14,w:14,h:572},
+
+    // Horizontal room dividers, with door openings
+    {x:28,y:206,w:130,h:12}, {x:202,y:206,w:230,h:12},
+    {x:474,y:206,w:112,h:12}, {x:628,y:206,w:304,h:12},
+    {x:28,y:386,w:86,h:12}, {x:158,y:386,w:258,h:12},
+    {x:456,y:386,w:154,h:12}, {x:650,y:386,w:282,h:12},
+
+    // Vertical room dividers, with door openings
+    {x:262,y:28,w:12,h:78}, {x:262,y:142,w:12,h:64},
+    {x:466,y:28,w:12,h:64}, {x:466,y:128,w:12,h:78},
+    {x:690,y:28,w:12,h:92}, {x:690,y:156,w:12,h:50},
+
+    {x:262,y:222,w:12,h:56}, {x:262,y:314,w:12,h:64},
+    {x:466,y:222,w:12,h:82}, {x:466,y:340,w:12,h:38},
+    {x:690,y:222,w:12,h:58}, {x:690,y:316,w:12,h:62},
+
+    {x:262,y:402,w:12,h:70}, {x:262,y:506,w:12,h:66},
+    {x:466,y:402,w:12,h:50}, {x:466,y:488,w:12,h:84},
+    {x:690,y:402,w:12,h:82}, {x:690,y:520,w:12,h:52},
+
+    // A few mansion interior obstacles / furniture silhouettes
+    {x:66,y:78,w:70,h:10}, {x:80,y:92,w:10,h:40},
+    {x:320,y:62,w:70,h:10}, {x:386,y:62,w:10,h:42},
+    {x:520,y:82,w:10,h:60}, {x:550,y:82,w:80,h:10},
+    {x:752,y:72,w:80,h:10}, {x:822,y:72,w:10,h:50},
+    {x:72,y:266,w:92,h:10}, {x:72,y:276,w:10,h:48},
+    {x:320,y:248,w:10,h:70}, {x:350,y:308,w:76,h:10},
+    {x:516,y:252,w:110,h:10}, {x:616,y:262,w:10,h:50},
+    {x:752,y:246,w:10,h:58}, {x:782,y:294,w:82,h:10},
+    {x:74,y:446,w:10,h:60}, {x:74,y:496,w:94,h:10},
+    {x:314,y:432,w:84,h:10}, {x:388,y:442,w:10,h:48},
+    {x:520,y:438,w:10,h:70}, {x:550,y:498,w:76,h:10},
+    {x:750,y:440,w:90,h:10}, {x:830,y:450,w:10,h:48}
+  ];
+
+  const player = {
+    id: "player-1", hunter: "warden", slot: 1, invulnerability: 0,
+    x: 112, y: 156, radius: 10, speed: 210,
+    aimX: 1, aimY: 0, moving: false
+  };
+  const input = { up: false, down: false, left: false, right: false, fire: false };
+  const mouse = { x: player.x + 100, y: player.y, inside: false };
+  let runState="menu";
+  // Seeded simulation random source; keep cosmetic effects independent of its sequence.
+  let randomState=1;
+  function random() {randomState|=0;randomState=(randomState+0x6D2B79F5)|0;let t=Math.imul(randomState^(randomState>>>15),1|randomState);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296;}
+  function shuffle(list) {const copy=[...list];for(let i=copy.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;}
+  function refreshReadyChoice() {document.getElementById("ready-choice").textContent=HUNTERS[player.hunter].name+" / "+LEVELS[levelIndex].name;}
+  function showMenu() {
+    if(network.session){network.leave();return;}
+    runState="menu";input.up=input.down=input.left=input.right=input.fire=false;
+    document.body.classList.add("menu-mode");refreshReadyChoice();
+  }
+  function startGame() {
+    if(network.session){network.start();return;}
+    resetCombat();runState="playing";document.body.classList.remove("menu-mode");canvas.focus();
+  }
+  document.getElementById("start-game").addEventListener("click",startGame);
+  document.getElementById("return-menu").addEventListener("click",showMenu);
+  const MAX_HP = 100;
+  const SHOOT_COOLDOWN = 0.18;
+  // Simulation values are independent of local input and cosmetic effects.
+  const COMBAT = Object.freeze({ cooldown: 0.18, invulnerability: 0.6, damage: 12, knockback: 125, killScore: 100 });
+  let score = 0, nextBulletId = 1;
+  let particles = [], trails = [], muzzle = null;
+  let shootTimer = 0;
+  let defeated = 0;
+  let gameOver = false;
+  let won = false;
+  let damageFlash = 0;
+
+  // Combat entities are separate from map geometry, making later networking easier.
+  // Shared data definitions keep type tuning separate from rendering and navigation.
+  const ENEMY_TYPES = Object.freeze({
+    ghost: Object.freeze({ hp: 3, speed: 65, damage: 12, knockbackScale: 1, score: 100 }),
+    wraith: Object.freeze({ hp: 3, speed: 84, damage: 12, knockbackScale: 1, score: 150 }),
+    brute: Object.freeze({ hp: 8, speed: 46, damage: 20, knockbackScale: 0.3, score: 250 }),
+    boss: Object.freeze({ hp: 20, speed: 105, damage: 28, knockbackScale: 0.2, score: 1000 })
+  });
+  const WAVES=[
+    {roster:[...Array(4).fill("ghost"),...Array(3).fill("wraith"),"brute"],speed:.9,hpBonus:0,damage:.9},
+    {roster:[...Array(5).fill("ghost"),...Array(4).fill("wraith"),...Array(3).fill("brute")],speed:1.15,hpBonus:0,damage:1},
+    {roster:[...Array(6).fill("ghost"),...Array(6).fill("wraith"),...Array(4).fill("brute")],speed:1.35,hpBonus:1,damage:1.1}
+  ];
+  let waveIndex=0,waveDelay=0;
+  let enemyStarts = [
+    { x: 350, y: 150 }, { x: 590, y: 150 }, { x: 820, y: 150 },
+    { x: 350, y: 340 }, { x: 820, y: 520 },
+    { x: 200, y: 340 }, { x: 580, y: 340 }, { x: 880, y: 350 },
+    { x: 200, y: 540 }, { x: 580, y: 540 }
+  ];
+  // Level geometry and spawn data are independent of combat and steering.
+  const boundary = walls.slice(0,4);
+  const LEVEL_DEFINITIONS = [
+    {visualIndex:0,name:"BLACKTHORN MANOR",description:"Tight rooms and winding doorways.",rooms,walls,spawns:enemyStarts,start:{x:112,y:156},doors:null},
+    {visualIndex:1,name:"MOONLIT COURTYARD",description:"Loop around the mausoleum, cut through its four gates, or risk the open lanes.",start:{x:110,y:300},
+      rooms:[{x:28,y:28,w:904,h:544,name:"MOONLIT COURTYARD"},{x:346,y:186,w:268,h:228,name:"THE MAUSOLEUM"}],
+      walls:[...boundary,
+        {x:330,y:170,w:114,h:14},{x:516,y:170,w:114,h:14},
+        {x:330,y:416,w:114,h:14},{x:516,y:416,w:114,h:14},
+        {x:330,y:184,w:14,h:80},{x:330,y:336,w:14,h:80},
+        {x:616,y:184,w:14,h:80},{x:616,y:336,w:14,h:80},
+        {x:150,y:100,w:60,h:36},{x:750,y:100,w:60,h:36},
+        {x:150,y:464,w:60,h:36},{x:750,y:464,w:60,h:36},
+        {x:452,y:270,w:56,h:60}],
+      spawns:[{x:240,y:100},{x:480,y:100},{x:840,y:100},{x:780,y:300},{x:840,y:520},{x:480,y:500},{x:240,y:500},{x:570,y:240},{x:390,y:360},{x:720,y:420}],
+      doors:[[444,177,72,0],[444,423,72,0],[337,264,0,72],[623,264,0,72]]},
+    {visualIndex:2,name:"SHATTERED ARCHIVES",description:"Staggered shelves break sightlines; alternate cross aisles let you flank and escape.",start:{x:90,y:300},
+      rooms:[{x:28,y:28,w:280,h:544,name:"WEST STACKS"},{x:322,y:28,w:312,h:544,name:"FRACTURED GALLERY"},{x:648,y:28,w:284,h:544,name:"EAST STACKS"}],
+      walls:[...boundary,
+        {x:300,y:28,w:14,h:160},{x:300,y:260,w:14,h:132},{x:300,y:464,w:14,h:108},
+        {x:636,y:28,w:14,h:100},{x:636,y:200,w:14,h:180},{x:636,y:452,w:14,h:120},
+        {x:100,y:100,w:112,h:20},{x:164,y:200,w:80,h:20},{x:100,y:400,w:112,h:20},{x:164,y:500,w:80,h:20},
+        {x:388,y:100,w:156,h:20},{x:460,y:220,w:112,h:20},{x:388,y:340,w:156,h:20},{x:460,y:460,w:112,h:20},
+        {x:716,y:90,w:128,h:20},{x:780,y:260,w:100,h:20},{x:716,y:360,w:128,h:20},{x:780,y:500,w:100,h:20}],
+      spawns:[{x:240,y:70},{x:240,y:350},{x:100,y:540},{x:370,y:170},{x:560,y:300},{x:400,y:520},{x:730,y:180},{x:870,y:330},{x:720,y:470},{x:870,y:550}],
+      doors:[[307,188,0,72],[307,392,0,72],[643,128,0,72],[643,380,0,72]]}
+  ];
+  const LEVELS=[LEVEL_DEFINITIONS[1],LEVEL_DEFINITIONS[2],LEVEL_DEFINITIONS[0]];
+  let levelIndex=0;
+  function selectLevel(index) {
+    levelIndex=(index+LEVELS.length)%LEVELS.length;
+    const level=LEVELS[levelIndex];rooms=level.rooms;walls=level.walls;enemyStarts=level.spawns;
+    document.getElementById("location").textContent=level.name;
+    document.getElementById("level-description").textContent=level.description;
+    document.getElementById("level-select").value=String(levelIndex);
+    resetCombat();showMenu();
+  }
+  function nextLevel() {if(network.session){network.notice("Ready up above; the host starts the next hunt.");return;}if(won)selectLevel(levelIndex+1);}
+  document.getElementById("level-select").addEventListener("change",e=>selectLevel(Number(e.target.value)));
+  document.getElementById("next-level").addEventListener("click",nextLevel);
+  let enemies = [];
+  let bullets = [];
+  const PATH_CELL = 12;
+  const PATH_COLS = Math.ceil(WORLD.width / PATH_CELL);
+  const PATH_ROWS = Math.ceil(WORLD.height / PATH_CELL);
+  let playerPath = [];
+  const radiusPaths = new Map();
+  const navigationMasks = new Map();
+  let navigationDirections=[[1,0],[-1,0],[0,1],[0,-1]];
+  let stage = "wave", bossDelay = 0;
+  let summonsUsed=0,summonTimer=1.2,nextEnemyId=1,finaleTimer=0,finaleOrigin=null,finaleSpawned=false;
+  let pathRefresh = 0;
+
+  function cellCenter(index) {
+    return {
+      x: (index % PATH_COLS + 0.5) * PATH_CELL,
+      y: (Math.floor(index / PATH_COLS) + 0.5) * PATH_CELL
+    };
+  }
+  function nearestWalkableCell(x, y, radius, requireSight=false) {
+    // Search nearby grid cells only. The caller runs this for each enemy, so
+    // a local search avoids scanning the entire mansion every animation frame.
+    const baseCol = Math.max(0, Math.min(PATH_COLS - 1, Math.floor(x / PATH_CELL)));
+    const baseRow = Math.max(0, Math.min(PATH_ROWS - 1, Math.floor(y / PATH_CELL)));
+    for (let ring = 0; ring <= 8; ring++) {
+      let best = -1, bestDistance = Infinity;
+      for (let row = Math.max(0, baseRow - ring); row <= Math.min(PATH_ROWS - 1, baseRow + ring); row++) {
+        for (let col = Math.max(0, baseCol - ring); col <= Math.min(PATH_COLS - 1, baseCol + ring); col++) {
+          if (ring > 0 && Math.max(Math.abs(col - baseCol), Math.abs(row - baseRow)) !== ring) continue;
+          const index = row * PATH_COLS + col;
+          const point = cellCenter(index);
+          if (point.x - radius < 0 || point.x + radius > WORLD.width ||
+              point.y - radius < 0 || point.y + radius > WORLD.height ||
+              walls.some(w => circleHitsRect(point.x, point.y, radius, w))) continue;
+          if(requireSight && !clearSight(x,y,point.x,point.y,radius))continue;
+          const distance = (point.x - x) ** 2 + (point.y - y) ** 2;
+          if (distance < bestDistance) { bestDistance = distance; best = index; }
+        }
+      }
+      if (best >= 0) return best;
+    }
+    return -1;
+  }
+  function buildPlayerPath(radius=player.radius){
+    const total=PATH_COLS*PATH_ROWS,start=nearestWalkableCell(player.x,player.y,radius);
+    let mask=navigationMasks.get(radius);
+    if(!mask){mask=new Uint8Array(total);for(let i=0;i<total;i++){const p=cellCenter(i);mask[i]=p.x-radius>=0&&p.x+radius<=WORLD.width&&p.y-radius>=0&&p.y+radius<=WORLD.height&&!walls.some(w=>circleHitsRect(p.x,p.y,radius,w))?1:0;}navigationMasks.set(radius,mask);}
+    const next=new Int32Array(total);next.fill(-2);const queue=new Int32Array(total),field=new Array(total).fill(false);let head=0,tail=0;
+    if(start>=0){next[start]=-1;field[start]=true;queue[tail++]=start;}
+    while(head<tail){const at=queue[head++],col=at%PATH_COLS,row=Math.floor(at/PATH_COLS);
+      for(const [dx,dy] of navigationDirections){const x=col+dx,y=row+dy;if(x<0||x>=PATH_COLS||y<0||y>=PATH_ROWS)continue;const n=y*PATH_COLS+x;if(next[n]!==-2||!mask[n])continue;next[n]=at;field[n]=true;queue[tail++]=n;}}
+    field.next=next;field.start=start;playerPath=field;radiusPaths.set(radius,field);
+  }
+  function clearSight(x1,y1,x2,y2,radius){
+    const dx=x2-x1,dy=y2-y1,len=dx*dx+dy*dy,r=Math.max(0,radius-0.0001);
+    const minX=Math.min(x1,x2),maxX=Math.max(x1,x2),minY=Math.min(y1,y2),maxY=Math.max(y1,y2);
+    function rectHit(left,top,right,bottom){
+      let near=0,far=1;
+      if(Math.abs(dx)<1e-8){if(x1<=left||x1>=right)return false;}else{const a=(left-x1)/dx,b=(right-x1)/dx;near=Math.max(near,Math.min(a,b));far=Math.min(far,Math.max(a,b));}
+      if(Math.abs(dy)<1e-8){if(y1<=top||y1>=bottom)return false;}else{const a=(top-y1)/dy,b=(bottom-y1)/dy;near=Math.max(near,Math.min(a,b));far=Math.min(far,Math.max(a,b));}
+      return far>=near&&near<=1&&far>=0;
+    }
+    function cornerHit(x,y){const t=len?Math.max(0,Math.min(1,((x-x1)*dx+(y-y1)*dy)/len)):0;return (x1+dx*t-x)**2+(y1+dy*t-y)**2<r*r;}
+    for(const w of walls){const right=w.x+w.w,bottom=w.y+w.h;
+      if(maxX<w.x-r||minX>right+r||maxY<w.y-r||minY>bottom+r)continue;
+      if(rectHit(w.x-r,w.y,right+r,bottom)||rectHit(w.x,w.y-r,right,bottom+r)||cornerHit(w.x,w.y)||cornerHit(right,w.y)||cornerHit(w.x,bottom)||cornerHit(right,bottom))return false;
+    }
+    return true;
+  }
+  function getEnemyWaypoint(enemy) {
+    // Held, wall-checked flanking goals vary approach without adding per-frame jitter.
+    if (clearSight(enemy.x,enemy.y,player.x,player.y,enemy.radius)) {
+      if(enemy.stuckTime>0.5)return {x:player.x,y:player.y};
+      const goal={x:player.x+(enemy.approachX||0),y:player.y+(enemy.approachY||0)};
+      if(Math.hypot(enemy.x-player.x,enemy.y-player.y)>65 && clearSight(enemy.x,enemy.y,goal.x,goal.y,enemy.radius))return goal;
+      return {x:player.x,y:player.y};
+    }
+    const cell=nearestWalkableCell(enemy.x,enemy.y,enemy.radius,true),field=radiusPaths.get(enemy.radius);
+    if(cell<0||!field?.[cell])return null;
+    let chosen=cellCenter(cell),at=cell;
+    for(let i=0;i<16;i++){at=field.next[at];if(at<0)break;const p=cellCenter(at);if(!clearSight(enemy.x,enemy.y,p.x,p.y,enemy.radius))break;chosen=p;}
+    return clearSight(enemy.x,enemy.y,chosen.x,chosen.y,enemy.radius)?chosen:null;
+  }
+
+  function spawnBoss() {
+    // Choose a distant reachable cell; the larger collision radius gets its own path field.
+    buildPlayerPath(14);
+    const path=radiusPaths.get(14);let best=null,bestDistance=-1;const distant=[];
+    for(let i=0;i<path.length;i++) {
+      if(!path[i])continue;
+      const point=cellCenter(i), distance=Math.hypot(point.x-player.x,point.y-player.y);
+      if(distance>300)distant.push(point);
+      if(distance>bestDistance){bestDistance=distance;best=point;}
+    }
+    if(distant.length)best=distant[Math.floor(random()*distant.length)];
+    if(!best)best={x:590,y:150};
+    const config=ENEMY_TYPES.boss;
+    enemies=[{id:nextEnemyId++,type:"boss",x:best.x,y:best.y,radius:14,hp:config.hp,maxHp:config.hp,
+      speed:config.speed,vx:0,vy:0,phase:0,alive:true,hitFlash:0,knockX:0,knockY:0,
+      behavior:"pursuit",behaviorTimer:0,abilityCooldown:1.5,dashX:0,dashY:0}];
+    bullets=[];stage="boss";statusLabel.textContent="THE AMALGAM";updateHud();
+  }
+  function spawnReinforcement(type,origin,finale=false) {
+    const paths=radiusPaths.get(11);if(!paths)return false;
+    const options=[];
+    // Final Wraith favors the aim direction, with close visible fallback positions.
+    const aimLength=Math.hypot(player.aimX,player.aimY),ux=aimLength>0.001?player.aimX/aimLength:1,uy=aimLength>0.001?player.aimY/aimLength:0;
+    const front={x:player.x+ux*72,y:player.y+uy*72};
+    const safe=p=>!walls.some(w=>circleHitsRect(p.x,p.y,11,w)) && !enemies.some(e=>e.alive&&Math.hypot(e.x-p.x,e.y-p.y)<32);
+    if(finale && safe(front) && clearSight(player.x,player.y,front.x,front.y,11))options.push({p:front,rank:-1000});
+    for(let i=0;i<paths.length;i++) {
+      if(!paths[i])continue;const p=cellCenter(i),distance=Math.hypot(p.x-player.x,p.y-player.y);
+      if(!safe(p))continue;
+      if(finale) {
+        if(distance<40||distance>140||!clearSight(player.x,player.y,p.x,p.y,11))continue;
+        const dot=((p.x-player.x)*ux+(p.y-player.y)*uy)/distance;
+        options.push({p,rank:Math.hypot(p.x-front.x,p.y-front.y)+(dot<0?200:0)});
+      } else {
+        if(distance<100)continue;
+        options.push({p,rank:Math.hypot(p.x-origin.x,p.y-origin.y)+random()*35});
+      }
+    }
+    options.sort((a,b)=>a.rank-b.rank);if(!options.length)return false;
+    const p=options[0].p,config=ENEMY_TYPES[type];
+    enemies.push({id:nextEnemyId++,type,x:p.x,y:p.y,radius:11,hp:config.hp,maxHp:config.hp,speed:config.speed,
+      vx:0,vy:0,phase:random()*6,alive:true,hitFlash:0,knockX:0,knockY:0,behavior:"pursuit",behaviorTimer:0,
+      abilityCooldown:finale?0.2:1,approachX:0,approachY:0,decisionTimer:random(),stuckTime:0,dashX:0,dashY:0,
+      summoned:!finale,finale});
+    burst(p.x,p.y,finale?COLORS.purple:COLORS.wall,12);updateHud();return true;
+  }
+  function releaseGhosts(target,origin) {
+    while(summonsUsed<target) {
+      if(!spawnReinforcement("ghost",origin))break;
+      summonsUsed++;
+    }
+    updateHud();
+  }
+  function updateBossEncounter(dt) {
+    if(stage === "boss") {
+      const boss=enemies.find(e=>e.alive&&e.type === "boss");
+      if(!boss)return;
+      summonTimer-=dt;
+      // Thresholds refer to cumulative health lost, not living Ghost count.
+      const target=boss.hp/boss.maxHp<=0.6?9:boss.hp/boss.maxHp<=0.8?6:summonTimer<=0?3:0;
+      releaseGhosts(target,boss);
+    } else if(stage === "ghost-cleanup") {
+      // Retry any pending threshold summons before allowing the finale.
+      releaseGhosts(9,finaleOrigin);
+      if(summonsUsed===9 && !enemies.some(e=>e.alive)) {
+        stage="last-gasp";finaleTimer=0.7;statusLabel.textContent="LAST GASP INCOMING!";updateHud();
+      }
+    } else if(stage === "last-gasp") {
+      if(!finaleSpawned) {
+        finaleTimer-=dt;
+        if(finaleTimer<=0)finaleSpawned=spawnReinforcement("wraith",finaleOrigin,true);
+      }
+      if(finaleSpawned && !enemies.some(e=>e.alive)) {
+        won=true;statusLabel.textContent="LEVEL CLEARED!";updateHud();
+      }
+    }
+  }
+  function spawnWave() {
+    const wave=WAVES[waveIndex];
+    buildPlayerPath(11);
+    const candidates=[];
+    const paths=radiusPaths.get(11);
+    for(let cell=0;cell<paths.length;cell++) {
+      if(!paths[cell])continue;const point=cellCenter(cell);
+      if(Math.hypot(point.x-player.x,point.y-player.y)>180)candidates.push(point);
+    }
+    const spawnPoints=[];
+    for(const point of shuffle(candidates)) {
+      if(spawnPoints.every(p=>Math.hypot(p.x-point.x,p.y-point.y)>50))spawnPoints.push(point);
+      if(spawnPoints.length===wave.roster.length)break;
+    }
+    const roster=shuffle(wave.roster);
+    enemies = spawnPoints.map((p, i) => {
+      const type = roster[i], config = ENEMY_TYPES[type];
+      return {
+        id: nextEnemyId++, type, x: p.x, y: p.y, radius: 11, hp: config.hp+wave.hpBonus, maxHp: config.hp+wave.hpBonus, damage:Math.round(config.damage*wave.damage), dashSpeed:220*wave.speed, windup:.44-waveIndex*.04, attackCooldown:2.4-waveIndex*.3,
+        speed: config.speed*wave.speed*(0.92+random()*0.16), vx: 0, vy: 0,
+        phase: i * 1.3, alive: true, hitFlash: 0, knockX: 0, knockY: 0,
+        behavior: "pursuit", behaviorTimer: 0, abilityCooldown: 0.8+random()*1.4,
+        approachX:0,approachY:0,decisionTimer:random(),stuckTime:0,
+        dashX: 0, dashY: 0
+      };
+    });
+    defeated=0;bullets=[];input.fire=false;pathRefresh=0;stage="wave";
+    statusLabel.textContent="WAVE "+(waveIndex+1)+" / "+WAVES.length;updateHud();
+  }
+  function resetCombat(seed) {
+    randomState=(seed === undefined ? (Date.now() ^ Math.floor(Math.random()*4294967296)) : seed)>>>0;
+    navigationDirections=shuffle([[1,0],[-1,0],[0,1],[0,-1]]);
+    player.x = LEVELS[levelIndex].start.x; player.y = LEVELS[levelIndex].start.y;
+    input.up=input.down=input.left=input.right=false;
+    mouse.x=player.x+100;mouse.y=player.y;
+    player.hp = MAX_HP;
+    player.invulnerability = 0; input.fire = false;
+    particles = []; trails = []; muzzle = null; score = 0; nextBulletId = 1;
+    stage="wave";bossDelay=0;summonsUsed=0;summonTimer=1.2;nextEnemyId=1;finaleTimer=0;finaleOrigin=null;finaleSpawned=false;radiusPaths.clear();navigationMasks.clear();
+    waveIndex=0;waveDelay=0;spawnWave();
+    bullets = [];
+    defeated = 0;
+    shootTimer = 0;
+    pathRefresh = 0;
+    buildPlayerPath();buildPlayerPath(11);
+    damageFlash = 0;
+    gameOver = false;
+    won = false;
+    statusLabel.textContent = "FIGHT!";
+    updateHud();
+  }
+  function updateHud() {
+    document.getElementById("next-level").disabled=!won;
+    hpLabel.textContent = String(Math.max(0, Math.ceil(player.hp)));
+    document.getElementById("health-meter").value=player.hp;
+    document.getElementById("health-warning").textContent=player.hp>0&&player.hp<=35?"CRITICAL":"";
+    hpLabel.style.color=player.hp<=35?"#ff795f":"#e8c58a";
+    defeatedLabel.textContent = String(enemies.filter(e=>e.alive).length);
+    document.getElementById("stage").textContent = stage === "wave" ? "WAVE "+(waveIndex+1)+" / "+WAVES.length : stage === "wave-break" ? "NEXT WAVE IN "+Math.ceil(waveDelay)+"s" : stage === "boss-intro" ? "BOSS INCOMING" : stage === "ghost-cleanup" ? "CLEAR REMAINING GHOSTS" : stage === "last-gasp" ? "LAST GASP" : "THE AMALGAM / GHOSTS "+summonsUsed+" OF 9";
+    document.getElementById("score").textContent = String(score);
+  }
+
+  function setKey(key, isDown) {
+    const k = key.toLowerCase();
+    if (k === "w" || k === "arrowup") input.up = isDown;
+    if (k === "s" || k === "arrowdown") input.down = isDown;
+    if (k === "a" || k === "arrowleft") input.left = isDown;
+    if (k === "d" || k === "arrowright") input.right = isDown;
+  }
+
+  window.addEventListener("keydown", (event) => {
+    if(["INPUT","TEXTAREA","SELECT"].includes(event.target?.tagName)&&event.key!=="Escape")return;
+    if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(event.key.toLowerCase())) {
+      event.preventDefault();
+    }
+    if(event.key === "Escape"){showMenu();return;}
+    if(runState !== "playing")return;
+    if (event.key.toLowerCase() === "r") {if(network.session)network.notice("The host restarts the whole team after a run.");else resetCombat();}
+    if(event.key.toLowerCase() === "n" && !event.repeat) nextLevel();
+    setKey(event.key, true);
+  });
+  window.addEventListener("keyup", (event) => setKey(event.key, false));
+  window.addEventListener("blur", () => {
+    input.up = input.down = input.left = input.right = input.fire = false;
+  });
+
+  function pointerPosition(event) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (event.clientX - rect.left) * canvas.width / rect.width,
+      y: (event.clientY - rect.top) * canvas.height / rect.height
+    };
+  }
+  canvas.addEventListener("pointermove", (event) => {
+    const p = pointerPosition(event);
+    mouse.x = p.x; mouse.y = p.y; mouse.inside = true;
+  });
+  canvas.addEventListener("pointerleave", () => { mouse.inside = false; });
+  canvas.addEventListener("pointerdown", (event) => {
+    const p = pointerPosition(event);
+    mouse.x = p.x; mouse.y = p.y;
+    if (runState === "playing" && event.button === 0) { input.fire = true; canvas.setPointerCapture(event.pointerId); fireBullet(); }
+  });
+
+  window.addEventListener("pointerup", e => { if (e.button === 0) input.fire = false; });
+  canvas.addEventListener("pointercancel", () => { input.fire = false; });
+  canvas.addEventListener("lostpointercapture", () => { input.fire = false; });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) input.up = input.down = input.left = input.right = input.fire = false;
+  });
+  function resetPlayer() {
+    resetCombat();
+  }
+
+  function fireBullet() {
+    if (runState !== "playing" || gameOver || won || (stage === "boss-intro" || stage === "wave-break") || shootTimer > 0) return;
+    const dx = mouse.x - player.x;
+    const dy = mouse.y - player.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const ux = len > 1 ? dx / len : player.aimX, uy = len > 1 ? dy / len : player.aimY;
+    const mx = player.x + ux * (player.radius + 5), my = player.y + uy * (player.radius + 5);
+    shootTimer = COMBAT.cooldown;
+    // Test the muzzle offset to prevent a bolt spawning across a nearby thin wall.
+    if (!clearSight(player.x, player.y, mx, my, 3)) {
+      burst(player.x + ux*10, player.y + uy*10, COLORS.wall, 4); return;
+    }
+    muzzle = { x: mx, y: my, ux, uy, life: 0.055 };
+    bullets.push({
+      id: nextBulletId++, ownerId: player.id,
+      x: player.x + ux * (player.radius + 5),
+      y: player.y + uy * (player.radius + 5),
+      vx: ux * 560, vy: uy * 560, radius: 3, life: 1.15
+    });
+    shootTimer = SHOOT_COOLDOWN;
+    statusLabel.textContent = "FIRING";
+  }
+
+  // Cosmetic state never feeds back into movement, damage, or targeting.
+  function burst(x, y, color, count = 9) {
+    for (let i=0; i<count; i++) {
+      const a = i * Math.PI*2/count, speed = 35+(i%4)*22;
+      particles.push({x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,color,life:0.24});
+    }
+  }
+  function updateEffects(dt) {
+    for (const p of particles) {p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;}
+    particles=particles.filter(p=>p.life>0);
+    for (const t of trails) t.life-=dt;
+    trails=trails.filter(t=>t.life>0);
+    if(muzzle) {muzzle.life-=dt;if(muzzle.life<=0)muzzle=null;}
+  }
+  function applyKnockback(enemy, dt) {
+    const dx=enemy.knockX*dt,dy=enemy.knockY*dt;
+    const steps=Math.max(1,Math.ceil(Math.hypot(dx,dy)/2));
+    const free=(x,y)=>x>enemy.radius&&y>enemy.radius&&x<WORLD.width-enemy.radius&&y<WORLD.height-enemy.radius&&!walls.some(w=>circleHitsRect(x,y,enemy.radius,w));
+    for(let i=0;i<steps;i++) {
+      if(free(enemy.x+dx/steps,enemy.y))enemy.x+=dx/steps;else enemy.knockX=0;
+      if(free(enemy.x,enemy.y+dy/steps))enemy.y+=dy/steps;else enemy.knockY=0;
+    }
+    enemy.knockX*=Math.exp(-12*dt);enemy.knockY*=Math.exp(-12*dt);
+  }
+  function damagePlayer(enemy) {
+    if(player.invulnerability>0||gameOver||won)return;
+    player.hp=Math.max(0,player.hp-(enemy.damage ?? ENEMY_TYPES[enemy.type].damage));
+    player.invulnerability=COMBAT.invulnerability;damageFlash=0.22;
+    burst(player.x,player.y,COLORS.wall,12);
+    if(player.hp<=0){gameOver=true;input.fire=false;statusLabel.textContent="YOU WERE CAUGHT";}
+    updateHud();
+  }
+  function pointHitsWall(x, y) {
+    return walls.some(w => circleHitsRect(x,y,3,w));
+  }
+
+  function enemyIntent(enemy, dt, pursuitX, pursuitY) {
+    if (enemy.type !== "wraith" && enemy.type !== "boss") return {x:pursuitX, y:pursuitY};
+    enemy.abilityCooldown = Math.max(0, enemy.abilityCooldown-dt);
+    enemy.behaviorTimer = Math.max(0, enemy.behaviorTimer-dt);
+    if (enemy.behavior === "windup" && enemy.behaviorTimer <= 0) {
+      enemy.behavior = "dash"; enemy.behaviorTimer = 0.32;
+    } else if (enemy.behavior === "dash" && enemy.behaviorTimer <= 0) {
+      enemy.behavior = "recovery"; enemy.behaviorTimer = enemy.type === "boss" ? 0.3 : 0.42;
+      enemy.vx = enemy.vy = 0;
+    } else if (enemy.behavior === "recovery" && enemy.behaviorTimer <= 0) {
+      enemy.behavior = "pursuit";
+    }
+    const dx=player.x-enemy.x, dy=player.y-enemy.y, distance=Math.hypot(dx,dy);
+    if (enemy.behavior === "pursuit" && enemy.abilityCooldown <= 0 && distance >= 65 && distance <= 210 && clearSight(enemy.x,enemy.y,player.x,player.y,enemy.radius)) {
+      enemy.behavior = "windup"; enemy.behaviorTimer = enemy.type === "boss" ? .36 : (enemy.windup ?? .36); enemy.abilityCooldown = enemy.type === "boss" ? 1.5 : (enemy.attackCooldown ?? 1.8);
+      enemy.dashX=dx/distance; enemy.dashY=dy/distance;
+      enemy.vx=enemy.vy=0;
+    }
+    if (enemy.behavior === "windup" || enemy.behavior === "recovery") return {x:0,y:0};
+    if (enemy.behavior === "dash") return {x:enemy.dashX*(enemy.type === "boss" ? 280 : (enemy.dashSpeed ?? 260)),y:enemy.dashY*(enemy.type === "boss" ? 280 : (enemy.dashSpeed ?? 260))};
+    return {x:pursuitX,y:pursuitY};
+  }
+  function updateCombat(dt) {
+    if(runState !== "playing")return;
+    shootTimer = Math.max(0, shootTimer - dt);
+    damageFlash = Math.max(0, damageFlash - dt);
+    updateEffects(dt);
+    player.invulnerability = Math.max(0, player.invulnerability-dt);
+    if (gameOver || won) return;
+    if(stage === "wave-break") {
+      waveDelay-=dt;updateHud();
+      if(waveDelay<=0){waveIndex++;spawnWave();}
+      return;
+    }
+    if(stage === "boss-intro") {
+      bossDelay -= dt;
+      if(bossDelay <= 0) spawnBoss();
+      return;
+    }
+    updateBossEncounter(dt);
+    if(won)return;
+    if (input.fire) fireBullet();
+
+    // Refresh a grid path occasionally. Ghosts follow doorways instead of
+    // getting stuck trying to move directly through a wall.
+    pathRefresh -= dt;
+    if (pathRefresh <= 0) {
+      buildPlayerPath();
+      buildPlayerPath(11);
+      if(stage === "boss") buildPlayerPath(14);
+      pathRefresh = 0.18;
+    }
+
+    for (const enemy of enemies) {
+      if (!enemy.alive) continue;
+      enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);
+      enemy.decisionTimer=(enemy.decisionTimer||0)-dt;
+      if(enemy.decisionTimer<=0) {
+        const spread=enemy.type === "wraith"?75:enemy.type === "ghost"?40:20;
+        const angle=random()*Math.PI*2;
+        enemy.approachX=Math.cos(angle)*spread;enemy.approachY=Math.sin(angle)*spread;
+        enemy.decisionTimer=0.8+random()*1.2;
+      }
+      const waypoint = getEnemyWaypoint(enemy);
+      const oldEnemyX=enemy.x,oldEnemyY=enemy.y;
+      const r = enemy.radius;
+      const enemyCanOccupy = (x, y) =>
+        x - r > 0 && x + r < WORLD.width && y - r > 0 && y + r < WORLD.height &&
+        !walls.some(w => circleHitsRect(x, y, r, w));
+      let desiredX = 0, desiredY = 0;
+      if (waypoint) {
+        const dx = waypoint.x - enemy.x, dy = waypoint.y - enemy.y;
+        const distance = Math.hypot(dx, dy);
+        if (distance > 2) {
+          const speedFactor = Math.min(1, Math.max(0.28, distance / 38));
+          desiredX = dx / distance * enemy.speed * speedFactor;
+          desiredY = dy / distance * enemy.speed * speedFactor;
+        }
+      }
+      // Light separation keeps ghosts from piling up into one vibrating stack.
+      for (const other of enemies) {
+        if (other === enemy || !other.alive) continue;
+        const dx = enemy.x - other.x, dy = enemy.y - other.y;
+        const d = Math.hypot(dx, dy);
+        if (d > 0.01 && d < 30) {
+          const force = (30 - d) * (clearSight(enemy.x,enemy.y,player.x,player.y,enemy.radius) && !(enemy.stuckTime>0.5) ? 0.7 : 0.15);
+          desiredX += dx / d * force;
+          desiredY += dy / d * force;
+        }
+      }
+      const intent = enemyIntent(enemy, dt, desiredX, desiredY);
+      desiredX = intent.x; desiredY = intent.y;
+      // Acceleration smoothing makes turns gradual, rather than snapping.
+      const blend = 1 - Math.exp(-7 * dt);
+      enemy.vx += (desiredX - enemy.vx) * blend;
+      enemy.vy += (desiredY - enemy.vy) * blend;
+      if ((enemy.type === "wraith" || enemy.type === "boss") && enemy.behavior === "dash") {
+        enemy.vx=desiredX; enemy.vy=desiredY;
+      }
+      const nextX = enemy.x + enemy.vx * dt;
+      const nextY = enemy.y + enemy.vy * dt;
+      if (enemyCanOccupy(nextX, enemy.y)) enemy.x = nextX;
+      else enemy.vx = 0;
+      if (enemyCanOccupy(enemy.x, nextY)) enemy.y = nextY;
+      else enemy.vy = 0;
+
+      const progress=Math.hypot(enemy.x-oldEnemyX,enemy.y-oldEnemyY);
+      if(waypoint && enemy.behavior === "pursuit" && Math.hypot(enemy.x-player.x,enemy.y-player.y)>30 && progress<3*dt)enemy.stuckTime=(enemy.stuckTime||0)+dt;
+      else enemy.stuckTime=0;
+      if(enemy.stuckTime>0.6){enemy.vx=enemy.vy=0;enemy.approachX=enemy.approachY=0;}
+      applyKnockback(enemy,dt);
+      if (Math.hypot(player.x - enemy.x, player.y - enemy.y) < player.radius + enemy.radius) {
+        damagePlayer(enemy);
+      }
+    }
+
+    // Substeps prevent fast bolts from skipping through thin walls or ghosts.
+    for (const bullet of bullets) {
+      const travelX = bullet.vx * dt;
+      const travelY = bullet.vy * dt;
+      const distance = Math.hypot(travelX, travelY);
+      const steps = Math.max(1, Math.ceil(distance / 3));
+      const stepX = travelX / steps, stepY = travelY / steps;
+      bullet.life -= dt;
+
+      for (let step = 0; step < steps && bullet.life > 0; step++) {
+        const oldX=bullet.x,oldY=bullet.y;
+        bullet.x += stepX;
+        bullet.y += stepY;
+        trails.push({x:oldX,y:oldY,endX:bullet.x,endY:bullet.y,life:0.065});
+        if (pointHitsWall(bullet.x, bullet.y)) {
+          burst(bullet.x,bullet.y,COLORS.wall,4);
+          bullet.life = 0;
+          break;
+        }
+        for (const enemy of enemies) {
+          if (!enemy.alive) continue;
+          if (Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y) < bullet.radius + enemy.radius) {
+            enemy.hp -= 1;
+            if(enemy.type === "boss")updateBossEncounter(0);
+            enemy.hitFlash = 0.12;
+            const speed=Math.hypot(bullet.vx,bullet.vy)||1;
+            enemy.knockX=bullet.vx/speed*COMBAT.knockback*ENEMY_TYPES[enemy.type].knockbackScale;enemy.knockY=bullet.vy/speed*COMBAT.knockback*ENEMY_TYPES[enemy.type].knockbackScale;
+            burst(bullet.x,bullet.y,COLORS.pink);
+            bullet.life = 0;
+            if (enemy.hp <= 0) {
+              enemy.alive = false;
+              defeated += 1;
+              score += ENEMY_TYPES[enemy.type].score;
+              updateHud();
+              if (enemy.type === "boss") {
+                stage="ghost-cleanup";finaleOrigin={x:enemy.x,y:enemy.y};
+                statusLabel.textContent="CLEAR REMAINING GHOSTS";updateHud();
+              } else if (stage === "wave" && defeated === WAVES[waveIndex].roster.length) {
+                bullets.forEach(b=>b.life=0);input.fire=false;
+                if(waveIndex<WAVES.length-1){
+                  stage="wave-break";waveDelay=4;player.hp=Math.min(MAX_HP,player.hp+15);
+                  statusLabel.textContent="WAVE CLEARED / +15 HP";
+                } else {stage="boss-intro";bossDelay=2;statusLabel.textContent="THE AMALGAM AWAKENS";}
+                updateHud();
+              }
+            }
+            break;
+          }
+        }
+      }
+    }
+    if(stage === "last-gasp" && finaleSpawned && !enemies.some(e=>e.alive)){won=true;statusLabel.textContent="LEVEL CLEARED!";updateHud();}
+    bullets = bullets.filter(b => b.life > 0 && b.x >= 0 && b.x <= WORLD.width && b.y >= 0 && b.y <= WORLD.height);
+    if (!gameOver && !won && stage !== "boss-intro" && stage !== "wave-break" && shootTimer <= 0) statusLabel.textContent = stage === "last-gasp" && !finaleSpawned ? "LAST GASP INCOMING!" : enemies.some(e => e.alive && e.behavior === "windup") ? "WRAITH WINDUP" : "FIGHT!";
+  }
+
+  function circleHitsRect(cx, cy, radius, rect) {
+    const nearestX = Math.max(rect.x, Math.min(cx, rect.x + rect.w));
+    const nearestY = Math.max(rect.y, Math.min(cy, rect.y + rect.h));
+    const dx = cx - nearestX, dy = cy - nearestY;
+    return dx * dx + dy * dy < radius * radius;
+  }
+
+  function canOccupy(x, y) {
+    if (x - player.radius < 0 || x + player.radius > WORLD.width ||
+        y - player.radius < 0 || y + player.radius > WORLD.height) return false;
+    return !walls.some(w => circleHitsRect(x, y, player.radius, w));
+  }
+
+  function update(dt) {
+    if(runState !== "playing" || gameOver||won)return;
+    let dx = (input.right ? 1 : 0) - (input.left ? 1 : 0);
+    let dy = (input.down ? 1 : 0) - (input.up ? 1 : 0);
+    const length = Math.hypot(dx, dy);
+    player.moving = length > 0;
+    if (length > 0) { dx /= length; dy /= length; }
+
+    // Resolve axes separately to allow sliding along walls.
+    const nextX = player.x + dx * player.speed * dt;
+    if (canOccupy(nextX, player.y)) player.x = nextX;
+    const nextY = player.y + dy * player.speed * dt;
+    if (canOccupy(player.x, nextY)) player.y = nextY;
+
+    const targetX = mouse.x - player.x, targetY = mouse.y - player.y;
+    const aimLength = Math.hypot(targetX, targetY) || 1;
+    player.aimX = targetX / aimLength;
+    player.aimY = targetY / aimLength;
+    posLabel.textContent = `X ${Math.round(player.x)} / Y ${Math.round(player.y)}`;
+  }
+
+  function glowLine(x1, y1, x2, y2, color, blur = 12, width = 2) {
+    ctx.save();
+    ctx.strokeStyle = color; ctx.lineWidth = width;
+    ctx.shadowColor = color; ctx.shadowBlur = blur;
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    ctx.restore();
+  }
+
+  // Atmosphere is rendering-only; no simulation RNG, blockers, or entity state changes.
+  let ambientMotion=true;
+  document.getElementById("ambient-motion").addEventListener("change",e=>{ambientMotion=e.target.checked;});
+  const ambienceCache=new Map();
+  function lightBoundary(x,y,radius) {
+    const points=[];
+    for(let i=0;i<72;i++) {
+      const angle=i*Math.PI*2/72, dx=Math.cos(angle),dy=Math.sin(angle);let length=radius;
+      for(const w of walls) {
+        let near=-Infinity,far=Infinity;
+        for(const [origin,direction,min,max] of [[x,dx,w.x,w.x+w.w],[y,dy,w.y,w.y+w.h]]) {
+          if(Math.abs(direction)<0.00001){if(origin<min||origin>max){near=Infinity;break;}}
+          else {const t1=(min-origin)/direction,t2=(max-origin)/direction;near=Math.max(near,Math.min(t1,t2));far=Math.min(far,Math.max(t1,t2));}
+        }
+        if(near>=0 && far>=near)length=Math.min(length,near);
+      }
+      points.push([x+dx*length,y+dy*length]);
+    }
+    return points;
+  }
+  function ambience() {
+    if(ambienceCache.has(levelIndex))return ambienceCache.get(levelIndex);
+    const lights=[];
+    // Place sconces on existing wall faces, with pools clipped to solid walls.
+    const candidates=walls.slice(4).filter(w=>Math.max(w.w,w.h)>44);
+    const stride=Math.max(1,Math.ceil(candidates.length/14));
+    for(let i=0;i<candidates.length;i+=stride) {
+      const w=candidates[i],horizontal=w.w>w.h;
+      const x=horizontal?w.x+w.w/2:w.x+w.w+5;
+      const y=horizontal?w.y+w.h+5:w.y+w.h/2;
+      if(walls.some(w=>circleHitsRect(x,y,2,w)))continue;
+      const radius=LEVELS[levelIndex].visualIndex===1?110:86;
+      lights.push({x,y,radius,phase:i*1.71,points:lightBoundary(x,y,radius)});
+    }
+    const moons=[{x:32,y:125},{x:928,y:475}].map(l=>({...l,radius:160,points:lightBoundary(l.x,l.y,160)}));
+    const data={lights,moons};ambienceCache.set(levelIndex,data);return data;
+  }
+  function lightPool(light,moon=false) {
+    const time=ambientMotion?lastTime/1000:0;
+    const flicker=moon?1:ambientMotion?0.88+0.07*Math.sin(time*5+light.phase)+0.05*Math.sin(time*11+light.phase*2):0.94;
+    ctx.save();ctx.beginPath();light.points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.clip();
+    const r=light.radius*flicker,g=ctx.createRadialGradient(light.x,light.y,1,light.x,light.y,r);
+    g.addColorStop(0,moon?"rgba(116,162,223,.19)":"rgba(255,181,76,.30)");
+    g.addColorStop(.4,moon?"rgba(95,139,213,.09)":"rgba(228,131,42,.12)");g.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=g;ctx.fillRect(light.x-r,light.y-r,r*2,r*2);ctx.restore();
+  }
+  function drawFloor() {
+    ctx.fillStyle="#10131e";ctx.fillRect(0,0,WORLD.width,WORLD.height);
+    rooms.forEach((room,i)=>{ctx.fillStyle=i%2?"#121521":"#151722";ctx.fillRect(room.x,room.y,room.w,room.h);});
+    // Staggered flagstones with deterministic wear; no bitmap textures needed.
+    for(let row=0;row<17;row++)for(let col=0;col<22;col++) {
+      const x=28+col*44+(row%2?-22:0),y=28+row*34;
+      if(x<28||x+42>932||y+32>572)continue;
+      const wear=(row*17+col*31)%9;
+      ctx.fillStyle=wear<3?"#191c29":"#151823";ctx.fillRect(x,y,42,32);
+      ctx.strokeStyle="#232534";ctx.lineWidth=.6;ctx.strokeRect(x+.5,y+.5,41,31);
+      if(wear===0){ctx.strokeStyle="#30303d";ctx.beginPath();ctx.moveTo(x+8,y+8);ctx.lineTo(x+15,y+12);ctx.lineTo(x+12,y+19);ctx.stroke();}
+    }
+    if(LEVELS[levelIndex].visualIndex===0) {
+      for(const i of [0,2,6,11]) {
+        const r=rooms[i];ctx.fillStyle="#321927";ctx.fillRect(r.x+28,r.y+35,r.w-56,r.h-62);
+        ctx.strokeStyle="#64404a";ctx.lineWidth=1;ctx.strokeRect(r.x+33,r.y+40,r.w-66,r.h-72);
+        ctx.strokeStyle="#774f55";ctx.strokeRect(r.x+38,r.y+45,r.w-76,r.h-82);
+      }
+    } else if(LEVELS[levelIndex].visualIndex===1) {
+      ctx.strokeStyle="#414054";ctx.lineWidth=2;
+      for(const r of [55,72]){ctx.beginPath();ctx.arc(480,300,r,0,Math.PI*2);ctx.stroke();}
+      ctx.fillStyle="#39394b";for(const [x,y] of [[180,90],[780,90],[180,510],[780,510]]){ctx.fillRect(x-12,y-4,24,5);ctx.fillRect(x-3,y-17,6,30);}
+    } else {
+      ctx.fillStyle="#291a25";ctx.fillRect(435,35,32,530);
+      ctx.strokeStyle="#62434b";ctx.strokeRect(438,35,26,530);
+    }
+    const {lights,moons}=ambience();for(const moon of moons)lightPool(moon,true);for(const l of lights)lightPool(l);
+    ctx.fillStyle="#b7adbc";ctx.font="9px monospace";for(const r of rooms)ctx.fillText(r.name,r.x+10,r.y+18);
+  }
+  function drawWalls() {
+    walls.forEach((w,index)=>{
+      const furniture=LEVELS[levelIndex].visualIndex===0?index>=30:LEVELS[levelIndex].visualIndex===1?index>=12:index>=10;
+      ctx.fillStyle=furniture?"#30212a":"#292735";ctx.fillRect(w.x,w.y,w.w,w.h);
+      ctx.strokeStyle=furniture?"#735242":"#71616c";ctx.lineWidth=1;ctx.strokeRect(w.x+.5,w.y+.5,w.w-1,w.h-1);
+      ctx.fillStyle=furniture?"#463039":"#3e3541";ctx.fillRect(w.x+2,w.y+1,Math.max(0,w.w-4),2);
+      ctx.fillStyle="#12121b";ctx.fillRect(w.x+2,w.y+w.h-3,Math.max(0,w.w-4),2);
+      // Burgundy trim and stone joints distinguish masonry from furniture.
+      ctx.strokeStyle=furniture?"#634436":"#4a2638";ctx.lineWidth=1;
+      ctx.beginPath();if(w.w>w.h){ctx.moveTo(w.x+2,w.y+w.h/2);ctx.lineTo(w.x+w.w-2,w.y+w.h/2);}else{ctx.moveTo(w.x+w.w/2,w.y+2);ctx.lineTo(w.x+w.w/2,w.y+w.h-2);}ctx.stroke();
+      if(!furniture){ctx.strokeStyle="#171720";for(let at=24;at<Math.max(w.w,w.h);at+=32){ctx.beginPath();if(w.w>w.h){ctx.moveTo(w.x+at,w.y);ctx.lineTo(w.x+at,w.y+w.h);}else{ctx.moveTo(w.x,w.y+at);ctx.lineTo(w.x+w.w,w.y+at);}ctx.stroke();}}
+      if(LEVELS[levelIndex].visualIndex===2 && furniture){const colors=["#694052","#345263","#8d7045","#49624e"];for(let x=w.x+5;x<w.x+w.w-5;x+=7){ctx.fillStyle=colors[Math.floor(x/7)%4];ctx.fillRect(x,w.y+4,4,Math.max(2,w.h-8));}}
+    });
+  }
+  function drawAtmosphere() {
+    const time=ambientMotion?lastTime/1000:0;
+    for(const [i,l] of ambience().lights.entries()) {
+      ctx.save();ctx.translate(l.x,l.y);
+      ctx.strokeStyle="#72513a";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-7,4);ctx.lineTo(7,4);ctx.moveTo(0,4);ctx.lineTo(0,8);ctx.stroke();
+      for(const offset of [-5,0,5]) {
+        ctx.fillStyle="#c7aa7a";ctx.fillRect(offset-1,-3,2,7);
+        const sway=ambientMotion?Math.sin(time*7+i+offset)*.65:0;
+        ctx.shadowColor="#ffb94f";ctx.shadowBlur=8;ctx.fillStyle="#ffd793";
+        ctx.beginPath();ctx.moveTo(offset-1.4,-4);ctx.quadraticCurveTo(offset-2+sway,-7,offset+sway,-10);ctx.quadraticCurveTo(offset+2+sway,-6,offset+1.4,-4);ctx.fill();
+      }
+      ctx.restore();
+    }
+    // Thin corner webs and sparse dust keep the playable floor unobscured.
+    for(const [x,y,sx,sy] of [[30,30,1,1],[930,30,-1,1],[30,570,1,-1],[930,570,-1,-1]]) {
+      ctx.save();ctx.translate(x,y);ctx.scale(sx,sy);ctx.strokeStyle="rgba(175,171,192,.27)";ctx.lineWidth=.6;
+      for(let n=1;n<=4;n++){ctx.beginPath();ctx.moveTo(n*9,0);ctx.quadraticCurveTo(n*3,n*3,0,n*9);ctx.stroke();}
+      for(const [a,b] of [[36,0],[25,25],[0,36]]){ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(a,b);ctx.stroke();}ctx.restore();
+    }
+    if(ambientMotion)for(let i=0;i<22;i++) {
+      const x=40+((i*137+time*(2+i%3))%880),y=40+((i*73+Math.sin(time*.25+i)*9)%510);
+      ctx.fillStyle="rgba(219,202,161,"+(.08+.10*(.5+.5*Math.sin(time+i)))+")";ctx.fillRect(x,y,1.2,1.2);
+    }
+  }
+
+  function drawDoors() {
+    // Neon threshold marks help communicate the gaps between rooms.
+    const doors = LEVELS[levelIndex].doors || [
+      [158,212,44,0], [586,212,42,0], [114,392,44,0], [416,392,40,0], [610,392,40,0],
+      [268,106,0,36], [472,92,0,36], [696,120,0,36],
+      [268,278,0,36], [472,304,0,36], [696,280,0,36],
+      [268,472,0,34], [472,452,0,36], [696,484,0,36]
+    ];
+    doors.forEach(([x,y,w,h]) => {
+      ctx.save(); ctx.strokeStyle = "#ad8654"; ctx.shadowColor = "#b89862"; ctx.shadowBlur = 3; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      if (w) { ctx.moveTo(x,y); ctx.lineTo(x+w,y); }
+      else { ctx.moveTo(x,y); ctx.lineTo(x,y+h); }
+      ctx.stroke(); ctx.restore();
+    });
+  }
+
+  // Cosmetic roster: identities belong to player state, while stats remain shared.
+  const HUNTERS = Object.freeze({
+    warden: {name:"THE WARDEN",color:"#FFBE3D",accent:"#FFF4D6"},
+    riftwalker: {name:"THE RIFTWALKER",color:"#507CFF",accent:"#C4E7FF"},
+    hexkeeper: {name:"THE HEXKEEPER",color:"#43E6A0",accent:"#DAFFF0"},
+    revenant: {name:"THE REVENANT",color:"#FF795F",accent:"#FFE0CC"}
+  });
+  function chooseHunter(id) {
+    if(!HUNTERS[id])return;
+    player.hunter=id;
+    if(network.session){network.selectedHunter=id;network.ready(false);}
+    if(runState === "menu")refreshReadyChoice();
+    for(const card of document.querySelectorAll(".hunter-card"))card.setAttribute("aria-pressed",String(card.dataset.hunter===id));
+  }
+  function drawHunter(c, actor, time=0, marker=true) {
+    const look=HUNTERS[actor.hunter], angle=Math.atan2(actor.aimY,actor.aimX);
+    c.save();c.translate(actor.x,actor.y);
+    // An unbroken ground ring and P-number stay readable beneath all costumes.
+    if(marker){c.strokeStyle=look.color;c.globalAlpha=.45;c.lineWidth=1;c.beginPath();c.ellipse(0,3,14,10,0,0,Math.PI*2);c.stroke();c.globalAlpha=1;}
+    if(actor.invulnerability>0)c.globalAlpha=.45+.55*Math.abs(Math.sin(actor.invulnerability*35));
+    c.save();c.rotate(angle+Math.PI/2);
+    const sway=actor.moving ? Math.sin(time*10)*.7 : 0;
+    c.strokeStyle=look.color;c.fillStyle="#11151f";c.lineWidth=1.6;c.lineJoin="round";
+    c.shadowColor=look.color;c.shadowBlur=8;
+    if(actor.hunter === "warden") {
+      polygon(c,[[-7,-7],[7,-7],[9,-2],[7,5],[0,10],[-7,5],[-9,-2]]);
+      c.fillStyle=look.color;c.fillRect(-10,-5,3,5);c.fillRect(7,-5,3,5);
+      c.fillStyle=look.accent;c.shadowBlur=3;c.fillRect(-4,-4,8,2);
+      c.strokeStyle=look.color;c.beginPath();c.moveTo(0,0);c.lineTo(0,6);c.stroke();
+    } else if(actor.hunter === "riftwalker") {
+      polygon(c,[[0,-10],[8,7+sway],[2,5],[0,9],[-2,5],[-8,7-sway]]);
+      c.fillStyle=look.accent;polygon(c,[[0,-6],[3,-2],[0,1],[-3,-2]]);
+    } else if(actor.hunter === "hexkeeper") {
+      polygon(c,[[0,-9],[8,-4],[8,4],[0,9],[-8,4],[-8,-4]]);
+      c.fillStyle=look.accent;c.beginPath();c.arc(0,0,2.7+.25*Math.sin(time*3),0,Math.PI*2);c.fill();
+      c.lineWidth=1;for(const [x,y] of [[-10,-5],[0,-11],[10,-5]]){c.beginPath();c.moveTo(x-1.5,y);c.lineTo(x,y-2);c.lineTo(x+1.5,y);c.lineTo(x,y+2);c.closePath();c.stroke();}
+    } else {
+      polygon(c,[[-9,-4],[-5,-8],[0,-5],[5,-8],[9,-4],[6,3],[4,8+sway],[0,5],[-4,8-sway],[-6,3]]);
+      c.fillStyle=look.accent;polygon(c,[[-3,-3],[3,-3],[2,1],[0,3],[-2,1]]);
+      c.strokeStyle=look.color;c.beginPath();c.moveTo(-1,-1);c.lineTo(1,-1);c.stroke();
+    }
+    // Barrel/tip marks forward regardless of body silhouette.
+    c.shadowBlur=4;c.fillStyle=look.color;c.fillRect(3,-12,2.5,9);c.fillStyle=look.accent;c.fillRect(3,-13,2.5,2);
+    c.restore();
+    if(marker){c.shadowBlur=0;c.globalAlpha=1;c.fillStyle=look.accent;c.font="bold 8px monospace";c.textAlign="center";c.fillText("P"+actor.slot,0,-19);}
+    c.restore();
+  }
+  function drawPlayer() {
+    const look=HUNTERS[player.hunter];
+    glowLine(player.x,player.y,player.x+player.aimX*35,player.y+player.aimY*35,look.color,5,1);
+    drawHunter(ctx,player,lastTime/1000);
+    if(player.invulnerability>0){ctx.save();ctx.strokeStyle=look.color;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(player.x,player.y,18,0,Math.PI*2);ctx.stroke();ctx.restore();}
+  }
+  function initHunterPicker() {
+    for(const card of document.querySelectorAll(".hunter-card")) {
+      const id=card.dataset.hunter;card.style.setProperty("--hunter",HUNTERS[id].color);
+      card.addEventListener("click",()=>chooseHunter(id));
+      const guide=document.getElementById("hunter-"+id),c=guide.getContext("2d");
+      c.save();c.translate(80,50);c.scale(2.8,2.8);
+      drawHunter(c,{hunter:id,x:0,y:0,aimX:0,aimY:-1,moving:false,invulnerability:0,slot:1},0,false);c.restore();
+    }
+  }
+
+  function drawBulletsAndEnemies() {
+    for(const t of trails) {
+      ctx.save();ctx.globalAlpha=t.life/0.065;
+      glowLine(t.x,t.y,t.endX,t.endY,COLORS.pink,6,2);ctx.restore();
+    }
+    // Projectiles are simple neon diamonds.
+    for (const bullet of bullets) {
+      ctx.save();
+      ctx.translate(bullet.x, bullet.y);
+      ctx.rotate(Math.atan2(bullet.vy, bullet.vx));
+      ctx.fillStyle = COLORS.pink;
+      ctx.shadowColor = COLORS.pink;
+      ctx.shadowBlur = 14;
+      ctx.fillRect(-5, -2, 10, 4);
+      ctx.restore();
+    }
+
+    for (const enemy of enemies) {
+      if (!enemy.alive) continue;
+      drawEnemy(ctx, enemy);
+    }
+  }
+
+  // Rendering only: body silhouettes fit the unchanged 11-unit collision radius.
+  const ENEMY_VISUALS = Object.freeze({
+    ghost: { color: "#fa4fe9", fill: "#170b24", name: "GHOST" },
+    wraith: { color: "#c35cff", fill: "#1b0b31", name: "WRAITH" },
+    brute: { color: "#36efff", fill: "#071d2a", name: "BRUTE" }
+  });
+  const WRAITH_OUTLINE = [[-6,-9],[1,-6],[9,0],[5,3],[9,8],[2,5],[2,10],[-3,5],[-9,9],[-6,1],[-10,-1],[-4,-4]];
+  function polygon(c, points) {
+    c.beginPath(); points.forEach(([x,y],i) => i ? c.lineTo(x,y) : c.moveTo(x,y));
+    c.closePath(); c.fill(); c.stroke();
+  }
+  function drawEnemy(c, enemy, showHealth = true) {
+    const visual=enemy.type === "boss" ? {color:"#36efff",fill:"#190e2d",name:"AMALGAM"} : ENEMY_VISUALS[enemy.type];
+    const flash=enemy.hitFlash>0, color=flash ? "#ffffff" : visual.color;
+    const facing=Math.hypot(enemy.vx,enemy.vy)>1 ? Math.atan2(enemy.vy,enemy.vx) : Math.PI/2;
+    c.save();c.translate(enemy.x,enemy.y);
+    if(enemy.type === "boss") c.scale(1.65,1.65);
+    // Wraith telegraphs use the locked simulation direction, never the current aim.
+    if(enemy.type === "wraith" || enemy.type === "boss") {
+      const angle=enemy.behavior === "windup" || enemy.behavior === "dash" ? Math.atan2(enemy.dashY,enemy.dashX) : facing;
+      c.save();c.rotate(angle);
+      if(enemy.behavior === "windup") {
+        const progress=Math.max(0,Math.min(1,1-enemy.behaviorTimer/(enemy.type === "boss" ? .36 : (enemy.windup ?? .36))));
+        c.strokeStyle=visual.color;c.lineWidth=1.5;c.globalAlpha=0.35+0.6*progress;
+        c.setLineDash([4,4]);c.beginPath();c.moveTo(14,0);c.lineTo(62,0);c.stroke();c.setLineDash([]);
+        c.beginPath();c.moveTo(55,-5);c.lineTo(62,0);c.lineTo(55,5);c.stroke();
+        c.beginPath();c.arc(0,0,16,-Math.PI/2,-Math.PI/2+Math.PI*2*progress);c.stroke();
+        c.save();c.scale(1.4,1.4);c.fillStyle="rgba(195,92,255,0.06)";
+        c.setLineDash([2,3]);polygon(c,WRAITH_OUTLINE);c.restore();
+      } else if(enemy.behavior === "dash") {
+        for(let i=3;i>0;i--) {
+          c.globalAlpha=0.1+(3-i)*0.08;c.fillStyle=visual.fill;c.strokeStyle=visual.color;c.lineWidth=1;
+          c.save();c.translate(-i*10,0);polygon(c,WRAITH_OUTLINE);c.restore();
+        }
+      }
+      c.restore();
+    }
+    c.strokeStyle=color;c.fillStyle=flash ? "#eaffff" : visual.fill;
+    c.lineWidth=1.6;c.shadowColor=color;c.shadowBlur=flash ? 18 : 9;
+    c.lineJoin="round";c.lineCap="round";
+    if(enemy.type === "ghost") {
+      // Rounded hood, trailing zigzag hem and two cyan eyes from the concept sheet.
+      c.beginPath();c.moveTo(-8,8);c.lineTo(-8,-1);
+      c.bezierCurveTo(-8,-13,8,-13,8,-1);
+      c.lineTo(8,8);c.lineTo(5,5);c.lineTo(2.5,9);c.lineTo(0,5.5);
+      c.lineTo(-2.5,9);c.lineTo(-5,5);c.closePath();c.fill();c.stroke();
+      c.fillStyle=flash ? "#0a2633" : "#30efff";
+      c.shadowColor="#30efff";c.shadowBlur=6;
+      for(const x of [-2.8,2.8]) {c.beginPath();c.arc(x,-1.5,1.35,0,Math.PI*2);c.fill();}
+    } else if(enemy.type === "wraith") {
+      const angle=enemy.behavior === "windup" || enemy.behavior === "dash" ? Math.atan2(enemy.dashY,enemy.dashX) : facing;
+      c.save();c.rotate(angle);polygon(c,WRAITH_OUTLINE);c.restore();
+      // Keep the paired eyes readable while the asymmetric body turns toward travel.
+      c.fillStyle=flash ? "#15132a" : "#30efff";c.shadowColor="#30efff";c.shadowBlur=6;
+      for(const x of [-2.5,2.5]) {c.beginPath();c.arc(x,-0.8,1.25,0,Math.PI*2);c.fill();}
+      if(enemy.behavior === "recovery") {c.strokeStyle=visual.color;c.globalAlpha=0.55;c.beginPath();c.moveTo(-10,7);c.lineTo(-6,10);c.stroke();}
+    } else {
+      if(enemy.type === "boss") {
+        c.save();c.strokeStyle="#c35cff";c.fillStyle="#200d30";c.shadowColor="#c35cff";
+        polygon(c,[[-6,-8],[-10,-10],[-8,-2],[-10,4],[-7,6],[-6,9],[6,9],[7,6],[10,4],[8,-2],[10,-10],[6,-8]]);c.restore();
+      }
+      // Magenta horn plates frame a cyan beveled, rounded armored face.
+      c.strokeStyle=flash ? "#ffffff" : "#f34be5";c.fillStyle="#310e38";
+      c.shadowColor=c.strokeStyle;c.shadowBlur=8;c.lineWidth=1.6;
+      polygon(c,[[-7,-4],[-8,-10],[-4,-5]]);
+      polygon(c,[[7,-4],[8,-10],[4,-5]]);
+      c.strokeStyle=color;c.shadowColor=color;c.fillStyle=flash ? "#eaffff" : visual.fill;
+      c.beginPath();c.moveTo(-3,-6.5);c.lineTo(3,-6.5);
+      c.quadraticCurveTo(5,-6.5,6,-4);c.lineTo(8,0);c.lineTo(8,6);
+      c.quadraticCurveTo(8,9,5,9);c.lineTo(-5,9);
+      c.quadraticCurveTo(-8,9,-8,6);c.lineTo(-8,0);c.lineTo(-6,-4);
+      c.quadraticCurveTo(-5,-6.5,-3,-6.5);c.closePath();c.fill();c.stroke();
+      c.fillStyle=flash ? "#301537" : "#fa39e5";c.shadowColor="#fa39e5";c.shadowBlur=6;
+      c.fillRect(-5,-0.5,3,2);c.fillRect(2,-0.5,3,2);
+      c.strokeStyle=flash ? "#123442" : "#36efff";c.shadowColor=c.strokeStyle;c.lineWidth=1.2;
+      c.beginPath();c.moveTo(-3.5,5);c.lineTo(3.5,5);c.stroke();
+    }
+    c.restore();
+    if(enemy.type === "boss") {
+      c.save();c.fillStyle="#f0b5ff";c.textAlign="center";c.font="bold 9px monospace";
+      c.fillText("THE AMALGAM",enemy.x,enemy.y-38);c.restore();
+    }
+    if(showHealth) {
+      const width=enemy.type === "boss" ? 52 : 24, gap=1, pipWidth=(width-(enemy.maxHp-1)*gap)/enemy.maxHp;
+      c.save();c.shadowBlur=0;
+      for(let i=0;i<enemy.maxHp;i++) {
+        c.fillStyle=i<enemy.hp ? visual.color : "#332b43";
+        c.fillRect(enemy.x-width/2+i*(pipWidth+gap),enemy.y-(enemy.type === "boss" ? 29 : 20),pipWidth,3);
+      }
+      c.restore();
+    }
+  }
+  function drawEnemyGuide() {
+    for(const type of ["ghost","wraith","brute"]) {
+      const guide=document.getElementById("guide-"+type), c=guide.getContext("2d");
+      c.clearRect(0,0,guide.width,guide.height);
+      c.save();c.translate(80,45);c.scale(2.7,2.7);
+      drawEnemy(c,{type,x:0,y:0,vx:1,vy:0,hitFlash:0,behavior:"pursuit",hp:ENEMY_TYPES[type].hp,maxHp:ENEMY_TYPES[type].hp},false);
+      c.restore();
+    }
+  }
+
+  function drawEffects() {
+    for(const p of particles) {
+      ctx.save();ctx.globalAlpha=p.life/0.24;ctx.fillStyle=p.color;
+      ctx.shadowColor=p.color;ctx.shadowBlur=7;ctx.fillRect(p.x-1.5,p.y-1.5,3,3);ctx.restore();
+    }
+    if(muzzle) {
+      const {x,y,ux,uy}=muzzle;
+      glowLine(x-uy*5,y+ux*5,x+uy*5,y-ux*5,"#ffffff",16,3);
+      glowLine(x,y,x+ux*10,y+uy*10,COLORS.pink,16,3);
+    }
+  }
+  function drawDamageOverlay() {
+    if(stage === "wave-break" && !gameOver) {
+      ctx.save();ctx.fillStyle="rgba(8,9,17,.87)";ctx.fillRect(245,242,470,100);
+      ctx.textAlign="center";ctx.fillStyle="#e8c58a";ctx.font="bold 22px Georgia";
+      ctx.fillText("WAVE CLEARED / +15 HP",480,280);ctx.font="14px monospace";
+      ctx.fillText("Wave "+(waveIndex+2)+" begins in "+Math.ceil(waveDelay)+"s",480,315);ctx.restore();
+    }
+    if(player.hp>0 && player.hp<=35 && !won && !gameOver) {
+      ctx.save();const edge=ctx.createRadialGradient(480,300,170,480,300,540);
+      edge.addColorStop(0,"rgba(92,8,23,0)");edge.addColorStop(1,"rgba(180,16,42,"+(ambientMotion ? .2+.05*Math.sin(lastTime/180):.2)+")");
+      ctx.fillStyle=edge;ctx.fillRect(0,0,960,600);ctx.restore();
+    }
+    if (damageFlash > 0) {
+      ctx.fillStyle = `rgba(255, 35, 120, ${damageFlash * 1.1})`;
+      ctx.fillRect(0, 0, WORLD.width, WORLD.height);
+    }
+    if (gameOver || won) {
+      ctx.fillStyle = "rgba(4, 4, 12, 0.76)";
+      ctx.fillRect(180, 235, 600, 130);
+      ctx.strokeStyle = won ? COLORS.wall : COLORS.pink;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(180, 235, 600, 130);
+      ctx.textAlign = "center";
+      ctx.fillStyle = won ? COLORS.wall : COLORS.pink;
+      ctx.shadowColor = ctx.fillStyle;
+      ctx.shadowBlur = 14;
+      ctx.font = "bold 28px ui-monospace, monospace";
+      ctx.fillText(won ? "LEVEL CLEARED!" : "YOU WERE CAUGHT", 480, 290);
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = "#f3f1ff";
+      ctx.font = "14px ui-monospace, monospace";
+      ctx.fillText(network.session ? "Ready up above for the next team hunt" : "Press R to retry", 480, 325);
+      ctx.textAlign = "left";
+    }
+  }
+
+  function drawVignette() {
+    const gradient = ctx.createRadialGradient(480, 300, 120, 480, 300, 520);
+    gradient.addColorStop(0, "rgba(0,0,0,0)");
+    gradient.addColorStop(1, "rgba(0,0,0,.42)");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, WORLD.width, WORLD.height);
+  }
+
+  let lastTime = 0;
+  function frame(timestamp) {
+    const dt = Math.min((timestamp - lastTime) / 1000 || 0, 0.033);
+    lastTime = timestamp;
+    if(runState !== "playing"){requestAnimationFrame(frame);return;}
+    if(network.session)network.animate(dt);else{update(dt);updateCombat(dt);}
+    drawFloor();
+    drawDoors();
+    drawWalls();
+    drawAtmosphere();
+    drawBulletsAndEnemies();
+    network.drawTeammates();
+    if(player.hp>0)drawPlayer();
+    drawEffects();
+    drawDamageOverlay();
+    drawVignette();
+    requestAnimationFrame(frame);
+  }
+
+
+  const network={session:null,stream:null,world:null,roster:[],revision:-1,seq:0,pending:false,hostId:null,readyState:false,peerPositions:new Map(),
+    notice(message){document.getElementById('room-message').textContent=message;},
+    async request(path,data={},auth=true){
+      const headers={'Content-Type':'application/json'};if(auth&&this.session)headers.Authorization='Bearer '+this.session.token;
+      const response=await fetch(path,{method:'POST',headers,body:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw Error(result.error||'Request failed');return result;
+    },
+    async connect(create){
+      if(this.session)return;const button=document.getElementById(create?'create-room':'join-room');button.disabled=true;
+      try{
+        const code=document.getElementById('room-code').value.trim().toUpperCase();if(!create&&!/^[A-F0-9]{6}$/.test(code))throw Error('Enter a six-character room code.');
+        this.session=await this.request(create?'/api/rooms':'/api/rooms/'+code+'/join',{hunter:player.hunter},false);this.revision=-1;this.seq=0;sessionStorage.setItem('monster-rush-room',JSON.stringify(this.session));
+        this.stream=new EventSource('/api/rooms/'+this.session.code+'/events?token='+encodeURIComponent(this.session.token));
+        this.stream.onmessage=event=>{try{this.receive(JSON.parse(event.data));}catch(e){this.notice('Could not read room update. Leave and rejoin.');}};
+        this.stream.onerror=()=>{input.up=input.down=input.left=input.right=input.fire=false;this.notice('Connection interrupted. Reconnecting; controls stopped.');};
+        this.notice('Share room '+this.session.code+'. Choose your hunter and press Ready.');
+      }catch(e){this.notice(e.message);}finally{if(!this.session)button.disabled=false;}
+    },
+    receive(state){
+      if(!this.session)return;this.hostId=state.hostId;this.roster=state.members;
+      const me=state.members.find(m=>m.id===this.session.id);if(!me){this.leave(false);this.notice('Session expired. Join again.');return;}
+      this.readyState=me.ready;const active=state.state==='playing'&&!state.world?.won&&!state.world?.gameOver;
+      document.getElementById('room-label').textContent='ROOM '+state.code+' / YOU: P'+me.slot+(state.hostId===me.id?' / HOST':'');
+      document.getElementById('room-roster').textContent=state.members.map(m=>'P'+m.slot+' '+HUNTERS[m.hunter].name+' / '+(!m.connected?'RECONNECTING':active?'IN HUNT':m.ready?'READY':'CHOOSING')).join(' | ');
+      document.getElementById('room-ready').disabled=active;document.getElementById('room-ready').textContent=me.ready?'Ready - cancel':'Ready';
+      document.getElementById('room-level').disabled=state.hostId!==me.id||active;
+      document.getElementById('room-start').disabled=state.hostId!==me.id||state.members.filter(m=>m.connected).length<2||state.members.some(m=>m.connected&&!m.ready)||active;
+      document.getElementById('create-room').disabled=true;document.getElementById('join-room').disabled=true;document.getElementById('leave-room').hidden=false;
+      if(state.state==='error'){this.notice('Room simulation stopped. Leave and create another room.');return;}
+      if(!state.world)return;const world=state.world,local=world.players.find(p=>p.id===this.session.id);if(!local)return;
+      if(this.revision!==state.revision){this.revision=state.revision;enemies=[];this.world=null;this.peerPositions.clear();this.selectedHunter=null;damageFlash=0;input.fire=false;this.notice('Hunt started. Clear the encounter together.');canvas.focus();}
+      const first=!this.world,oldHp=player.hp;this.world=world;
+      levelIndex=world.levelIndex;const level=LEVELS[levelIndex];rooms=level.rooms;walls=level.walls;enemyStarts=level.spawns;document.getElementById('location').textContent=level.name;
+      if(first)Object.assign(player,local);else{const x=player.x,y=player.y;Object.assign(player,local,{x,y});}if(world.won||world.gameOver)player.hunter=this.selectedHunter||me.hunter;if(local.hp<oldHp)damageFlash=.22;
+      const old=new Map(enemies.map(e=>[e.id,e]));enemies=world.enemies.map(e=>({...e,x:first?e.x:old.get(e.id)?.x??e.x,y:first?e.y:old.get(e.id)?.y??e.y}));
+      bullets=world.bullets.map(b=>({...b}));particles=world.particles.map(p=>({...p}));trails=world.trails.map(t=>({...t}));muzzle=world.muzzle?{...world.muzzle}:null;
+      waveIndex=world.waveIndex;waveDelay=world.waveDelay;stage=world.stage;score=world.score;won=world.won;gameOver=world.gameOver;summonsUsed=world.summonsUsed;finaleSpawned=world.finaleSpawned;
+      runState='playing';document.body.classList.remove('menu-mode');document.body.classList.toggle('run-ended',won||gameOver);statusLabel.textContent=local.hp<=0&&!gameOver?'DOWN / SPECTATING':world.status;updateHud();
+    },
+    animate(dt){
+      if(!this.world)return;const blend=1-Math.exp(-24*dt),local=this.world.players.find(p=>p.id===this.session.id);
+      if(local){player.x+=(local.x-player.x)*blend;player.y+=(local.y-player.y)*blend;}
+      const targets=new Map(this.world.enemies.map(e=>[e.id,e]));for(const e of enemies){const target=targets.get(e.id);if(target){e.x+=(target.x-e.x)*blend;e.y+=(target.y-e.y)*blend;}}
+      for(const actor of this.world.players){const prev=this.peerPositions.get(actor.id)||actor;this.peerPositions.set(actor.id,{...actor,x:prev.x+(actor.x-prev.x)*blend,y:prev.y+(actor.y-prev.y)*blend});}
+      damageFlash=Math.max(0,damageFlash-dt);updateEffects(dt);posLabel.textContent='X '+Math.round(player.x)+' / Y '+Math.round(player.y);
+    },
+    drawTeammates(){
+      if(!this.world)return;for(const actor of this.peerPositions.values()){if(actor.id===this.session.id)continue;ctx.save();if(actor.hp<=0||!actor.connected)ctx.globalAlpha=.3;drawHunter(ctx,actor,lastTime/1000);ctx.restore();}
+      if(player.hp<=0){ctx.save();ctx.fillStyle='#eee0ca';ctx.font='12px monospace';ctx.textAlign='center';ctx.fillText('You are down. Teammates can finish the hunt.',480,580);ctx.restore();}
+    },
+    async ready(value){if(!this.session)return;try{await this.request('/api/rooms/'+this.session.code+'/ready',{ready:value,hunter:this.selectedHunter||player.hunter});this.notice(value?'Ready. Waiting for host.':'Select hunter, then Ready.');}catch(e){this.notice(e.message);}},
+    async start(){if(!this.session)return;try{await this.request('/api/rooms/'+this.session.code+'/start',{level:Number(document.getElementById('room-level').value)});}catch(e){this.notice(e.message);}},
+    async leave(send=true){const session=this.session;if(!session)return;this.stream?.close();this.stream=null;if(send)try{await this.request('/api/rooms/'+session.code+'/leave');}catch{}
+      sessionStorage.removeItem('monster-rush-room');this.session=null;this.world=null;this.readyState=false;input.up=input.down=input.left=input.right=input.fire=false;runState='menu';document.body.classList.add('menu-mode');
+      for(const id of ['create-room','join-room'])document.getElementById(id).disabled=false;for(const id of ['room-ready','room-start'])document.getElementById(id).disabled=true;
+      document.getElementById('leave-room').hidden=true;document.getElementById('room-label').textContent='Not connected';document.getElementById('room-roster').textContent='';this.notice('Left room. Create or join another hunt.');
+    }
+  };
+  document.getElementById('create-room').addEventListener('click',()=>network.connect(true));document.getElementById('join-room').addEventListener('click',()=>network.connect(false));
+  document.getElementById('leave-room').addEventListener('click',()=>network.leave());document.getElementById('room-ready').addEventListener('click',()=>network.ready(!network.readyState));document.getElementById('room-start').addEventListener('click',()=>network.start());
+  async function restoreRoom(){
+    let saved;try{saved=JSON.parse(sessionStorage.getItem('monster-rush-room'));}catch{}if(!saved?.token||!saved?.code)return;
+    network.session=saved;
+    try{
+      const resumed=await network.request('/api/rooms/'+saved.code+'/resume');network.seq=resumed.seq;
+      network.stream=new EventSource('/api/rooms/'+saved.code+'/events?token='+encodeURIComponent(saved.token));
+      network.stream.onmessage=e=>{try{network.receive(JSON.parse(e.data));}catch{network.notice('Could not read room update.');}};
+      network.stream.onerror=()=>{input.up=input.down=input.left=input.right=input.fire=false;network.notice('Reconnecting to your room...');};
+      network.notice('Rejoined room '+saved.code);
+    }catch(e){await network.leave(false);network.notice('Previous room expired. Create or join another.');}
+  }
+  setInterval(async()=>{
+    if(!network.session||network.pending||!network.world||won||gameOver)return;network.pending=true;
+    try{await network.request('/api/rooms/'+network.session.code+'/input',{seq:++network.seq,input:{up:input.up,down:input.down,left:input.left,right:input.right,fire:input.fire,aimX:mouse.x,aimY:mouse.y}});}
+    catch(e){network.notice(e.message);}finally{network.pending=false;}
+  },50);
+
+  // Initial mouse aim points right until the pointer enters the game canvas.
+  selectLevel(0);
+  drawEnemyGuide();
+  initHunterPicker();
+  restoreRoom();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
