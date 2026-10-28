@@ -3,6 +3,8 @@ const fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync(__dirname+'/solo.html','utf8').replace(/\r\n/g,'\n');
 function makeEngine(){
  let script=source.match(/<script>([\s\S]*?)<\/script>/)[1];
+ // Audio belongs exclusively to browser clients.
+ script=script.replace(/  \/\/ Local synthesized audio:[\s\S]*?(?=  \/\/ All world coordinates)/, '  const sound={reset(){}};\n');
  function replace(a,b){if(!script.includes(a))throw Error('Engine source mismatch: '+a.slice(0,70));script=script.replace(a,b);}
  replace('      enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);','      netTarget(enemy);\n      enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);');
  replace('    player.invulnerability = Math.max(0, player.invulnerability-dt);','    // Protection is advanced separately for every network actor.');

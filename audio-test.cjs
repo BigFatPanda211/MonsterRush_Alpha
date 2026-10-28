@@ -1,0 +1,12 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+let starts=0,contexts=0;const events={},elements={},storage=new Map();
+const param=()=>({value:0,setValueAtTime(){},exponentialRampToValueAtTime(){},setTargetAtTime(v){this.value=v}});
+const node=()=>({gain:param(),frequency:param(),threshold:param(),ratio:param(),connect(){},disconnect(){},start(){starts++},stop(){this.onended?.()}});
+class AudioContext{constructor(){contexts++;this.currentTime=0;this.state='running';this.destination={}}createGain(){return node()}createDynamicsCompressor(){return node()}createOscillator(){return node()}resume(){this.state='running';return Promise.resolve()}suspend(){this.state='suspended';return Promise.resolve()}}
+const document={hidden:false,getElementById(id){return elements[id]??={value:35,setAttribute(){},addEventListener(k,f){events[id+':'+k]=f}}},addEventListener(k,f){events[k]=f}};
+const sandbox={document,window:{AudioContext},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)}};
+const source=fs.readFileSync(__dirname+'/solo.html','utf8').match(/  \/\/ Local synthesized audio:[\s\S]*?(?=  \/\/ All world coordinates)/)[0];vm.createContext(sandbox);vm.runInContext(source+';globalThis.audio=sound',sandbox);assert.equal(contexts,0);events.pointerdown();assert.equal(contexts,1);
+let state={active:true,player:{id:'p',hp:100},bullets:[],enemies:[{id:1,hp:3}],waveIndex:0,stage:'wave',score:0,won:false,gameOver:false};sandbox.audio.observe(state);let count=starts;
+state={...state,bullets:[{id:1,ownerId:'p'}],enemies:[{id:1,hp:2,behavior:'windup'}],player:{id:'p',hp:80},score:100,stage:'boss-intro'};sandbox.audio.observe(state);assert.ok(starts>count);count=starts;sandbox.audio.observe(state);assert.equal(starts,count);
+events['sound-mute:click']();state={...state,won:true};sandbox.audio.observe(state);assert.equal(starts,count);assert.equal(JSON.parse(storage.get('monster-rush-audio')).muted,true);
+elements['sound-volume'].value=70;events['sound-volume:input']();assert.equal(JSON.parse(storage.get('monster-rush-audio')).volume,.7);document.hidden=true;events.visibilitychange();document.hidden=false;events.visibilitychange();sandbox.audio.reset();sandbox.audio.observe({active:false});console.log('PASS audio gesture unlock, combat cues, duplicate suppression, mute, persisted volume, visibility and inactive handling with mocked Web Audio.');

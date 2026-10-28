@@ -104,6 +104,7 @@
       <button id="start-game" class="start-button">Start expedition</button>
       <span id="ready-choice">THE WARDEN / MOONLIT COURTYARD</span>
     </section>
+    <div class="atmosphere-controls" aria-label="Sound settings"><button id="sound-mute" aria-pressed="false">Sound: on</button><label>Volume <input id="sound-volume" type="range" min="0" max="100" value="35" aria-label="Sound volume"></label></div>
     <label class="atmosphere-controls"><input id="ambient-motion" type="checkbox" checked> Candle flicker and drifting dust</label>
     <button id="return-menu" class="return-menu">Room menu / Esc</button>
     <div class="level-controls">
@@ -146,6 +147,64 @@
 <script>
 (() => {
   "use strict";
+
+  // Local synthesized audio: no assets, server state changes, or network traffic.
+  const sound=(()=>{
+    let context,bus,bed,voices=0,previous=null,volume=.35,muted=false,unlocked=false;
+    const last=new Map();
+    try{const saved=JSON.parse(localStorage.getItem('monster-rush-audio'));if(saved){volume=Math.max(0,Math.min(1,Number(saved.volume)||0));muted=!!saved.muted;}}catch{}
+    const muteButton=document.getElementById('sound-mute'),slider=document.getElementById('sound-volume');
+    slider.value=String(Math.round(volume*100));
+    function labels(){muteButton.textContent=muted?'Sound: off':'Sound: on';muteButton.setAttribute('aria-pressed',String(muted));}
+    function save(){labels();try{localStorage.setItem('monster-rush-audio',JSON.stringify({volume,muted}));}catch{}if(bus)bus.gain.setTargetAtTime(muted?0:volume,context.currentTime,.03);}
+    function unlock(){
+      if(!context){const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;
+        try{context=new Audio();bus=context.createGain();bus.gain.value=muted?0:volume;const limiter=context.createDynamicsCompressor();limiter.threshold.value=-16;limiter.ratio.value=8;bus.connect(limiter);limiter.connect(context.destination);
+          bed=context.createGain();bed.gain.value=0;bed.connect(bus);
+          for(const frequency of [55,82.6]){const o=context.createOscillator();o.type='sine';o.frequency.value=frequency;o.connect(bed);o.start();}
+        }catch{return;}}
+      unlocked=true;if(!document.hidden)context.resume().catch(()=>{});
+    }
+    function tone(frequency,end,duration,type='sine',gain=.15,delay=0){
+      if(!context||muted||volume===0||context.state!=='running'||voices>=24)return;
+      const now=context.currentTime+delay,o=context.createOscillator(),g=context.createGain();voices++;
+      o.type=type;o.frequency.setValueAtTime(frequency,now);o.frequency.exponentialRampToValueAtTime(Math.max(15,end),now+duration);
+      g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(gain,now+.008);g.gain.exponentialRampToValueAtTime(.0001,now+duration);
+      o.connect(g);g.connect(bus);o.onended=()=>{voices--;o.disconnect();g.disconnect();};o.start(now);o.stop(now+duration+.02);
+    }
+    function cue(name,quiet=1){
+      if(!context)return;const now=context.currentTime;if(now-(last.get(name)??-100)<(name==='shot'?.07:.12))return;last.set(name,now);
+      if(name==='shot')tone(240,65,.085,'triangle',.2*quiet);
+      if(name==='hit')tone(750,180,.055,'square',.05);
+      if(name==='kill'){tone(320,65,.22,'triangle',.17);tone(980,110,.16,'sine',.08);}
+      if(name==='hurt'){tone(130,35,.3,'sawtooth',.13);tone(70,45,.35,'sine',.2);}
+      if(name==='dash')tone(180,1200,.22,'triangle',.08);
+      if(name==='wave'){for(let i=0;i<3;i++)tone([220,277,330][i], [220,277,330][i],.22,'triangle',.14,i*.12);}
+      if(name==='boss'){tone(95,32,1.1,'sawtooth',.14);tone(142,48,1.2,'triangle',.16,.1);}
+      if(name==='finale'){tone(1600,160,.6,'triangle',.15);tone(800,80,.6,'sine',.13,.08);}
+      if(name==='win')for(let i=0;i<4;i++)tone([262,330,392,524][i],[262,330,392,524][i],.4,'triangle',.15,i*.16);
+      if(name==='lose'){tone(220,40,1,'triangle',.2);tone(165,30,1,'sine',.15,.1);}
+    }
+    function observe(state){
+      if(!state.active||document.hidden){if(bed)bed.gain.setTargetAtTime(0,context.currentTime,.1);return;}
+      if(bed)bed.gain.setTargetAtTime(state.won||state.gameOver?0:.035,context.currentTime,.4);
+      const shot=Math.max(0,...state.bullets.map(b=>b.id));
+      if(previous){
+        if(shot>previous.shot){const b=state.bullets.find(b=>b.id===shot);cue('shot',b?.ownerId===state.player.id?1:.45);}
+        if(state.player.hp<previous.hp)cue('hurt');
+        let hit=false,dash=false;for(const e of state.enemies){const old=previous.enemies.get(e.id);if(old&&e.hp<old.hp)hit=true;if(e.behavior==='windup'&&old?.behavior!=='windup')dash=true;}
+        if(hit)cue('hit');if(dash)cue('dash');if(state.score>previous.score)cue('kill');
+        if(state.waveIndex!==previous.waveIndex)cue('wave');
+        if(state.stage!==previous.stage){if(state.stage==='boss-intro')cue('boss');if(state.stage==='last-gasp')cue('finale');}
+        if(state.won&&!previous.won)cue('win');if(state.gameOver&&!previous.gameOver)cue('lose');
+      }else cue('wave');
+      previous={shot:Math.max(shot,previous?.shot||0),hp:state.player.hp,enemies:new Map(state.enemies.map(e=>[e.id,{hp:e.hp,behavior:e.behavior}])),waveIndex:state.waveIndex,stage:state.stage,score:state.score,won:state.won,gameOver:state.gameOver};
+    }
+    muteButton.addEventListener('click',()=>{unlock();muted=!muted;save();});slider.addEventListener('input',()=>{unlock();volume=Math.max(0,Math.min(1,Number(slider.value)/100));save();});
+    document.addEventListener('pointerdown',unlock);document.addEventListener('keydown',unlock);
+    document.addEventListener('visibilitychange',()=>{if(!context)return;if(document.hidden)context.suspend().catch(()=>{});else if(unlocked)context.resume().catch(()=>{});});labels();
+    return {observe,reset(){previous=null;last.clear();}};
+  })();
 
   // All world coordinates use the 960 x 600 canvas coordinate system.
   // Keep map geometry and player logic separate so multiplayer can be added later.
@@ -1249,8 +1308,9 @@
   function frame(timestamp) {
     const dt = Math.min((timestamp - lastTime) / 1000 || 0, 0.033);
     lastTime = timestamp;
-    if(runState !== "playing"){requestAnimationFrame(frame);return;}
+    if(runState !== "playing"){sound.observe({active:false});requestAnimationFrame(frame);return;}
     if(network.session)network.animate(dt);else{update(dt);updateCombat(dt);}
+    sound.observe({active:true,player,bullets,enemies,waveIndex,stage,score,won,gameOver});
     drawFloor();
     drawDoors();
     drawWalls();
@@ -1294,7 +1354,7 @@
       document.getElementById('create-room').disabled=true;document.getElementById('join-room').disabled=true;document.getElementById('leave-room').hidden=false;
       if(state.state==='error'){this.notice('Room simulation stopped. Leave and create another room.');return;}
       if(!state.world)return;const world=state.world,local=world.players.find(p=>p.id===this.session.id);if(!local)return;
-      if(this.revision!==state.revision){this.revision=state.revision;enemies=[];this.world=null;this.peerPositions.clear();this.selectedHunter=null;damageFlash=0;input.fire=false;this.notice('Hunt started. Clear the encounter together.');canvas.focus();}
+      if(this.revision!==state.revision){this.revision=state.revision;sound.reset();enemies=[];this.world=null;this.peerPositions.clear();this.selectedHunter=null;damageFlash=0;input.fire=false;this.notice('Hunt started. Clear the encounter together.');canvas.focus();}
       const first=!this.world,oldHp=player.hp;this.world=world;
       levelIndex=world.levelIndex;const level=LEVELS[levelIndex];rooms=level.rooms;walls=level.walls;enemyStarts=level.spawns;document.getElementById('location').textContent=level.name;
       if(first)Object.assign(player,local);else{const x=player.x,y=player.y;Object.assign(player,local,{x,y});}if(world.won||world.gameOver)player.hunter=this.selectedHunter||me.hunter;if(local.hp<oldHp)damageFlash=.22;
