@@ -72,6 +72,9 @@
     .ready-room h2 {font-family:Georgia,serif;color:#f6dfb7;}
     .start-button {border-color:#c7a064;background:#473020;color:#fff0d6;}
     .atmosphere-controls {font-size:.72rem;color:#bdb5c3;display:flex;align-items:center;gap:8px;margin:0 0 12px;}
+    #solo-menu-dialog {max-width:420px;background:#17121b;color:#f3f1ff;border:1px solid #c7a064;border-radius:10px;padding:24px;}
+    #solo-menu-dialog::backdrop {background:#08090faa;}
+    #solo-menu-dialog p {line-height:1.6;color:#c5b7bf;}
   </style>
 </head>
 <body class="menu-mode">
@@ -125,6 +128,7 @@
       <div class="tip"><b>COMBAT</b> Ghosts pursue, Wraiths pause then dash, Brutes endure. Survive three rising waves, then defeat the Amalgam boss to win. Magenta Ghosts pursue; purple Wraiths dash; cyan Brutes endure. Press <kbd>R</kbd> to retry. After the boss, <kbd>N</kbd> advances to the next layout.</div>
     </section>
   </main>
+  <dialog id="solo-menu-dialog" aria-labelledby="solo-menu-title" aria-describedby="solo-menu-description"><h2 id="solo-menu-title">Hunt paused</h2><p id="solo-menu-description">Resume your hunt, or return to character and level selection. Returning to selection ends this run.</p><button id="solo-resume" autofocus>Resume hunt</button> <button id="solo-confirm-menu">Return to selection</button></dialog>
 <script>
 (() => {
   "use strict";
@@ -209,6 +213,13 @@
   const input = { up: false, down: false, left: false, right: false, fire: false };
   const mouse = { x: player.x + 100, y: player.y, inside: false };
   let runState="menu";
+  const soloMenuDialog=document.getElementById('solo-menu-dialog');
+  function clearSoloControls(){input.up=input.down=input.left=input.right=input.fire=false;}
+  function openSoloMenu(){if(runState!=='playing'||soloMenuDialog.open)return;clearSoloControls();runState='paused';soloMenuDialog.showModal();document.getElementById('solo-resume').focus();}
+  function resumeSoloHunt(){if(!soloMenuDialog.open)return;soloMenuDialog.close();clearSoloControls();runState='playing';canvas.focus();}
+  soloMenuDialog.addEventListener('cancel',event=>{event.preventDefault();resumeSoloHunt();});
+  document.getElementById('solo-resume').addEventListener('click',resumeSoloHunt);
+  document.getElementById('solo-confirm-menu').addEventListener('click',()=>{soloMenuDialog.close();showMenu();});
   // Seeded simulation random source; keep cosmetic effects independent of its sequence.
   let randomState=1;
   function random() {randomState|=0;randomState=(randomState+0x6D2B79F5)|0;let t=Math.imul(randomState^(randomState>>>15),1|randomState);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296;}
@@ -222,7 +233,7 @@
     resetCombat();runState="playing";document.body.classList.remove("menu-mode");canvas.focus();
   }
   document.getElementById("start-game").addEventListener("click",startGame);
-  document.getElementById("return-menu").addEventListener("click",showMenu);
+  document.getElementById("return-menu").addEventListener("click",openSoloMenu);
   const MAX_HP = 100;
   const SHOOT_COOLDOWN = 0.18;
   // Simulation values are independent of local input and cosmetic effects.
@@ -530,7 +541,7 @@
     if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(event.key.toLowerCase())) {
       event.preventDefault();
     }
-    if(event.key === "Escape"){showMenu();return;}
+    if(event.key === "Escape"){event.preventDefault();if(event.repeat)return;if(soloMenuDialog.open)resumeSoloHunt();else openSoloMenu();return;}
     if(runState !== "playing")return;
     if (event.key.toLowerCase() === "r") resetCombat();
     if(event.key.toLowerCase() === "n" && !event.repeat) nextLevel();
