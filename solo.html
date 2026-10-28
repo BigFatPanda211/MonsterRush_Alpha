@@ -75,6 +75,16 @@
     #solo-menu-dialog {max-width:420px;background:#17121b;color:#f3f1ff;border:1px solid #c7a064;border-radius:10px;padding:24px;}
     #solo-menu-dialog::backdrop {background:#08090faa;}
     #solo-menu-dialog p {line-height:1.6;color:#c5b7bf;}
+
+    .shell{width:min(1520px,100%)}
+    .play-arena{display:grid;grid-template-columns:190px minmax(0,1fr) 180px;gap:14px;align-items:start}
+    .game-toolbar{grid-column:1 / -1;display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:#bfa57a;font-size:.72rem;letter-spacing:.08em}.game-toolbar button{margin-left:auto}#fullscreen-message{color:#ffb99f;letter-spacing:normal}
+    .controls-sidebar,.enemy-sidebar{min-width:0;border:1px solid #665038;border-radius:8px;background:#121019;padding:12px}.play-arena h2{font-size:.72rem;letter-spacing:.1em;color:#e8c58a;margin:0 0 12px}
+    .controls-sidebar .instructions,.enemy-sidebar .bestiary{grid-template-columns:1fr;margin:0;gap:10px}.controls-sidebar .tip{padding:9px;font-size:.72rem}.controls-sidebar .atmosphere-controls{margin:14px 0 0;flex-wrap:wrap;line-height:1.5}.controls-sidebar input[type=range]{width:100%;max-width:150px}.controls-sidebar .return-menu{width:100%;margin:14px 0 0;font-size:.72rem}
+    .enemy-sidebar .enemy-card{border:0;background:transparent;padding:4px 0 12px}.enemy-sidebar .enemy-card canvas{width:140px;height:auto;aspect-ratio:16/9}.play-arena .game-frame{min-width:0;align-self:start}body.menu-mode .play-arena{display:none}
+    .play-arena:fullscreen{width:100vw;height:100dvh;padding:14px;background:#08090f;overflow:auto;align-content:start}.play-arena:fullscreen #game{width:min(100%,calc((100dvh - 165px) * 1.6));margin:auto}.play-arena:fullscreen .controls-sidebar,.play-arena:fullscreen .enemy-sidebar{max-height:calc(100dvh - 75px);overflow:auto}
+    @media(max-width:1050px){.play-arena{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.play-arena .game-frame{grid-column:1 / -1;grid-row:2}.controls-sidebar{grid-column:1;grid-row:3}.enemy-sidebar{grid-column:2;grid-row:3}.enemy-sidebar .bestiary{grid-template-columns:repeat(3,minmax(0,1fr))}.enemy-sidebar .enemy-card canvas{width:100%}.play-arena:fullscreen .controls-sidebar,.play-arena:fullscreen .enemy-sidebar{max-height:none}}
+    @media(max-width:600px){body{padding:8px}.play-arena{grid-template-columns:minmax(0,1fr)}.controls-sidebar,.enemy-sidebar{grid-column:1}.enemy-sidebar{grid-row:4}.game-toolbar{font-size:.65rem}.hud{gap:7px;padding:8px;font-size:.65rem}}
   </style>
 </head>
 <body class="menu-mode">
@@ -90,9 +100,6 @@
       <button id="start-game" class="start-button">Start expedition</button>
       <span id="ready-choice">THE WARDEN / MOONLIT COURTYARD</span>
     </section>
-    <div class="atmosphere-controls" aria-label="Sound settings"><button id="sound-mute" aria-pressed="false">Sound: on</button><label>Volume <input id="sound-volume" type="range" min="0" max="100" value="35" aria-label="Sound volume"></label></div>
-    <label class="atmosphere-controls"><input id="ambient-motion" type="checkbox" checked> Candle flicker and drifting dust</label>
-    <button id="return-menu" class="return-menu">Change hunter / level / Esc</button>
     <div class="level-controls">
       <label for="level-select">LEVEL</label>
       <select id="level-select" aria-label="Choose level (starts a fresh run)">
@@ -108,7 +115,11 @@
       <button class="hunter-card" data-hunter="revenant" aria-pressed="false"><canvas id="hunter-revenant" width="160" height="100"></canvas><b>THE REVENANT</b><span>CORAL / HAUNTED DUELIST</span></button>
     </section>
     <p class="hunter-note">Choose your hunter / Same abilities for now / Colors and silhouettes prepare the roster for multiplayer.</p>
-    <section class="game-frame" aria-label="Monster Rush game">
+<section id="play-arena" class="play-arena" aria-label="Game and field guide"><div class="game-toolbar"><span>BLACKTHORN EXPEDITIONS</span><button id="fullscreen-toggle" aria-pressed="false">Enter fullscreen</button><span id="fullscreen-message" role="status"></span></div><aside class="controls-sidebar" aria-label="Controls and settings"><h2>FIELD CONTROLS</h2><section class="instructions">
+      <div class="tip"><b>MOVEMENT</b><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to move. You cannot walk through walls.</div>
+      <div class="tip"><b>AIM + SHOOT</b> Move the mouse to aim. Hold left mouse to fire (0.18s cooldown).</div>
+      <div class="tip"><b>COMBAT</b> Ghosts pursue, Wraiths pause then dash, Brutes endure. Survive three rising waves, then defeat the Amalgam boss to win. Magenta Ghosts pursue; purple Wraiths dash; cyan Brutes endure. Press <kbd>R</kbd> to retry. After the boss, <kbd>N</kbd> advances to the next layout.</div>
+    </section><div class="atmosphere-controls" aria-label="Sound settings"><button id="sound-mute" aria-pressed="false">Sound: on</button><label>Volume <input id="sound-volume" type="range" min="0" max="100" value="35" aria-label="Sound volume"></label></div><label class="atmosphere-controls"><input id="ambient-motion" type="checkbox" checked> Candle flicker and drifting dust</label><button id="return-menu" class="return-menu">Change hunter / level / Esc</button></aside><section class="game-frame" aria-label="Monster Rush game">
       <canvas id="game" width="960" height="600" tabindex="0" aria-label="Game canvas. Move with WASD, aim with the mouse, and click to shoot."></canvas>
       <div class="hud">
         <span>LOCATION: <strong id="location">BLACKTHORN MANOR</strong></span>
@@ -117,19 +128,12 @@
         <span>STAGE: <strong id="stage">WAVE 1</strong></span><span>REMAINING: <strong id="defeated">0 / 5</strong></span>
         <span>SCORE: <strong id="score">0</strong></span><span>STATUS: <strong id="status">EXPLORING</strong></span>
       </div>
-    </section>
-    <section class="bestiary" aria-label="Enemy visual guide">
+    </section><aside class="enemy-sidebar" aria-label="Enemy types"><h2>KNOW YOUR ENEMY</h2><section class="bestiary" aria-label="Enemy visual guide">
       <div class="enemy-card"><canvas id="guide-ghost" width="160" height="90" aria-label="Ghost: rounded magenta shroud with cyan eyes"></canvas><b>01 / GHOST</b><span>STANDARD PURSUER / RELENTLESS</span></div>
       <div class="enemy-card"><canvas id="guide-wraith" width="160" height="90" aria-label="Wraith: jagged purple spirit with cyan eyes"></canvas><b>02 / WRAITH</b><span>FAST FLANKER / PAUSE / DASH</span></div>
       <div class="enemy-card"><canvas id="guide-brute" width="160" height="90" aria-label="Brute: cyan armored head with magenta horns"></canvas><b>03 / BRUTE</b><span>HEAVY TANK / RESISTS KNOCKBACK</span></div>
-    </section>
-    <section class="instructions">
-      <div class="tip"><b>MOVEMENT</b><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to move. You cannot walk through walls.</div>
-      <div class="tip"><b>AIM + SHOOT</b> Move the mouse to aim. Hold left mouse to fire (0.18s cooldown).</div>
-      <div class="tip"><b>COMBAT</b> Ghosts pursue, Wraiths pause then dash, Brutes endure. Survive three rising waves, then defeat the Amalgam boss to win. Magenta Ghosts pursue; purple Wraiths dash; cyan Brutes endure. Press <kbd>R</kbd> to retry. After the boss, <kbd>N</kbd> advances to the next layout.</div>
-    </section>
+    </section></aside><dialog id="solo-menu-dialog" aria-labelledby="solo-menu-title" aria-describedby="solo-menu-description"><h2 id="solo-menu-title">Hunt paused</h2><p id="solo-menu-description">Resume your hunt, or return to character and level selection. Returning to selection ends this run.</p><button id="solo-resume" autofocus>Resume hunt</button> <button id="solo-confirm-menu">Return to selection</button></dialog></section>
   </main>
-  <dialog id="solo-menu-dialog" aria-labelledby="solo-menu-title" aria-describedby="solo-menu-description"><h2 id="solo-menu-title">Hunt paused</h2><p id="solo-menu-description">Resume your hunt, or return to character and level selection. Returning to selection ends this run.</p><button id="solo-resume" autofocus>Resume hunt</button> <button id="solo-confirm-menu">Return to selection</button></dialog>
 <script>
 (() => {
   "use strict";
@@ -270,6 +274,14 @@
     aimX: 1, aimY: 0, moving: false
   };
   const input = { up: false, down: false, left: false, right: false, fire: false };
+  // Fullscreen includes the game, side panels, and confirmation dialogs.
+  const arena=document.getElementById('play-arena'),fullscreenButton=document.getElementById('fullscreen-toggle'),fullscreenMessage=document.getElementById('fullscreen-message');
+  fullscreenButton.addEventListener('click',async()=>{
+    input.up=input.down=input.left=input.right=input.fire=false;fullscreenMessage.textContent='';
+    try{if(document.fullscreenElement)await document.exitFullscreen();else if(arena.requestFullscreen)await arena.requestFullscreen();else fullscreenMessage.textContent='Fullscreen is unavailable in this browser.';}
+    catch{fullscreenMessage.textContent='Fullscreen could not open. Try opening the game in a browser tab.';}canvas.focus();
+  });
+  document.addEventListener('fullscreenchange',()=>{const active=document.fullscreenElement===arena;fullscreenButton.textContent=active?'Exit fullscreen':'Enter fullscreen';fullscreenButton.setAttribute('aria-pressed',String(active));input.up=input.down=input.left=input.right=input.fire=false;canvas.focus();});
   const mouse = { x: player.x + 100, y: player.y, inside: false };
   let runState="menu";
   const soloMenuDialog=document.getElementById('solo-menu-dialog');
@@ -600,7 +612,7 @@
     if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(event.key.toLowerCase())) {
       event.preventDefault();
     }
-    if(event.key === "Escape"){event.preventDefault();if(event.repeat)return;if(soloMenuDialog.open)resumeSoloHunt();else openSoloMenu();return;}
+    if(event.key === "Escape"){if(document.fullscreenElement)return;event.preventDefault();if(event.repeat)return;if(soloMenuDialog.open)resumeSoloHunt();else openSoloMenu();return;}
     if(runState !== "playing")return;
     if (event.key.toLowerCase() === "r") resetCombat();
     if(event.key.toLowerCase() === "n" && !event.repeat) nextLevel();
