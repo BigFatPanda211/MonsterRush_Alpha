@@ -722,20 +722,40 @@
   const CLASS_RULES=MONSTER_CLASSES;
   let classEffects=[];
   function classActors(){return [player];}
-  function resetClassState(actor){Object.assign(actor,{abilityCooldown:0,abilityTime:0,lastAbilitySeq:0,pactHealing:0,attackTime:0,attackSide:1,attackSerial:0});}
+  const attackVisuals=new Map();
+  function beginAttack(charged=false){
+    const melee=!!CLASS_RULES[player.hunter].reach;
+    player.attackDuration=charged?.32:player.hunter==='warden'?.30:melee?.20:.15;
+    player.attackTime=player.attackDuration;player.attackKind=charged?'charged':'normal';
+    player.attackSide=player.hunter==='revenant'?-(player.attackSide||1):1;
+    const d=attackDirection();player.attackAngle=Math.atan2(d.y,d.x);player.attackSerial=(player.attackSerial||0)+1;
+  }
+  // Render clock is independent of 30Hz snapshots; one serial starts one smooth motion.
+  function attackPose(actor,time){
+    const idle={active:false,p:1,kick:0,swing:0,side:actor.attackSide||1,charged:false};
+    if(!actor.id||!actor.attackSerial)return idle;
+    let state=attackVisuals.get(actor.id);
+    if(!state||state.serial!==actor.attackSerial){if(!(actor.attackTime>0))return idle;state={serial:actor.attackSerial,start:time,duration:actor.attackDuration||.2};attackVisuals.set(actor.id,state);}
+    const p=Math.max(0,Math.min(1,(time-state.start)/state.duration));
+    const ease=x=>x*x*(3-2*x),kick=p<.18?ease(p/.18):Math.pow(1-(p-.18)/.82,2);
+    const swing=p<.12?-.45*ease(p/.12):p<.60?-.45+1.5*ease((p-.12)/.48):1.05*(1-ease((p-.60)/.40));
+    return {active:p<1,p,kick,swing,side:actor.attackSide||1,charged:actor.attackKind==='charged'};
+  }
+
+  function resetClassState(actor){Object.assign(actor,{abilityCooldown:0,abilityTime:0,lastAbilitySeq:0,pactHealing:0,attackTime:0,attackSide:1,attackSerial:0,attackDuration:0,attackKind:'normal',attackAngle:0});}
   function attackDirection(){const x=mouse.x-player.x,y=mouse.y-player.y,l=Math.hypot(x,y)||1;return {x:x/l,y:y/l};}
   function moveClassDash(distance){const d=attackDirection(),x=player.x,y=player.y;for(let i=0;i<distance;i+=2){if(!canOccupy(player.x+d.x*2,player.y+d.y*2))break;player.x+=d.x*2;player.y+=d.y*2;}classEffects.push({type:'dash',x,y,endX:player.x,endY:player.y,life:.25,maxLife:.25,color:HUNTERS[player.hunter].color});}
   function queueMelee(x,y,reach,cone,damage,knockback=1,owner=player){
-    const d=attackDirection();classEffects.push({type:'slash',x,y,radius:reach,angle:Math.atan2(d.y,d.x),cone,life:.18,maxLife:.18,color:HUNTERS[owner.hunter].color});
+    const d=attackDirection();const life=owner.hunter==='warden'?.24:.18;classEffects.push({type:'slash',ownerId:owner.id,side:owner.attackSide||1,slam:owner.hunter==='warden'&&owner.attackKind==='charged',x,y,radius:reach,angle:Math.atan2(d.y,d.x),cone,life,maxLife:life,color:HUNTERS[owner.hunter].color});
     for(const e of enemies){if(!e.alive)continue;const dx=e.x-x,dy=e.y-y,l=Math.hypot(dx,dy);if(l>reach+e.radius||l>1&&(dx*d.x+dy*d.y)/l<cone||!clearSight(x,y,e.x,e.y,2))continue;bullets.push({id:nextBulletId++,ownerId:owner.id,targetId:e.id,x:e.x,y:e.y,vx:0,vy:0,hitX:d.x,hitY:d.y,radius:1,life:.08,damage,knockback,melee:true});}
   }
   function fireClassCharge(){
-    const d=attackDirection(),full=player.chargeTime>=1;
+    const d=attackDirection(),full=player.chargeTime>=1;beginAttack(true);
     if(player.hunter==='warden')queueMelee(player.x,player.y,full?82:64,-1,full?4:2,2.5);
     else if(player.hunter==='revenant'){moveClassDash(full?70:40);queueMelee(player.x,player.y,65,-.15,full?3:2,1.5);}
     else if(player.hunter==='hexkeeper'){let x=player.x,y=player.y;const range=Math.min(180,Math.hypot(mouse.x-x,mouse.y-y));for(let i=0;i<range;i+=3){if(pointHitsWall(x+d.x*3,y+d.y*3))break;x+=d.x*3;y+=d.y*3;}classEffects.push({type:'rune',ownerId:player.id,x,y,radius:full?75:55,damage:full?3:2,life:.65,maxLife:.65,color:'#43e6a0'});}
-    else{const x=player.x+d.x*18-d.y*12,y=player.y+d.y*18+d.x*12;if(!clearSight(player.x,player.y,x,y,5))return false;bullets.push({id:nextBulletId++,ownerId:player.id,x,y,vx:d.x*650,vy:d.y*650,radius:5,life:1.4,damage:full?4:2,charged:true,piercing:true,hitIds:[]});muzzle={x,y,ux:d.x,uy:d.y,life:.12};}
-    player.attackTime=.2;player.attackSerial=(player.attackSerial||0)+1;player.chargeCooldown=1.25;shootTimer=Math.max(shootTimer,.25);return true;
+    else{const x=player.x+d.x*18-d.y*12,y=player.y+d.y*18+d.x*12;if(!clearSight(player.x,player.y,x,y,5))return false;bullets.push({id:nextBulletId++,ownerId:player.id,x,y,vx:d.x*650,vy:d.y*650,radius:5,life:1.4,damage:full?4:2,charged:true,piercing:true,hitIds:[]});muzzle={x,y,ux:d.x,uy:d.y,life:.1,maxLife:.1,kind:player.hunter,color:HUNTERS[player.hunter].color};}
+    player.chargeCooldown=1.25;shootTimer=Math.max(shootTimer,.25);return true;
   }
   function updateClass(dt){
     player.abilityCooldown=Math.max(0,(player.abilityCooldown||0)-dt);player.abilityTime=Math.max(0,(player.abilityTime||0)-dt);player.attackTime=Math.max(0,(player.attackTime||0)-dt);
@@ -766,7 +786,14 @@
   function refreshClassInfo(){const r=CLASS_RULES[player.hunter];document.getElementById('class-preview').textContent=r.role+' / '+r.weapon+' — '+r.normal+' Charged: '+r.charged+' '+r.skill;document.getElementById('class-controls').textContent=r.normal+' Hold right mouse, release to charge. '+r.charged+' '+r.skill;}
   function drawClassEffects(){for(const e of classEffects){ctx.save();ctx.globalAlpha=e.type==='sanctuary'?.3:.75;ctx.strokeStyle=e.color;ctx.fillStyle=e.color;ctx.shadowColor=e.color;ctx.shadowBlur=8;ctx.lineWidth=2;
     if(e.type==='dash'){ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.endX,e.endY);ctx.stroke();}
-    else if(e.type==='slash'){const arc=e.cone<-.9?Math.PI:Math.acos(e.cone);ctx.beginPath();ctx.arc(e.x,e.y,e.radius,e.angle-arc,e.angle+arc);ctx.stroke();}
+    else if(e.type==='slash'){
+      const owner=network.session?(e.ownerId===player.id?player:network.peerPositions.get(e.ownerId)):player;
+      const x=owner?.id===e.ownerId?owner.x:e.x,y=owner?.id===e.ownerId?owner.y:e.y;
+      const frameAge=network.session?Math.min(.05,Math.max(0,(Date.now()-network.lastSnapshot)/1000)):0;
+      const p=Math.max(0,Math.min(1,1-(e.life-frameAge)/e.maxLife)),smooth=1-Math.pow(1-p,2);ctx.globalAlpha=Math.pow(1-p,.65)*.8;ctx.shadowBlur=5;
+      if(e.slam){ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,10+(e.radius-10)*smooth,0,Math.PI*2);ctx.stroke();}
+      else{const arc=Math.min(1.25,Math.acos(e.cone)),side=e.side||1,head=e.angle+side*(-arc+2*arc*smooth),tail=head-side*Math.min(.8,p*4),r=e.radius*(.72+.28*smooth);ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,r,Math.min(tail,head),Math.max(tail,head));ctx.stroke();ctx.strokeStyle='#fff2ce';ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,r,head-.04,head+.04);ctx.stroke();}
+    }
     else{ctx.beginPath();ctx.arc(e.x,e.y,e.radius,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=.08;ctx.fill();ctx.globalAlpha=.8;ctx.translate(e.x,e.y);ctx.rotate(Math.PI/4);ctx.strokeRect(-e.radius*.45,-e.radius*.45,e.radius*.9,e.radius*.9);}ctx.restore();}}
 
   function updateCharge(dt){
@@ -784,7 +811,7 @@
   function fireBullet() {
     if (runState !== "playing" || gameOver || won || (stage === "boss-intro" || stage === "wave-break") || shootTimer > 0) return;
     if(input.charge)return;
-    const rule=CLASS_RULES[player.hunter];player.attackTime=.16;player.attackSerial=(player.attackSerial||0)+1;player.attackSide=-(player.attackSide||1);
+    const rule=CLASS_RULES[player.hunter];beginAttack(false);
     if(rule.reach){queueMelee(player.x,player.y,rule.reach,rule.cone,rule.damage);shootTimer=rule.cooldown;return;}
     const dx = mouse.x - player.x;
     const dy = mouse.y - player.y;
@@ -797,7 +824,7 @@
     if (!clearSight(player.x, player.y, mx, my, 3)) {
       burst(player.x + ux*10, player.y + uy*10, COLORS.wall, 4); return;
     }
-    muzzle = { x: mx, y: my, ux, uy, life: 0.055 };
+    muzzle = { x: mx, y: my, ux, uy, life:.065,maxLife:.065,kind:player.hunter,color:HUNTERS[player.hunter].color };
     const shotLength=Math.hypot(mouse.x-mx,mouse.y-my)||1,sx=(mouse.x-mx)/shotLength,sy=(mouse.y-my)/shotLength;
     bullets.push({
       id: nextBulletId++, ownerId: player.id,
@@ -1237,20 +1264,36 @@
       c.fillStyle=look.accent;polygon(c,[[-3,-3],[3,-3],[2,1],[0,3],[-2,1]]);
       c.strokeStyle=look.color;c.beginPath();c.moveTo(-1,-1);c.lineTo(1,-1);c.stroke();
     }
-    c.save();if(actor.attackTime>0)c.rotate((actor.attackSide||1)*.35);
-    // Arms end in hands; weapons sit outside the torso, never across the face.
+    const pose=attackPose(actor,time),attackOffset=pose.active?(actor.attackAngle??angle)-angle:0;
+    // Each arm has its own pivot. Shields and off-hands stay planted.
     c.shadowBlur=3;c.lineWidth=1.7;c.fillStyle='#15151f';c.strokeStyle=look.color;
     if(actor.hunter==='warden'){
       polygon(c,[[-19,-8],[-11,-9],[-10,3],[-15,8],[-20,2]]);c.fillStyle=look.accent;c.fillRect(-16,-5,2,9);
-      c.strokeStyle=look.accent;c.beginPath();c.moveTo(7,2);c.lineTo(13,0);c.lineTo(13,-10);c.stroke();c.fillStyle=look.color;c.fillRect(8,-15,11,6);c.strokeRect(8,-15,11,6);c.fillStyle=look.accent;c.fillRect(11,-14,2,4);
+      c.save();c.rotate(attackOffset);c.translate(6,3);c.rotate(pose.swing*(pose.charged?1.25:1));
+      c.strokeStyle=look.color;c.lineWidth=2.4;c.beginPath();c.moveTo(0,0);c.lineTo(7,-1);c.stroke();
+      c.strokeStyle='#ba9859';c.beginPath();c.moveTo(7,1);c.lineTo(7,-13);c.stroke();c.fillStyle=look.accent;c.beginPath();c.arc(7,-1,1.8,0,Math.PI*2);c.fill();
+      c.fillStyle=look.color;c.fillRect(1,-18,12,6);c.strokeStyle=look.accent;c.lineWidth=1;c.strokeRect(1,-18,12,6);c.restore();
     }else if(actor.hunter==='riftwalker'){
-      c.strokeStyle=look.accent;c.beginPath();c.moveTo(6,2);c.lineTo(12,3);c.lineTo(12,-13);c.stroke();c.strokeStyle=look.color;c.beginPath();c.moveTo(4,-10);c.lineTo(7,-15);c.lineTo(17,-15);c.lineTo(20,-10);c.moveTo(4,-10);c.lineTo(20,-10);c.stroke();c.fillStyle=look.accent;c.fillRect(11,-19,2,11);
+      const recoil=pose.kick*(pose.charged?4.2:2.7),flex=pose.kick*2;
+      c.strokeStyle=look.color;c.lineWidth=2.2;c.beginPath();c.moveTo(6,2);c.lineTo(11,4+recoil);c.stroke();
+      c.save();c.translate(0,recoil);c.strokeStyle=look.color;c.lineWidth=2.7;c.beginPath();c.moveTo(12,4);c.lineTo(12,-13);c.stroke();
+      c.lineWidth=1.8;c.beginPath();c.moveTo(4,-10+flex);c.lineTo(7,-15);c.lineTo(17,-15);c.lineTo(20,-10+flex);c.stroke();
+      c.strokeStyle=look.accent;c.lineWidth=.8;c.beginPath();c.moveTo(4,-10+flex);c.lineTo(12,-8+flex);c.lineTo(20,-10+flex);c.stroke();
+      if(!pose.active||pose.p>.45){c.fillStyle=look.accent;c.fillRect(11.4,-20,1.2,9);}c.fillStyle=look.accent;c.beginPath();c.arc(11,3,1.7,0,Math.PI*2);c.fill();c.restore();
     }else if(actor.hunter==='hexkeeper'){
-      c.fillStyle='#14251f';polygon(c,[[11,-10],[17,-8],[23,-10],[23,4],[17,6],[11,4]]);c.strokeStyle=look.accent;c.beginPath();c.moveTo(17,-7);c.lineTo(17,4);c.moveTo(13,-3);c.lineTo(15,-2);c.moveTo(19,-2);c.lineTo(21,-3);c.stroke();c.fillStyle=look.color;c.beginPath();c.arc(17,-17,2.6,0,Math.PI*2);c.fill();c.fillStyle=look.accent;c.fillRect(7,1,3,3);
+      const lift=-pose.kick*2.2+(marker?Math.sin(time*2)*.55:0);
+      c.save();c.translate(0,lift);c.fillStyle='#14251f';polygon(c,[[11,-10],[17,-8],[23,-10],[23,4],[17,6],[11,4]]);
+      c.strokeStyle=look.accent;c.lineWidth=1;c.beginPath();c.moveTo(17,-7);c.lineTo(17,4);c.moveTo(13,-3);c.lineTo(15,-2);c.moveTo(19,-2);c.lineTo(21,-3);c.stroke();
+      c.fillStyle=look.color;c.shadowBlur=5+pose.kick*7;c.beginPath();c.arc(17,-17,2.4+pose.kick*1.8,0,Math.PI*2);c.fill();c.restore();c.fillStyle=look.accent;c.fillRect(7,1,3,3);
     }else{
-      for(const side of [-1,1]){c.strokeStyle=look.accent;c.beginPath();c.moveTo(side*7,2);c.lineTo(side*12,0);c.stroke();c.fillStyle='#30202b';polygon(c,[[side*12,1],[side*11,-8],[side*15,-17],[side*16,-6]]);c.fillStyle=look.color;c.fillRect(side*12-1,0,3,3);}
+      for(const side of [-1,1]){
+        const active=pose.active&&(pose.charged||side===pose.side);
+        c.save();if(active)c.rotate(attackOffset);c.translate(side*7,3);c.rotate(active?side*pose.swing*1.4:0);
+        c.strokeStyle=look.color;c.lineWidth=2.2;c.beginPath();c.moveTo(0,0);c.lineTo(side*5,-2);c.stroke();
+        c.fillStyle=look.accent;c.beginPath();c.arc(side*5,-2,1.6,0,Math.PI*2);c.fill();c.fillStyle='#30202b';c.strokeStyle=look.color;c.lineWidth=1.7;
+        polygon(c,[[side*5,-3],[side*4,-10],[side*8,-19],[side*9,-8]]);c.restore();
+      }
     }
-    c.restore();
     if(marker&&actor.abilityTime>0){c.strokeStyle=look.color;c.lineWidth=3;c.shadowBlur=12;c.beginPath();if(actor.hunter==='warden')c.arc(0,0,26,-Math.PI+.25,-.25);else c.arc(0,0,19,0,Math.PI*2);c.stroke();}
     c.restore();
     if(marker){
@@ -1411,9 +1454,9 @@
       ctx.shadowColor=p.color;ctx.shadowBlur=7;ctx.fillRect(p.x-1.5,p.y-1.5,3,3);ctx.restore();
     }
     if(muzzle) {
-      const {x,y,ux,uy}=muzzle;
-      glowLine(x-uy*5,y+ux*5,x+uy*5,y-ux*5,"#ffffff",16,3);
-      glowLine(x,y,x+ux*10,y+uy*10,COLORS.pink,16,3);
+      const {x,y,ux,uy}=muzzle,p=1-muzzle.life/(muzzle.maxLife||.065);ctx.save();ctx.globalAlpha=Math.max(0,1-p);ctx.strokeStyle=muzzle.color||COLORS.cyan;ctx.shadowColor=ctx.strokeStyle;ctx.shadowBlur=7;ctx.lineWidth=1.4;
+      if(muzzle.kind==='hexkeeper'){ctx.beginPath();ctx.arc(x,y,3+p*7,0,Math.PI*2);ctx.stroke();}
+      else{ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+ux*(7-p*3),y+uy*(7-p*3));ctx.stroke();}ctx.restore();
     }
   }
   function drawDamageOverlay() {
@@ -1538,7 +1581,7 @@
       document.getElementById('create-room').disabled=true;document.getElementById('join-room').disabled=true;document.getElementById('leave-room').hidden=false;
       if(state.state==='error'){this.notice('Room simulation stopped. Leave and create another room.');return;}
       if(!state.world)return;const world=state.world,local=world.players.find(p=>p.id===this.session.id);if(!local)return;
-      if(this.revision!==state.revision){this.revision=state.revision;input.abilitySeq=0;this.history=[];this.offsetX=this.offsetY=0;sound.reset();enemies=[];this.world=null;this.peerPositions.clear();this.selectedHunter=null;damageFlash=0;input.fire=false;input.charge=false;this.notice('Hunt started. Clear the encounter together.');canvas.focus();}
+      if(this.revision!==state.revision){this.revision=state.revision;input.abilitySeq=0;this.history=[];this.offsetX=this.offsetY=0;attackVisuals.clear();sound.reset();enemies=[];this.world=null;this.peerPositions.clear();this.selectedHunter=null;damageFlash=0;input.fire=false;input.charge=false;this.notice('Hunt started. Clear the encounter together.');canvas.focus();}
       const first=!this.world,oldHp=player.hp;this.world=world;
       levelIndex=world.levelIndex;const level=LEVELS[levelIndex];rooms=level.rooms;walls=level.walls;enemyStarts=level.spawns;document.getElementById('location').textContent=level.name;
       this.reconcile(local,first);if(this.displayedClass!==player.hunter){this.displayedClass=player.hunter;refreshClassInfo();}if(world.won||world.gameOver)player.hunter=this.selectedHunter||me.hunter;if(local.hp<oldHp)damageFlash=.22;

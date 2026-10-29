@@ -21,7 +21,7 @@ function makeEngine(){
  replace('hp: config.hp+wave.hpBonus, maxHp: config.hp+wave.hpBonus','hp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty), maxHp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty)');
  const bridge=`
   let netActors=[],netActive=null,netClock=0,netCache=new Map(),netDifficulty=1;
-  function netCommit(){if(netActive)for(const k of ['x','y','aimX','aimY','moving','hp','invulnerability','chargeTime','chargeCooldown','lastReleaseSeq','abilityCooldown','abilityTime','lastAbilitySeq','pactHealing','attackTime','attackSide','attackSerial'])netActive[k]=player[k];}
+  function netCommit(){if(netActive)for(const k of ['x','y','aimX','aimY','moving','hp','invulnerability','chargeTime','chargeCooldown','lastReleaseSeq','abilityCooldown','abilityTime','lastAbilitySeq','pactHealing','attackTime','attackSide','attackSerial','attackDuration','attackKind','attackAngle'])netActive[k]=player[k];}
   function netHeal(){for(const a of netActors)if(a.connected&&a.hp>0)a.hp=Math.min(100,a.hp+15);if(netActive)player.hp=netActive.hp;}
   function netUse(actor){netActive=actor;Object.assign(player,actor);}
   function netTarget(enemy){

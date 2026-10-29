@@ -1,6 +1,8 @@
 # Static frontend on Vercel, multiplayer backend on Render
 
-Prepared, not yet deployed to Vercel. The existing Render public link remains fully working.
+LIVE: https://monster-rush-alpha.vercel.app (Vercel production). Multiplayer backend: https://monster-rush-alpha.onrender.com (Render Free). The old Render public link remains working.
+
+Vercel project monster-rush-alpha / prj_dqtU0BLeJro6sMo86sIwC8Ez9Jud is Git-linked to BigFatPanda211/MonsterRush_Alpha, main branch, root frontend/. Production frontend commit: 673130ea925eabc287ed8c81740a4c64dca6c1fe. Render FRONTEND_ORIGINS is configured for the exact canonical Vercel origin. Browser verified two-player create/join/ready/start and server-authoritative Rift Step across the two hosts. Fullscreen retained through multiplayer/solo switches.
 
 The frontend/ directory contains only public static files. config.js points API calls directly to https://monster-rush-alpha.onrender.com. Solo runs in the browser; multiplayer stays authoritative on Render. The persistent shell keeps fullscreen active while switching game frames.
 
