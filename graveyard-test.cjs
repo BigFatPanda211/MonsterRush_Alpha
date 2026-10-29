@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict'),{makeEngine}=require('./engine.cjs');
 const members=[{id:'one',hunter:'riftwalker',slot:1},{id:'two',hunter:'warden',slot:2}];
 function input(){return new Map(members.map(p=>[p.id,{connected:true,input:{aimX:480,aimY:300}}]));}
-const e=makeEngine();e.start(members,3,123);const cmd=input();assert.equal(e.snapshot().levelIndex,3);assert.equal(e.snapshot().enemies.length,8);assert.equal(e.debug.walls.length,25);
+const e=makeEngine();e.start(members,3,123);const cmd=input();assert.equal(e.snapshot().levelIndex,3);assert.equal(e.snapshot().enemies.length,8);assert.equal(e.debug.walls.length,21);
 for(const enemy of e.debug.enemies)enemy.alive=false;
 const a=e.debug.actors[0];e.debug.actors[1].hp=0;
 for(const [start,key,check] of [[{x:22,y:300},'left',p=>p.x>900],[{x:938,y:300},'right',p=>p.x<60],[{x:480,y:22},'up',p=>p.y>550],[{x:480,y:578},'down',p=>p.y<60]]){Object.assign(a,start,{hp:100});cmd.get(a.id).input={left:false,right:false,up:false,down:false,[key]:true,aimX:480,aimY:300};e.tick(.033,cmd);assert(check(a),'gate '+key);assert(!e.debug.walls.some(w=>e.debug.circleHitsRect(a.x,a.y,10,w)));}
@@ -12,3 +12,5 @@ e.debug.spawnBoss();const boss=e.debug.enemies.find(e=>e.type==='boss');boss.hp=
 for(let i=0;i<180;i++)e.tick(1/30,cmd);for(const enemy of e.debug.enemies.filter(e=>e.alive))assert(!e.debug.walls.some(w=>e.debug.circleHitsRect(enemy.x,enemy.y,enemy.radius,w)),'enemy wall collision');
 console.log('PASS graveyard: four paired gates, intact perimeter, enemy portal pursuit, safe boss house spawn and one-time 90% ritual heal.');
 
+
+const hengine=makeEngine();hengine.start(members,3,55);for(const foe of hengine.debug.enemies){foe.speed=0;foe.x=850;foe.y=450;}const h=hengine.debug.graveHazards[0],ha=hengine.debug.actors[0];hengine.debug.actors[1].hp=0;Object.assign(ha,{x:h.x,y:h.y,hp:100,invulnerability:0});const hc=input();hengine.debug.updateGraves(3);assert.equal(h.phase,'warning');assert.equal(ha.hp,100);hengine.debug.updateGraves(1);assert.equal(h.phase,'active');hengine.tick(.01,hc);assert.equal(ha.hp,92);hengine.tick(.01,hc);assert.equal(ha.hp,92,'brief invulnerability blocks repeated contact');assert.equal(hengine.snapshot().graveHazards.length,12);hengine.debug.updateGraves(2);assert.equal(h.phase,'retreat');hengine.debug.updateGraves(.7);assert.equal(h.phase,'idle');hengine.start(members,0,44);assert.equal(hengine.snapshot().graveHazards.length,0);console.log('PASS skeletal grave hazard warning, damage, invulnerability, retreat, cooldown and other-level isolation.');

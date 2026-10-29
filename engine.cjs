@@ -64,9 +64,9 @@ function makeEngine(){
     if(netActors.length&&netActors.every(a=>a.hp<=0||!commands.has(a.id))){gameOver=true;statusLabel.textContent='TEAM DEFEATED';}
   }
   globalThis.engine={start:netStart,tick:netTick,snapshot:()=>({levelIndex,waveIndex,waveDelay,stage,score,won,gameOver,summonsUsed,finaleSpawned,difficulty:netDifficulty,
-    status:statusLabel.textContent,players:netActors.map(a=>({...a})),enemies:enemies.filter(e=>e.alive).map(e=>({...e})),
+    graveHazards:graveHazards.map(h=>({...h})),status:statusLabel.textContent,players:netActors.map(a=>({...a})),enemies:enemies.filter(e=>e.alive).map(e=>({...e})),
     classEffects:classEffects.map(e=>({...e})),bullets:bullets.map(b=>({...b})),particles:particles.map(p=>({...p})),trails:trails.map(t=>({...t})),muzzle:muzzle?{...muzzle}:null}),
-    debug:{get actors(){return netActors},get enemies(){return enemies},get bullets(){return bullets},get walls(){return walls},circleHitsRect,clearSight,
+    debug:{get actors(){return netActors},get enemies(){return enemies},get bullets(){return bullets},get walls(){return walls},get graveHazards(){return graveHazards},updateGraves,circleHitsRect,clearSight,
     setActor:(id,values)=>Object.assign(netActors.find(a=>a.id===id),values),spawnBoss,updateBossEncounter}};
  `;
  script=script.slice(0,script.indexOf('  // Initial mouse aim points'))+bridge+'\n})();';

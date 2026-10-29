@@ -152,7 +152,7 @@
       </select>
       <button id="next-level" disabled>Next level / N</button>
       <span id="level-description">Tight rooms and winding doorways.</span>
-    </div><details id="hunting-grounds" class="hunting-grounds"><summary><span class="hamburger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span><small>CHOOSE YOUR HUNTING GROUND</small><strong id="hunting-ground-name">Moonlit Courtyard</strong></span><span class="ground-chevron" aria-hidden="true">+</span></summary><div class="ground-options"><p>Every doorway has a story. Choose where yours begins.</p><button type="button" id="ground-0"><span class="ground-chapter">I / THE FIRST CROSSING</span><b>Moonlit Courtyard</b><span>Under a watchful moon, open paths circle a silent mausoleum.</span></button><button type="button" id="ground-1"><span class="ground-chapter">II / WHISPERS IN THE STACKS</span><b>Shattered Archives</b><span>Follow the candlelight through forgotten shelves and fractured corridors.</span></button><button type="button" id="ground-2"><span class="ground-chapter">III / THE HOUSE REMEMBERS</span><b>Blackthorn Manor</b><span>Beyond these doors, narrow halls leave little room for mercy.</span></button><button type="button" id="ground-3"><span class="ground-chapter">IV / THE DEAD RETURN</span><b>Haunted Graveyard</b><span>Looping cemetery paths surround a ruined house that feeds the darkness.</span></button><p id="ground-permission">Choose a destination for your next hunt.</p></div></details></div><section class="game-frame" aria-label="Monster Rush game">
+    </div><details id="hunting-grounds" class="hunting-grounds"><summary><span class="hamburger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span><small>CHOOSE YOUR HUNTING GROUND</small><strong id="hunting-ground-name">Moonlit Courtyard</strong></span><span class="ground-chevron" aria-hidden="true">+</span></summary><div class="ground-options"><p>Every doorway has a story. Choose where yours begins.</p><button type="button" id="ground-0"><span class="ground-chapter">I / THE FIRST CROSSING</span><b>Moonlit Courtyard</b><span>Under a watchful moon, open paths circle a silent mausoleum.</span></button><button type="button" id="ground-1"><span class="ground-chapter">II / WHISPERS IN THE STACKS</span><b>Shattered Archives</b><span>Follow the candlelight through forgotten shelves and fractured corridors.</span></button><button type="button" id="ground-2"><span class="ground-chapter">III / THE HOUSE REMEMBERS</span><b>Blackthorn Manor</b><span>Beyond these doors, narrow halls leave little room for mercy.</span></button><button type="button" id="ground-3"><span class="ground-chapter">IV / THE DEAD RETURN</span><b>Haunted Graveyard</b><span>Looping cemetery paths surround a broken castle that feeds the darkness.</span></button><p id="ground-permission">Choose a destination for your next hunt.</p></div></details></div><section class="game-frame" aria-label="Monster Rush game">
       <canvas id="game" width="960" height="600" tabindex="0" aria-label="Game canvas. Move with WASD, aim with the mouse, and click to shoot."></canvas>
       <div class="hud">
         <span>LOCATION: <strong id="location">BLACKTHORN MANOR</strong></span>
@@ -426,7 +426,7 @@
       spawns:[{x:240,y:70},{x:240,y:350},{x:100,y:540},{x:370,y:170},{x:560,y:300},{x:400,y:520},{x:730,y:180},{x:870,y:330},{x:720,y:470},{x:870,y:550}],
       doors:[[307,188,0,72],[307,392,0,72],[643,128,0,72],[643,380,0,72]]}
   ];
-  LEVEL_DEFINITIONS.push({"visualIndex":3,"name":"HAUNTED GRAVEYARD","description":"The paths loop beyond the cemetery walls. Corner lanterns cut the dark; the ruined house feeds the Amalgam once.","start":{"x":126,"y":300},"rooms":[{"x":28,"y":28,"w":904,"h":544,"name":"HAUNTED GRAVEYARD"}],"walls":[{"x":14,"y":14,"w":410,"h":14},{"x":536,"y":14,"w":410,"h":14},{"x":14,"y":572,"w":410,"h":14},{"x":536,"y":572,"w":410,"h":14},{"x":14,"y":28,"w":14,"h":216},{"x":14,"y":356,"w":14,"h":216},{"x":932,"y":28,"w":14,"h":216},{"x":932,"y":356,"w":14,"h":216},{"x":380,"y":200,"w":200,"h":200},{"x":175,"y":67,"w":50,"h":34},{"x":229,"y":128,"w":50,"h":34},{"x":273,"y":189,"w":50,"h":34},{"x":297,"y":250,"w":50,"h":34},{"x":297,"y":311,"w":50,"h":34},{"x":273,"y":372,"w":50,"h":34},{"x":229,"y":433,"w":50,"h":34},{"x":175,"y":494,"w":50,"h":34},{"x":735,"y":67,"w":50,"h":34},{"x":681,"y":128,"w":50,"h":34},{"x":637,"y":189,"w":50,"h":34},{"x":613,"y":250,"w":50,"h":34},{"x":613,"y":311,"w":50,"h":34},{"x":637,"y":372,"w":50,"h":34},{"x":681,"y":433,"w":50,"h":34},{"x":735,"y":494,"w":50,"h":34}],"graves":[{"x":175,"y":67,"w":50,"h":34,"angle":-1.5707963267948966},{"x":229,"y":128,"w":50,"h":34,"angle":-1.5707963267948966},{"x":273,"y":189,"w":50,"h":34,"angle":-1.5707963267948966},{"x":297,"y":250,"w":50,"h":34,"angle":-1.5707963267948966},{"x":297,"y":311,"w":50,"h":34,"angle":-1.5707963267948966},{"x":273,"y":372,"w":50,"h":34,"angle":-1.5707963267948966},{"x":229,"y":433,"w":50,"h":34,"angle":-1.5707963267948966},{"x":175,"y":494,"w":50,"h":34,"angle":-1.5707963267948966},{"x":735,"y":67,"w":50,"h":34,"angle":1.5707963267948966},{"x":681,"y":128,"w":50,"h":34,"angle":1.5707963267948966},{"x":637,"y":189,"w":50,"h":34,"angle":1.5707963267948966},{"x":613,"y":250,"w":50,"h":34,"angle":1.5707963267948966},{"x":613,"y":311,"w":50,"h":34,"angle":1.5707963267948966},{"x":637,"y":372,"w":50,"h":34,"angle":1.5707963267948966},{"x":681,"y":433,"w":50,"h":34,"angle":1.5707963267948966},{"x":735,"y":494,"w":50,"h":34,"angle":1.5707963267948966}],"ports":[{"x":480,"y":178},{"x":480,"y":422},{"x":358,"y":300},{"x":602,"y":300}],"spawns":[{"x":480,"y":178},{"x":480,"y":422},{"x":358,"y":300},{"x":602,"y":300}],"doors":[[424,21,112,0],[424,579,112,0],[21,244,0,112],[939,244,0,112]]});
+  LEVEL_DEFINITIONS.push({"visualIndex":3,"name":"HAUNTED GRAVEYARD","description":"Overgrown graves stir beside a shattered castle. Mind the reaching dead and the paths that loop through darkness.","start":{"x":126,"y":300},"rooms":[{"x":28,"y":28,"w":904,"h":544,"name":"HAUNTED GRAVEYARD"}],"walls":[{"x":14,"y":14,"w":410,"h":14},{"x":536,"y":14,"w":410,"h":14},{"x":14,"y":572,"w":410,"h":14},{"x":536,"y":572,"w":410,"h":14},{"x":14,"y":28,"w":14,"h":216},{"x":14,"y":356,"w":14,"h":216},{"x":932,"y":28,"w":14,"h":216},{"x":932,"y":356,"w":14,"h":216},{"x":380,"y":200,"w":200,"h":200},{"x":176,"y":75,"w":40,"h":50},{"x":254,"y":145,"w":40,"h":50},{"x":330,"y":210,"w":40,"h":50},{"x":280,"y":385,"w":40,"h":50},{"x":205,"y":445,"w":40,"h":50},{"x":125,"y":495,"w":40,"h":50},{"x":744,"y":75,"w":40,"h":50},{"x":666,"y":145,"w":40,"h":50},{"x":590,"y":210,"w":40,"h":50},{"x":640,"y":385,"w":40,"h":50},{"x":715,"y":445,"w":40,"h":50},{"x":795,"y":495,"w":40,"h":50}],"graves":[{"x":176,"y":75,"w":40,"h":50,"angle":-0.09},{"x":254,"y":145,"w":40,"h":50,"angle":-0.09},{"x":330,"y":210,"w":40,"h":50,"angle":-0.09},{"x":280,"y":385,"w":40,"h":50,"angle":-0.09},{"x":205,"y":445,"w":40,"h":50,"angle":-0.09},{"x":125,"y":495,"w":40,"h":50,"angle":-0.09},{"x":744,"y":75,"w":40,"h":50,"angle":0.09},{"x":666,"y":145,"w":40,"h":50,"angle":0.09},{"x":590,"y":210,"w":40,"h":50,"angle":0.09},{"x":640,"y":385,"w":40,"h":50,"angle":0.09},{"x":715,"y":445,"w":40,"h":50,"angle":0.09},{"x":795,"y":495,"w":40,"h":50,"angle":0.09}],"ports":[{"x":480,"y":178},{"x":480,"y":422},{"x":358,"y":300},{"x":602,"y":300}],"spawns":[{"x":480,"y":178},{"x":480,"y":422},{"x":358,"y":300},{"x":602,"y":300}],"doors":[[424,21,112,0],[424,579,112,0],[21,244,0,112],[939,244,0,112]]});
   const LEVELS=[LEVEL_DEFINITIONS[1],LEVEL_DEFINITIONS[2],LEVEL_DEFINITIONS[0],LEVEL_DEFINITIONS[3]];
   // Cemetery gates form paired, bidirectional corridors. Only this map wraps.
   function graveyard(){return LEVELS[levelIndex].visualIndex===3;}
@@ -598,7 +598,7 @@
     if(stage === "boss") {
       const boss=enemies.find(e=>e.alive&&e.type === "boss");
       if(!boss)return;
-      if(graveyard()&&!boss.houseHealUsed&&boss.hp<=boss.maxHp*.9){boss.houseHealUsed=true;boss.healTime=1.5;const p=LEVELS[levelIndex].ports.slice().sort((a,b)=>Math.hypot(b.x-player.x,b.y-player.y)-Math.hypot(a.x-player.x,a.y-player.y))[0];boss.x=p.x;boss.y=p.y;boss.vx=boss.vy=0;boss.behavior="pursuit";statusLabel.textContent="THE HOUSE CALLS THE AMALGAM";burst(p.x,p.y,"#8affc1",24);}
+      if(graveyard()&&!boss.houseHealUsed&&boss.hp<=boss.maxHp*.9){boss.houseHealUsed=true;boss.healTime=1.5;const p=LEVELS[levelIndex].ports.slice().sort((a,b)=>Math.hypot(b.x-player.x,b.y-player.y)-Math.hypot(a.x-player.x,a.y-player.y))[0];boss.x=p.x;boss.y=p.y;boss.vx=boss.vy=0;boss.behavior="pursuit";statusLabel.textContent="THE CASTLE CALLS THE AMALGAM";burst(p.x,p.y,"#8affc1",24);}
       summonTimer-=dt;
       // Thresholds refer to cumulative health lost, not living Ghost count.
       const target=boss.hp/boss.maxHp<=0.6?9:boss.hp/boss.maxHp<=0.8?6:summonTimer<=0?3:0;
@@ -659,7 +659,7 @@
     player.invulnerability = 0; input.fire = false; input.charge=false;
     particles = []; trails = []; muzzle = null; score = 0; nextBulletId = 1;
     stage="wave";bossDelay=0;summonsUsed=0;summonTimer=1.2;nextEnemyId=1;finaleTimer=0;finaleOrigin=null;finaleSpawned=false;radiusPaths.clear();navigationMasks.clear();
-    waveIndex=0;waveDelay=0;spawnWave();
+    resetGraves();waveIndex=0;waveDelay=0;spawnWave();
     bullets = [];
     defeated = 0;
     shootTimer = 0;
@@ -934,6 +934,7 @@
       if(bossDelay <= 0) spawnBoss();
       return;
     }
+    updateGraves(dt);
     updateBossEncounter(dt);
     if(won)return;
     if (input.fire) fireBullet();
@@ -1138,7 +1139,7 @@
   function ambience() {
     if(ambienceCache.has(levelIndex))return ambienceCache.get(levelIndex);
     const lights=[];
-    if(graveyard()){const sources=[{x:42,y:42,angle:Math.PI/4},{x:918,y:42,angle:Math.PI*3/4},{x:42,y:558,angle:-Math.PI/4},{x:918,y:558,angle:-Math.PI*3/4}];for(const [i,l] of sources.entries()){const points=lightBoundary(l.x,l.y,720).map((p,j)=>{const a=j*Math.PI*2/72,delta=Math.atan2(Math.sin(a-l.angle),Math.cos(a-l.angle));return Math.abs(delta)<.54?p:[l.x,l.y];});lights.push({...l,radius:720,phase:i,points});}for(const [i,l] of LEVELS[levelIndex].ports.entries())lights.push({...l,radius:300,phase:i+4,points:lightBoundary(l.x,l.y,300)});const data={lights,moons:[]};ambienceCache.set(levelIndex,data);return data;}
+    if(graveyard()){const sources=[{x:42,y:42,angle:Math.PI/4},{x:918,y:42,angle:Math.PI*3/4},{x:42,y:558,angle:-Math.PI/4},{x:918,y:558,angle:-Math.PI*3/4}];for(const [i,l] of sources.entries()){const points=lightBoundary(l.x,l.y,720).map((p,j)=>{const a=j*Math.PI*2/72,delta=Math.atan2(Math.sin(a-l.angle),Math.cos(a-l.angle));return Math.abs(delta)<.54?p:[l.x,l.y];});lights.push({...l,radius:720,phase:i,dim:.32,points});}for(const [i,l] of LEVELS[levelIndex].ports.entries())lights.push({...l,radius:230,phase:i+4,dim:.48,points:lightBoundary(l.x,l.y,230)});const data={lights,moons:[]};ambienceCache.set(levelIndex,data);return data;}
     // Place sconces on existing wall faces, with pools clipped to solid walls.
     const candidates=walls.slice(4).filter(w=>Math.max(w.w,w.h)>44);
     const stride=Math.max(1,Math.ceil(candidates.length/14));
@@ -1156,36 +1157,67 @@
   function lightPool(light,moon=false) {
     const time=ambientMotion?lastTime/1000:0;
     const flicker=moon?1:ambientMotion?0.88+0.07*Math.sin(time*5+light.phase)+0.05*Math.sin(time*11+light.phase*2):0.94;
-    ctx.save();ctx.beginPath();light.points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.clip();
+    ctx.save();if(light.dim)ctx.globalAlpha=light.dim*(ambientMotion?.76+.12*Math.sin(time*7+light.phase)+.08*Math.sin(time*17+light.phase):.85);ctx.beginPath();light.points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.clip();
     const r=light.radius*flicker,g=ctx.createRadialGradient(light.x,light.y,1,light.x,light.y,r);
     g.addColorStop(0,moon?"rgba(116,162,223,.19)":"rgba(255,181,76,.30)");
     g.addColorStop(.4,moon?"rgba(95,139,213,.09)":"rgba(228,131,42,.12)");g.addColorStop(1,"rgba(0,0,0,0)");
     ctx.fillStyle=g;ctx.fillRect(light.x-r,light.y-r,r*2,r*2);ctx.restore();
   }
 
-  function drawGraveyard(){
-    // Dirt and low grass replace the indoor floor. Graves face the central house.
-    ctx.fillStyle='#0d1417';ctx.fillRect(28,28,904,544);
-    for(let i=0;i<380;i++){const x=34+(i*137)%890,y=34+(i*79)%530;ctx.strokeStyle=i%3?'#1b2625':'#28332b';ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-2,y-4);ctx.moveTo(x,y);ctx.lineTo(x+3,y-5);ctx.stroke();}
-    ctx.strokeStyle='#35322b';ctx.lineWidth=26;ctx.globalAlpha=.3;ctx.beginPath();ctx.moveTo(28,300);ctx.lineTo(932,300);ctx.moveTo(480,28);ctx.lineTo(480,572);ctx.stroke();ctx.globalAlpha=1;
-    for(const [x,y,a] of [[332,87,-.4],[620,86,.5],[480,136,0],[480,458,Math.PI],[312,499,2.7],[649,500,-2.7]]){
-      ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.strokeStyle='#aaa28c';ctx.fillStyle='#c1b69c';ctx.lineWidth=3;
-      ctx.beginPath();ctx.moveTo(-10,6);ctx.lineTo(10,20);ctx.moveTo(10,6);ctx.lineTo(-10,20);ctx.stroke();
-      ctx.beginPath();ctx.ellipse(0,-4,6,8,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#252126';ctx.fillRect(-4,-6,3,3);ctx.fillRect(1,-6,3,3);ctx.fillRect(-2,0,4,3);ctx.restore();
+
+  let graveHazards=[];
+  function resetGraves(){graveHazards=graveyard()?LEVELS[levelIndex].graves.map((g,i)=>{const cx=g.x+g.w/2,cy=g.y+g.h/2,dx=480-cx,dy=300-cy,d=Math.hypot(dx,dy);return {x:cx+dx/d*39,y:cy+dy/d*39,phase:'idle',timer:1+i*.18};}):[];}
+  function updateGraves(dt){
+    if(!graveyard())return;const actors=classActors();
+    for(const h of graveHazards){h.timer=Math.max(0,h.timer-dt);if(h.phase==='idle'){if(h.timer===0&&actors.some(a=>a.hp>0&&a.connected!==false&&Math.hypot(a.x-h.x,a.y-h.y)<75)){h.phase='warning';h.timer=1;}}
+      else if(h.phase==='warning'&&h.timer===0){h.phase='active';h.timer=1.2;}
+      else if(h.phase==='active'){for(const a of actors)if(a.hp>0&&a.connected!==false&&a.invulnerability<=0&&Math.hypot(a.x-h.x,a.y-h.y)<29&&clearSight(h.x,h.y,a.x,a.y,2)){a.hp=Math.max(0,a.hp-8);a.invulnerability=.8;if(a.id===player.id){player.hp=a.hp;player.invulnerability=a.invulnerability;damageFlash=.22;}burst(a.x,a.y,'#a8b894',6);}if(h.timer===0){h.phase='retreat';h.timer=.6;}}
+      else if(h.phase==='retreat'&&h.timer===0){h.phase='idle';h.timer=5;}
     }
+    if(player.hp<=0&&!classActors().some(a=>a.hp>0)){gameOver=true;input.fire=false;input.charge=false;}
   }
+
+
+  function drawGraveyard(){
+    const time=ambientMotion?lastTime/1000:0;
+    ctx.fillStyle='#0b1312';ctx.fillRect(28,28,904,544);
+    // Deterministic moss and soil patches, independent of gameplay randomness.
+    for(let i=0;i<110;i++){const x=35+(i*173)%890,y=35+(i*97)%530;ctx.fillStyle=i%3?'rgba(38,56,33,.22)':'rgba(57,48,32,.20)';ctx.beginPath();ctx.ellipse(x,y,12+i%23,6+i%11,i*.7,0,Math.PI*2);ctx.fill();}
+    ctx.strokeStyle='#302d25';ctx.lineWidth=28;ctx.globalAlpha=.32;ctx.beginPath();ctx.moveTo(28,300);ctx.lineTo(932,300);ctx.moveTo(480,28);ctx.lineTo(480,572);ctx.stroke();ctx.globalAlpha=1;
+    for(let shade=0;shade<3;shade++){ctx.strokeStyle=['#243a28','#304731','#3d5034'][shade];ctx.lineWidth=shade===2?.8:1;ctx.beginPath();for(let i=shade;i<2100;i+=3){const x=34+(i*137.37)%890,y=35+(i*79.73)%530;if((Math.abs(x-480)<22||Math.abs(y-300)<18)&&i%4)continue;if(x>372&&x<588&&y>192&&y<408)continue;const sway=ambientMotion?Math.sin(time*1.3+x*.012+y*.008)*2:0,h=4+i%8;ctx.moveTo(x-3,y);ctx.quadraticCurveTo(x-3+sway,y-h*.6,x-5+sway,y-h);ctx.moveTo(x,y);ctx.quadraticCurveTo(x+sway,y-h*.6,x+1+sway,y-h-2);ctx.moveTo(x+2,y);ctx.lineTo(x+5+sway,y-h*.8);}ctx.stroke();}
+    // Four skull cairns occupy the upper and lower clearings in the reference.
+    for(const [x,y,a] of [[350,100,-.12],[540,147,.1],[333,490,-.12],[575,484,.12]]){ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.fillStyle='#10100f';ctx.beginPath();ctx.ellipse(0,17,30,10,0,0,Math.PI*2);ctx.fill();for(let row=0;row<3;row++)for(let col=0;col<=row;col++)drawSkull((col-row/2)*15,row*13-16,7);ctx.restore();}
+  }
+  function drawSkull(x,y,r){ctx.fillStyle='#aaa48a';ctx.strokeStyle='#504c40';ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(x,y,r*.82,r,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#1a2020';ctx.fillRect(x-r*.58,y-r*.2,r*.45,r*.4);ctx.fillRect(x+r*.15,y-r*.2,r*.45,r*.4);ctx.fillRect(x-1,y+r*.35,2,3);ctx.fillStyle='#8d8874';ctx.fillRect(x-r*.4,y+r*.65,r*.8,r*.45);}
   function drawGraveyardObjects(){
-    const level=LEVELS[levelIndex];
-    for(const g of level.graves){ctx.save();ctx.translate(g.x+g.w/2,g.y+g.h/2);ctx.rotate(g.angle);ctx.fillStyle='#343e3b';ctx.strokeStyle='#899382';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-15,22);ctx.lineTo(-15,-10);ctx.quadraticCurveTo(-15,-25,0,-25);ctx.quadraticCurveTo(15,-25,15,-10);ctx.lineTo(15,22);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#161d1e';ctx.fillRect(-2,-12,4,22);ctx.fillRect(-8,-7,16,3);ctx.strokeStyle='#62695e';ctx.beginPath();ctx.moveTo(-8,14);ctx.lineTo(8,14);ctx.stroke();ctx.restore();}
-    ctx.save();ctx.translate(480,300);ctx.fillStyle='#221c28';ctx.strokeStyle='#8d6c60';ctx.lineWidth=3;
-    ctx.beginPath();ctx.moveTo(-100,100);ctx.lineTo(-100,-70);ctx.lineTo(-78,-94);ctx.lineTo(-30,-94);ctx.lineTo(-12,-110);ctx.lineTo(18,-90);ctx.lineTo(58,-96);ctx.lineTo(100,-58);ctx.lineTo(100,100);ctx.closePath();ctx.fill();ctx.stroke();
-    ctx.fillStyle='#342332';ctx.fillRect(-77,-65,154,130);ctx.strokeStyle='#70504c';ctx.lineWidth=2;for(const y of [-57,-15,26,64]){ctx.beginPath();ctx.moveTo(-75,y);ctx.lineTo(75,y+10);ctx.stroke();}
-    for(const [x,y,a] of [[0,-96,0],[0,96,Math.PI],[-96,0,-Math.PI/2],[96,0,Math.PI/2]]){ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.shadowColor='#ffb254';ctx.shadowBlur=20;ctx.fillStyle='#ffd58c';ctx.fillRect(-18,-4,36,10);ctx.shadowBlur=0;ctx.fillStyle='#4d302a';ctx.fillRect(-2,-4,4,10);ctx.restore();}
-    ctx.strokeStyle='#140f17';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-90,85);ctx.lineTo(-42,30);ctx.lineTo(-62,-8);ctx.moveTo(78,-75);ctx.lineTo(29,-32);ctx.lineTo(48,4);ctx.stroke();
-    ctx.fillStyle='#e5c295';ctx.font='10px monospace';ctx.textAlign='center';ctx.fillText('THE RUINED HOUSE',0,81);ctx.restore();
-    // Readable paired gates, with arrows toward the matching edge.
-    ctx.fillStyle='#bdd5cf';ctx.font='9px monospace';ctx.textAlign='center';for(const [x,y,t] of [[60,287,'< LOOP >'],[900,287,'< LOOP >'],[480,49,'^ LOOP'],[480,555,'LOOP v']])ctx.fillText(t,x,y);
-    for(const e of enemies)if(e.alive&&e.healTime>0){ctx.save();ctx.strokeStyle='#98ffca';ctx.shadowColor='#63ffb3';ctx.shadowBlur=18;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(480,300);ctx.lineTo(e.x,e.y);ctx.stroke();ctx.fillStyle='#d1ffe2';ctx.font='12px monospace';ctx.textAlign='center';ctx.fillText('THE HOUSE RESTORES THE AMALGAM',480,172);ctx.restore();}
+    const time=ambientMotion?lastTime/1000:0;
+    for(const [i,g] of LEVELS[levelIndex].graves.entries()){
+      const cx=g.x+g.w/2,cy=g.y+g.h/2;ctx.save();ctx.translate(cx,cy);ctx.rotate(g.angle);
+      ctx.fillStyle='#11110f';ctx.beginPath();ctx.ellipse(0,20,31,12,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#302d23';ctx.beginPath();ctx.ellipse(0,18,26,8,0,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#39413d';ctx.strokeStyle='#666f61';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-18,20);ctx.lineTo(-18,-12);ctx.quadraticCurveTo(-18,-30,0,-30);ctx.quadraticCurveTo(18,-30,18,-12);ctx.lineTo(18,20);ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.fillStyle='#26372b';ctx.fillRect(-16,11,32,9);ctx.strokeStyle='#1b2624';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(9,-23);ctx.lineTo(2,-12);ctx.lineTo(7,-5);ctx.lineTo(-1,5);ctx.stroke();ctx.strokeStyle='#727768';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-2,-17);ctx.lineTo(-2,1);ctx.moveTo(-8,-10);ctx.lineTo(4,-10);ctx.stroke();
+      for(let k=0;k<6;k++){ctx.strokeStyle='#34442b';ctx.beginPath();ctx.moveTo(-20+k*8,21);ctx.lineTo(-22+k*8,12-k%3*2);ctx.stroke();}ctx.restore();
+      const h=graveHazards[i];if(!h)continue;
+      const rise=h.phase==='active'?1:h.phase==='warning'?Math.min(1,1-h.timer):h.phase==='retreat'?h.timer/.6:0;
+      ctx.save();ctx.translate(h.x,h.y);ctx.strokeStyle=h.phase==='warning'?'rgba(188,139,85,.65)':'#4f694f';ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(0,0,23,10,0,0,Math.PI*2);ctx.stroke();
+      if(h.phase!=='idle'){ctx.fillStyle='rgba(9,12,10,.85)';ctx.beginPath();ctx.ellipse(0,0,21,8,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#a5a08b';ctx.lineWidth=2.2;for(const side of [-1,1]){const sway=Math.sin(time*3+i)*2;ctx.beginPath();ctx.moveTo(side*9,3);ctx.lineTo(side*(13+sway),-rise*12);ctx.lineTo(side*18,-rise*24);ctx.stroke();for(let f=0;f<4;f++){ctx.beginPath();ctx.moveTo(side*18,-rise*24);ctx.lineTo(side*(14+f*3),-rise*(29+f%2*3));ctx.stroke();}}if(h.phase==='active'||h.phase==='retreat')drawSkull(0,-rise*9,6);}
+      ctx.restore();
+    }
+    drawRuinedCastle();
+    ctx.fillStyle='#74877b';ctx.font='9px monospace';ctx.textAlign='center';for(const [x,y,t] of [[60,287,'< LOOP >'],[900,287,'< LOOP >'],[480,49,'^ LOOP'],[480,555,'LOOP v']])ctx.fillText(t,x,y);
+    for(const e of enemies)if(e.alive&&e.healTime>0){ctx.save();ctx.strokeStyle='#82cda2';ctx.shadowColor='#63ffb3';ctx.shadowBlur=12;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(480,300);ctx.lineTo(e.x,e.y);ctx.stroke();ctx.fillStyle='#b3dbc1';ctx.font='11px monospace';ctx.textAlign='center';ctx.fillText('THE CASTLE RESTORES THE AMALGAM',480,172);ctx.restore();}
+  }
+  function drawRuinedCastle(){
+    ctx.save();ctx.translate(480,300);ctx.fillStyle='#101217';ctx.strokeStyle='#62616a';ctx.lineWidth=2;
+    // Broken curtain wall, crenellations and a collapsed northern section.
+    ctx.beginPath();ctx.moveTo(-99,99);ctx.lineTo(-99,-99);ctx.lineTo(-45,-99);ctx.lineTo(-45,-83);ctx.lineTo(-24,-91);ctx.lineTo(-8,-72);ctx.lineTo(13,-97);ctx.lineTo(99,-99);ctx.lineTo(99,99);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#292a32';for(const x of [-88,-66,42,64,86])ctx.fillRect(x-6,-99,12,13);for(const x of [-88,-66,-44,44,66,88])ctx.fillRect(x-6,86,12,13);
+    ctx.fillStyle='#1c1e26';ctx.fillRect(-65,-63,130,128);ctx.strokeStyle='#3a3b45';ctx.lineWidth=1;for(let y=-56;y<=60;y+=18){ctx.beginPath();ctx.moveTo(-65,y);ctx.lineTo(65,y);ctx.stroke();for(let x=-54;x<65;x+=24){ctx.beginPath();ctx.moveTo(x+(y%36?10:0),y);ctx.lineTo(x+(y%36?10:0),y+18);ctx.stroke();}}
+    for(const [i,[x,y]] of [[-73,-73],[73,-73],[-73,73],[73,73]].entries()){ctx.fillStyle='#292b34';ctx.strokeStyle='#666570';ctx.beginPath();ctx.arc(x,y,23,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#10121a';ctx.beginPath();ctx.arc(x,y,15,0,Math.PI*2);ctx.fill();for(let k=0;k<6;k++){if(i===0&&k<2)continue;const a=k*Math.PI/3;ctx.fillStyle='#454650';ctx.fillRect(x+Math.cos(a)*19-4,y+Math.sin(a)*19-4,8,8);}}
+    ctx.fillStyle='#30313c';ctx.strokeStyle='#72707b';ctx.beginPath();ctx.moveTo(-31,32);ctx.lineTo(-31,-27);ctx.lineTo(-22,-27);ctx.lineTo(-22,-43);ctx.lineTo(-8,-37);ctx.lineTo(0,-55);ctx.lineTo(11,-35);ctx.lineTo(29,-42);ctx.lineTo(32,32);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#0c1016';ctx.beginPath();ctx.moveTo(-12,32);ctx.lineTo(-12,12);ctx.quadraticCurveTo(0,-5,12,12);ctx.lineTo(12,32);ctx.fill();
+    const glow=ambientMotion?.68+.14*Math.sin(lastTime*.007)+.08*Math.sin(lastTime*.017):.75;ctx.globalAlpha=glow;for(const [x,y,a] of [[0,-94,0],[0,94,Math.PI],[-94,0,-Math.PI/2],[94,0,Math.PI/2]]){ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.shadowColor='#e09b45';ctx.shadowBlur=9;ctx.fillStyle='#c8a368';ctx.fillRect(-10,-3,20,6);ctx.restore();}ctx.globalAlpha=1;
+    ctx.fillStyle='#56554c';for(const [x,y,w,h] of [[-43,-83,10,8],[-22,-88,8,6],[0,-76,12,9],[20,-91,7,10],[-82,29,8,6],[78,41,10,7]]){ctx.fillRect(x,y,w,h);ctx.strokeStyle='#23252b';ctx.strokeRect(x,y,w,h);}
+    ctx.strokeStyle='#0b1015';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(40,-65);ctx.lineTo(25,-44);ctx.lineTo(44,-25);ctx.moveTo(-58,24);ctx.lineTo(-42,38);ctx.lineTo(-51,61);ctx.stroke();ctx.fillStyle='#b3a083';ctx.font='9px monospace';ctx.textAlign='center';ctx.fillText('THE BROKEN CASTLE',0,57);ctx.restore();
   }
 
   function drawFloor() {
@@ -1639,6 +1671,7 @@
       levelIndex=world.levelIndex;const level=LEVELS[levelIndex];rooms=level.rooms;walls=level.walls;enemyStarts=level.spawns;document.getElementById('location').textContent=level.name;
       this.reconcile(local,first);if(this.displayedClass!==player.hunter){this.displayedClass=player.hunter;refreshClassInfo();}if(world.won||world.gameOver)player.hunter=this.selectedHunter||me.hunter;if(local.hp<oldHp)damageFlash=.22;
       const old=new Map(enemies.map(e=>[e.id,e]));enemies=world.enemies.map(e=>({...e,x:first?e.x:old.get(e.id)?.x??e.x,y:first?e.y:old.get(e.id)?.y??e.y}));
+      graveHazards=(world.graveHazards||[]).map(h=>({...h}));
       classEffects=(world.classEffects||[]).map(e=>({...e}));
       bullets=world.bullets.map(b=>({...b}));particles=world.particles.map(p=>({...p}));trails=world.trails.map(t=>({...t}));muzzle=world.muzzle?{...world.muzzle}:null;
       waveIndex=world.waveIndex;waveDelay=world.waveDelay;stage=world.stage;score=world.score;won=world.won;gameOver=world.gameOver;summonsUsed=world.summonsUsed;finaleSpawned=world.finaleSpawned;
