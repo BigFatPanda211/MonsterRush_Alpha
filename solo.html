@@ -93,6 +93,12 @@
     body:not(.menu-mode) .game-stage{min-height:0}body.run-ended .game-stage{min-height:620px}
     @media(max-width:1050px){.play-arena .game-stage{grid-column:1 / -1;grid-row:2}.game-stage .game-frame{grid-column:auto;grid-row:auto}}
     @media(max-width:600px){.game-menu{padding:12px}.game-stage{min-height:720px}.menu-heading{font-size:1.15rem}}
+    /* Portrait character cards: four across on desktop, two on small screens. */
+    .game-menu .hunters{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:stretch;max-width:820px;width:100%;margin:0 auto}
+    .game-menu .hunter-card{aspect-ratio:2 / 3;display:grid;grid-template-rows:minmax(0,1fr) auto auto;align-items:center;align-content:stretch;padding:12px 8px 16px;background:radial-gradient(ellipse at 50% 35%,#ffffff0a,transparent 70%),#0a0a13}
+    .game-menu .hunter-card canvas{width:100%;max-width:160px;height:auto;aspect-ratio:4 / 5;align-self:center}
+    .game-menu .hunter-card b{font-size:clamp(.6rem,.9vw,.78rem);line-height:1.4}.game-menu .hunter-card span{font-size:.56rem;line-height:1.5;min-height:2.5em}
+    @media(max-width:700px){.game-menu .hunters{grid-template-columns:repeat(2,minmax(0,1fr));max-width:400px}.game-menu .hunter-card b{font-size:.72rem}.game-menu .hunter-card{padding:10px 8px 14px}}
   </style>
 </head>
 <body class="menu-mode">
@@ -116,10 +122,10 @@
       <button id="start-game" class="start-button">Start expedition</button>
       <span id="ready-choice">THE WARDEN / MOONLIT COURTYARD</span>
     </section>    <section class="hunters" aria-label="Choose your hunter">
-      <button class="hunter-card" data-hunter="warden" aria-pressed="true"><canvas id="hunter-warden" width="160" height="100"></canvas><b>THE WARDEN</b><span>AMBER / ARMORED SHIELD</span></button>
-      <button class="hunter-card" data-hunter="riftwalker" aria-pressed="false"><canvas id="hunter-riftwalker" width="160" height="100"></canvas><b>THE RIFTWALKER</b><span>BLUE / SPLIT CLOAK</span></button>
-      <button class="hunter-card" data-hunter="hexkeeper" aria-pressed="false"><canvas id="hunter-hexkeeper" width="160" height="100"></canvas><b>THE HEXKEEPER</b><span>EMERALD / RUNIC HOOD</span></button>
-      <button class="hunter-card" data-hunter="revenant" aria-pressed="false"><canvas id="hunter-revenant" width="160" height="100"></canvas><b>THE REVENANT</b><span>CORAL / HAUNTED DUELIST</span></button>
+      <button class="hunter-card" data-hunter="warden" aria-pressed="true"><canvas id="hunter-warden" width="160" height="200"></canvas><b>THE WARDEN</b><span>AMBER / ARMORED SHIELD</span></button>
+      <button class="hunter-card" data-hunter="riftwalker" aria-pressed="false"><canvas id="hunter-riftwalker" width="160" height="200"></canvas><b>THE RIFTWALKER</b><span>BLUE / SPLIT CLOAK</span></button>
+      <button class="hunter-card" data-hunter="hexkeeper" aria-pressed="false"><canvas id="hunter-hexkeeper" width="160" height="200"></canvas><b>THE HEXKEEPER</b><span>EMERALD / RUNIC HOOD</span></button>
+      <button class="hunter-card" data-hunter="revenant" aria-pressed="false"><canvas id="hunter-revenant" width="160" height="200"></canvas><b>THE REVENANT</b><span>CORAL / HAUNTED DUELIST</span></button>
     </section>    <p class="hunter-note">Choose your hunter / Same abilities for now / Colors and silhouettes prepare the roster for multiplayer.</p>    <div class="level-controls">
       <label for="level-select">LEVEL</label>
       <select id="level-select" aria-label="Choose level (starts a fresh run)">
@@ -1147,7 +1153,7 @@
       const id=card.dataset.hunter;card.style.setProperty("--hunter",HUNTERS[id].color);
       card.addEventListener("click",()=>chooseHunter(id));
       const guide=document.getElementById("hunter-"+id),c=guide.getContext("2d");
-      c.save();c.translate(80,50);c.scale(2.8,2.8);
+      c.save();c.translate(80,104);c.scale(4.4,4.4);
       drawHunter(c,{hunter:id,x:0,y:0,aimX:0,aimY:-1,moving:false,invulnerability:0,slot:1},0,false);c.restore();
     }
   }
