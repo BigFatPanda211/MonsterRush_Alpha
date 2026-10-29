@@ -103,6 +103,7 @@
     .game-menu{grid-auto-rows:max-content}.hunting-grounds{height:max-content;min-height:max-content;align-self:start}
     .mode-switch{display:flex;border:1px solid #665038;border-radius:7px;overflow:hidden;margin-left:auto}.game-toolbar .mode-switch button{margin:0;border:0;border-radius:0;padding:9px 14px;color:#c8b6c9;background:#100d17}.game-toolbar .mode-switch button[aria-pressed=true]{background:#3b2c24;color:#ffe1a3;box-shadow:inset 0 -2px #e8c58a}.game-toolbar #fullscreen-toggle{margin-left:0}body:not(.menu-mode) #game{cursor:none}@media(max-width:600px){.mode-switch{margin-left:0}.game-toolbar .mode-switch button{padding:8px 10px}}
     .class-preview{max-width:650px;margin:0 auto;color:#d6c7d2;font-size:.72rem;line-height:1.65;text-align:center;padding:12px 16px;border:1px solid #5c4735;border-radius:8px;background:#17111d}
+    body.shell-fullscreen{padding:0}.shell-fullscreen .shell{width:100%;max-width:none}.shell-fullscreen .play-arena{padding:12px}.shell-fullscreen #game{width:min(100%,calc((100dvh - 230px) * 1.6));margin:auto}
   </style>
 </head>
 <body class="menu-mode">
@@ -152,6 +153,7 @@
       <div class="enemy-card"><canvas id="guide-brute" width="160" height="90" aria-label="Brute: cyan armored head with magenta horns"></canvas><b>03 / BRUTE</b><span>HEAVY TANK / RESISTS KNOCKBACK</span></div>
     </section></aside><dialog id="solo-menu-dialog" aria-labelledby="solo-menu-title" aria-describedby="solo-menu-description"><h2 id="solo-menu-title">Hunt paused</h2><p id="solo-menu-description">Resume your hunt, or return to character and level selection. Returning to selection ends this run.</p><button id="solo-resume" autofocus>Resume hunt</button> <button id="solo-confirm-menu">Return to selection</button></dialog></section>
   </main>
+<script src="config.js"></script>
 <script src="classes.js"></script>
 <script>
 (() => {
@@ -299,14 +301,20 @@
     aimX: 1, aimY: 0, moving: false
   };
   const input = { up: false, down: false, left: false, right: false, fire: false, charge:false, releaseSeq:0, abilitySeq:0 };
-  // Fullscreen includes the game, side panels, and confirmation dialogs.
+  // Fullscreen belongs to the persistent shell; modes replace only its child frame.
+  function getShell(){try{return window.parent&&window.parent!==window?window.parent.MONSTER_SHELL||null:null;}catch{return null;}}
+  function navigateMode(destination){const shell=getShell();if(shell)shell.switchMode(destination==='/solo'?'solo':'multiplayer');else window.location.assign(destination);}
+  function isGameFullscreen(){return !!(getShell()?.isFullscreen()||document.fullscreenElement);}
+  function syncFullscreen(){const active=isGameFullscreen();document.body.classList.toggle('shell-fullscreen',!!getShell()?.isFullscreen());fullscreenButton.textContent=active?'Exit fullscreen':'Enter fullscreen';fullscreenButton.setAttribute('aria-pressed',String(active));input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;canvas.focus();}
+
   const arena=document.getElementById('play-arena'),fullscreenButton=document.getElementById('fullscreen-toggle'),fullscreenMessage=document.getElementById('fullscreen-message');
   fullscreenButton.addEventListener('click',async()=>{
     input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;fullscreenMessage.textContent='';
-    try{if(document.fullscreenElement)await document.exitFullscreen();else if(arena.requestFullscreen)await arena.requestFullscreen();else fullscreenMessage.textContent='Fullscreen is unavailable in this browser.';}
+    try{if(getShell())await getShell().toggleFullscreen();else if(document.fullscreenElement)await document.exitFullscreen();else if(arena.requestFullscreen)await arena.requestFullscreen();else fullscreenMessage.textContent='Fullscreen is unavailable in this browser.';}
     catch{fullscreenMessage.textContent='Fullscreen could not open. Try opening the game in a browser tab.';}canvas.focus();
   });
-  document.addEventListener('fullscreenchange',()=>{const active=document.fullscreenElement===arena;fullscreenButton.textContent=active?'Exit fullscreen':'Enter fullscreen';fullscreenButton.setAttribute('aria-pressed',String(active));input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;canvas.focus();});
+  document.addEventListener('fullscreenchange',syncFullscreen);
+  window.addEventListener('message',event=>{if(event.source===window.parent&&event.origin===window.location.origin&&event.data?.type==='monster-fullscreen')syncFullscreen();});
   const mouse = { x: player.x + 100, y: player.y, inside: false };
   let runState="menu";
   const soloMenuDialog=document.getElementById('solo-menu-dialog');
@@ -315,8 +323,8 @@
   function resumeSoloHunt(){if(!soloMenuDialog.open)return;pendingMode=null;document.getElementById('solo-menu-title').textContent='Hunt paused';document.getElementById('solo-confirm-menu').textContent='Return to selection';soloMenuDialog.close();clearSoloControls();runState='playing';canvas.focus();}
   soloMenuDialog.addEventListener('cancel',event=>{event.preventDefault();resumeSoloHunt();});
   document.getElementById('solo-resume').addEventListener('click',resumeSoloHunt);
-  document.getElementById('solo-confirm-menu').addEventListener('click',()=>{const destination=pendingMode;pendingMode=null;soloMenuDialog.close();showMenu();if(destination)window.location.assign(destination);});
-  document.getElementById('mode-multiplayer').addEventListener('click',()=>{if(runState==='playing'){openSoloMenu();pendingMode='/';document.getElementById('solo-menu-title').textContent='Switch to multiplayer?';document.getElementById('solo-confirm-menu').textContent='End run and switch';}else window.location.assign('/');});
+  document.getElementById('solo-confirm-menu').addEventListener('click',()=>{const destination=pendingMode;pendingMode=null;soloMenuDialog.close();showMenu();if(destination)navigateMode(destination);});
+  document.getElementById('mode-multiplayer').addEventListener('click',()=>{if(runState==='playing'){openSoloMenu();pendingMode='/';document.getElementById('solo-menu-title').textContent='Switch to multiplayer?';document.getElementById('solo-confirm-menu').textContent='End run and switch';}else navigateMode('/');});
   // Seeded simulation random source; keep cosmetic effects independent of its sequence.
   let randomState=1;
   function random() {randomState|=0;randomState=(randomState+0x6D2B79F5)|0;let t=Math.imul(randomState^(randomState>>>15),1|randomState);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296;}
@@ -651,7 +659,7 @@
     if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(event.key.toLowerCase())) {
       event.preventDefault();
     }
-    if(event.key === "Escape"){if(document.fullscreenElement)return;event.preventDefault();if(event.repeat)return;if(soloMenuDialog.open)resumeSoloHunt();else openSoloMenu();return;}
+    if(event.key === "Escape"){if(isGameFullscreen())return;event.preventDefault();if(event.repeat)return;if(soloMenuDialog.open)resumeSoloHunt();else openSoloMenu();return;}
     if(runState !== "playing")return;
     if(event.key===' '){if(!event.repeat)input.abilitySeq++;return;}
     if (event.key.toLowerCase() === "r") resetCombat();

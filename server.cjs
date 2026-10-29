@@ -16,12 +16,17 @@ function createGameServer({maxRooms=12}={}){
  const server=http.createServer(async(req,res)=>{
   try{
    const url=new URL(req.url,'http://localhost');
-   // Same-origin browser requests only; API has no permissive CORS.
-   if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`&&req.headers.origin!==`https://${req.headers.host}`)return json(res,403,{error:'Use the room page on this server.'});
+   // Cross-origin frontends require an explicit origin allowlist.
+   const origin=req.headers.origin,allowed=(process.env.FRONTEND_ORIGINS||'').split(',').map(s=>s.trim()).filter(Boolean);
+   if(origin&&origin!==`http://${req.headers.host}`&&origin!==`https://${req.headers.host}`&&!allowed.includes(origin))return json(res,403,{error:'This frontend is not allowed.'});
+   if(origin&&allowed.includes(origin)){res.setHeader('Access-Control-Allow-Origin',origin);res.setHeader('Vary','Origin');res.setHeader('Access-Control-Allow-Methods','GET, POST, OPTIONS');res.setHeader('Access-Control-Allow-Headers','Content-Type, Authorization');res.setHeader('Access-Control-Max-Age','600');}
+   if(req.method==='OPTIONS'){res.writeHead(204);return res.end();}
+   if(req.method==='GET'&&['/shell.js','/config.js'].includes(url.pathname)){res.writeHead(200,{'Content-Type':'application/javascript; charset=utf-8','Cache-Control':'no-store'});return res.end(fs.readFileSync(path.join(__dirname,url.pathname.slice(1))));}
+   if(req.method==='GET'&&['/','/solo'].includes(url.pathname)){res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'});return res.end(fs.readFileSync(path.join(__dirname,'index.html')));}
    if(req.method==='GET'&&url.pathname==='/classes.js'){res.writeHead(200,{'Content-Type':'application/javascript; charset=utf-8','Cache-Control':'no-store'});return res.end(fs.readFileSync(path.join(__dirname,'classes.js')));}
    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true});
-   if(req.method==='GET'&&(url.pathname==='/'||url.pathname==='/solo')){
-    res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});return res.end(fs.readFileSync(path.join(__dirname,url.pathname==='/solo'?'solo.html':'client.html')));
+   if(req.method==='GET'&&(url.pathname==='/client.html'||url.pathname==='/solo.html')){
+    res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});return res.end(fs.readFileSync(path.join(__dirname,url.pathname==='/solo.html'?'solo.html':'client.html')));
    }
    if(req.method==='POST'&&url.pathname==='/api/rooms'){
     if(rooms.size>=maxRooms)return json(res,503,{error:'Server is full. Try again later.'});

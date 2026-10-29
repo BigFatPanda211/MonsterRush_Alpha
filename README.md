@@ -31,3 +31,5 @@ Controls: WASD/arrows move, mouse aims, hold left mouse fires, Escape leaves roo
 Original approved solo Rising Dread remains available at /solo. Solo source is embedded read-only by the server adapter to preserve its authored game behavior. Net adapters change authority, target selection, scaling, team healing and snapshot ownership.
 
 `node classes-test.cjs` verifies class damage, shielding, piercing, slows, healing caps, no revive, wall separation and dash safety. `node test.cjs --simulation-only` runs the full encounter suite without opening network sockets. Keep classes.js next to the HTML files; the Node server serves it and the authoritative engine imports the same class rules.
+
+Public / and /solo now use index.html + shell.js so fullscreen survives mode changes. client.html and solo.html are the inner game documents. See VERCEL-FRONTEND.md for the prepared static frontend split and exact-origin backend configuration. Run node shell-test.cjs for shell persistence, routes and CORS checks.
