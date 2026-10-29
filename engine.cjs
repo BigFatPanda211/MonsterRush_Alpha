@@ -69,7 +69,7 @@ function makeEngine(){
  script=script.slice(0,script.indexOf('  // Initial mouse aim points'))+bridge+'\n})();';
  const labels={},context=new Proxy({}, {get:(o,k)=>o[k]??(()=>{}),set:(o,k,v)=>(o[k]=v,true)});
  const canvas={getContext:()=>context,addEventListener:()=>{},focus:()=>{}};
- const sandbox={document:{body:{classList:{add:()=>{},remove:()=>{}}},getElementById:id=>id==='game'?canvas:(labels[id]??={style:{},addEventListener:()=>{}}),querySelectorAll:()=>[],addEventListener:()=>{}},window:{addEventListener:()=>{}},requestAnimationFrame:()=>{}};
+ const sandbox={document:{body:{classList:{add:()=>{},remove:()=>{}}},getElementById:id=>id==='game'?canvas:(labels[id]??={style:{},setAttribute:()=>{},addEventListener:()=>{}}),querySelectorAll:()=>[],addEventListener:()=>{}},window:{addEventListener:()=>{}},requestAnimationFrame:()=>{}};
  vm.createContext(sandbox);vm.runInContext(script,sandbox,{timeout:10000});return sandbox.engine;
 }
 module.exports={makeEngine};

@@ -99,6 +99,7 @@
     .game-menu .hunter-card canvas{width:100%;max-width:160px;height:auto;aspect-ratio:4 / 5;align-self:center}
     .game-menu .hunter-card b{font-size:clamp(.6rem,.9vw,.78rem);line-height:1.4}.game-menu .hunter-card span{font-size:.56rem;line-height:1.5;min-height:2.5em}
     @media(max-width:700px){.game-menu .hunters{grid-template-columns:repeat(2,minmax(0,1fr));max-width:400px}.game-menu .hunter-card b{font-size:.72rem}.game-menu .hunter-card{padding:10px 8px 14px}}
+    .hunting-grounds{width:min(100%,620px);margin:4px auto 0;border:1px solid #7b6040;border-radius:10px;background:#0c0b14;overflow:hidden}.hunting-grounds summary{display:flex;gap:14px;align-items:center;padding:15px 18px;cursor:pointer;list-style:none;color:#efdbb4}.hunting-grounds summary::-webkit-details-marker{display:none}.hunting-grounds summary:focus-visible{outline:2px solid #ffd166;outline-offset:-3px}.hunting-grounds small{display:block;font-size:.6rem;letter-spacing:.14em;color:#bba484;margin-bottom:6px}.hunting-grounds strong{font-family:Georgia,serif;font-size:1.15rem;letter-spacing:.04em}.hamburger-icon{display:grid;gap:4px;flex-shrink:0}.hamburger-icon i{display:block;width:21px;height:2px;background:#e8c58a}.ground-chevron{margin-left:auto;font-size:1.4rem}.hunting-grounds[open] .ground-chevron{transform:rotate(45deg)}.ground-options{border-top:1px solid #4b392b;padding:12px;display:grid;gap:8px}.ground-options p{margin:2px 5px 8px;color:#b5a7b9;font-size:.7rem;line-height:1.6}.ground-options button{text-align:left;padding:13px;display:grid;gap:6px;background:#17131e;border-color:#43374c;color:#c7bdcd;line-height:1.5}.ground-options button b{font-family:Georgia,serif;font-size:1.1rem;color:#efdbb4}.ground-options button>span:last-child{font-size:.7rem}.ground-chapter{font-size:.58rem;letter-spacing:.12em;color:#bfa173}.ground-options button[aria-pressed=true]{border-color:#e8c58a;background:#27202b}.ground-options button:disabled{cursor:default}
   </style>
 </head>
 <body class="menu-mode">
@@ -126,14 +127,14 @@
       <button class="hunter-card" data-hunter="riftwalker" aria-pressed="false"><canvas id="hunter-riftwalker" width="160" height="200"></canvas><b>THE RIFTWALKER</b><span>BLUE / SPLIT CLOAK</span></button>
       <button class="hunter-card" data-hunter="hexkeeper" aria-pressed="false"><canvas id="hunter-hexkeeper" width="160" height="200"></canvas><b>THE HEXKEEPER</b><span>EMERALD / RUNIC HOOD</span></button>
       <button class="hunter-card" data-hunter="revenant" aria-pressed="false"><canvas id="hunter-revenant" width="160" height="200"></canvas><b>THE REVENANT</b><span>CORAL / HAUNTED DUELIST</span></button>
-    </section>    <p class="hunter-note">Choose your hunter / Same abilities for now / Colors and silhouettes prepare the roster for multiplayer.</p>    <div class="level-controls">
+    </section>    <p class="hunter-note">Choose your hunter / Same abilities for now / Colors and silhouettes prepare the roster for multiplayer.</p>    <div class="level-controls" hidden style="display:none!important">
       <label for="level-select">LEVEL</label>
       <select id="level-select" aria-label="Choose level (starts a fresh run)">
         <option value="0">01 / Moonlit Courtyard</option><option value="1">02 / Shattered Archives</option><option value="2">03 / Blackthorn Manor</option>
       </select>
       <button id="next-level" disabled>Next level / N</button>
       <span id="level-description">Tight rooms and winding doorways.</span>
-    </div></div><section class="game-frame" aria-label="Monster Rush game">
+    </div><details id="hunting-grounds" class="hunting-grounds"><summary><span class="hamburger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span><small>CHOOSE YOUR HUNTING GROUND</small><strong id="hunting-ground-name">Moonlit Courtyard</strong></span><span class="ground-chevron" aria-hidden="true">+</span></summary><div class="ground-options"><p>Every doorway has a story. Choose where yours begins.</p><button type="button" id="ground-0"><span class="ground-chapter">I / THE FIRST CROSSING</span><b>Moonlit Courtyard</b><span>Under a watchful moon, open paths circle a silent mausoleum.</span></button><button type="button" id="ground-1"><span class="ground-chapter">II / WHISPERS IN THE STACKS</span><b>Shattered Archives</b><span>Follow the candlelight through forgotten shelves and fractured corridors.</span></button><button type="button" id="ground-2"><span class="ground-chapter">III / THE HOUSE REMEMBERS</span><b>Blackthorn Manor</b><span>Beyond these doors, narrow halls leave little room for mercy.</span></button><p id="ground-permission">Choose a destination for your next hunt.</p></div></details></div><section class="game-frame" aria-label="Monster Rush game">
       <canvas id="game" width="960" height="600" tabindex="0" aria-label="Game canvas. Move with WASD, aim with the mouse, and click to shoot."></canvas>
       <div class="hud">
         <span>LOCATION: <strong id="location">BLACKTHORN MANOR</strong></span>
@@ -310,6 +311,18 @@
   let randomState=1;
   function random() {randomState|=0;randomState=(randomState+0x6D2B79F5)|0;let t=Math.imul(randomState^(randomState>>>15),1|randomState);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296;}
   function shuffle(list) {const copy=[...list];for(let i=copy.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;}
+
+  function refreshGroundMenu(){
+    const selected=Number(document.getElementById('level-select').value)||0;
+    const names=['Moonlit Courtyard','Shattered Archives','Blackthorn Manor'];document.getElementById('hunting-ground-name').textContent=names[selected];
+    for(let i=0;i<3;i++){const option=document.getElementById('ground-'+i);option.setAttribute('aria-pressed',String(i===selected));}
+    
+  }
+  for(let i=0;i<3;i++)document.getElementById('ground-'+i).addEventListener('click',()=>{
+    selectLevel(i);
+    refreshGroundMenu();document.getElementById('hunting-grounds').open=false;
+  });
+
   function refreshReadyChoice() {document.getElementById("ready-choice").textContent=HUNTERS[player.hunter].name+" / "+LEVELS[levelIndex].name;}
   function showMenu() {
     runState="menu";input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;
@@ -386,7 +399,7 @@
     const level=LEVELS[levelIndex];rooms=level.rooms;walls=level.walls;enemyStarts=level.spawns;
     document.getElementById("location").textContent=level.name;
     document.getElementById("level-description").textContent=level.description;
-    document.getElementById("level-select").value=String(levelIndex);
+    document.getElementById("level-select").value=String(levelIndex);refreshGroundMenu();
     resetCombat();showMenu();
   }
   function nextLevel() {if(won)selectLevel(levelIndex+1);}
