@@ -134,11 +134,11 @@
     </section>    <p class="hunter-note">Four hunters. Four ways to survive.</p><p id="class-preview" class="class-preview"></p>    <div class="level-controls" hidden style="display:none!important">
       <label for="level-select">LEVEL</label>
       <select id="level-select" aria-label="Choose level (starts a fresh run)">
-        <option value="0">01 / Moonlit Courtyard</option><option value="1">02 / Shattered Archives</option><option value="2">03 / Blackthorn Manor</option>
+        <option value="0">01 / Moonlit Courtyard</option><option value="1">02 / Shattered Archives</option><option value="2">03 / Blackthorn Manor</option><option value="3">04 / Haunted Graveyard</option>
       </select>
       <button id="next-level" disabled>Next level / N</button>
       <span id="level-description">Tight rooms and winding doorways.</span>
-    </div><details id="hunting-grounds" class="hunting-grounds"><summary><span class="hamburger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span><small>CHOOSE YOUR HUNTING GROUND</small><strong id="hunting-ground-name">Moonlit Courtyard</strong></span><span class="ground-chevron" aria-hidden="true">+</span></summary><div class="ground-options"><p>Every doorway has a story. Choose where yours begins.</p><button type="button" id="ground-0"><span class="ground-chapter">I / THE FIRST CROSSING</span><b>Moonlit Courtyard</b><span>Under a watchful moon, open paths circle a silent mausoleum.</span></button><button type="button" id="ground-1"><span class="ground-chapter">II / WHISPERS IN THE STACKS</span><b>Shattered Archives</b><span>Follow the candlelight through forgotten shelves and fractured corridors.</span></button><button type="button" id="ground-2"><span class="ground-chapter">III / THE HOUSE REMEMBERS</span><b>Blackthorn Manor</b><span>Beyond these doors, narrow halls leave little room for mercy.</span></button><p id="ground-permission">Choose a destination for your next hunt.</p></div></details></div><section class="game-frame" aria-label="Monster Rush game">
+    </div><details id="hunting-grounds" class="hunting-grounds"><summary><span class="hamburger-icon" aria-hidden="true"><i></i><i></i><i></i></span><span><small>CHOOSE YOUR HUNTING GROUND</small><strong id="hunting-ground-name">Moonlit Courtyard</strong></span><span class="ground-chevron" aria-hidden="true">+</span></summary><div class="ground-options"><p>Every doorway has a story. Choose where yours begins.</p><button type="button" id="ground-0"><span class="ground-chapter">I / THE FIRST CROSSING</span><b>Moonlit Courtyard</b><span>Under a watchful moon, open paths circle a silent mausoleum.</span></button><button type="button" id="ground-1"><span class="ground-chapter">II / WHISPERS IN THE STACKS</span><b>Shattered Archives</b><span>Follow the candlelight through forgotten shelves and fractured corridors.</span></button><button type="button" id="ground-2"><span class="ground-chapter">III / THE HOUSE REMEMBERS</span><b>Blackthorn Manor</b><span>Beyond these doors, narrow halls leave little room for mercy.</span></button><button type="button" id="ground-3"><span class="ground-chapter">IV / THE DEAD RETURN</span><b>Haunted Graveyard</b><span>Looping cemetery paths surround a ruined house that feeds the darkness.</span></button><p id="ground-permission">Choose a destination for your next hunt.</p></div></details></div><section class="game-frame" aria-label="Monster Rush game">
       <canvas id="game" width="960" height="600" tabindex="0" aria-label="Game canvas. Move with WASD, aim with the mouse, and click to shoot."></canvas>
       <div class="hud">
         <span>LOCATION: <strong id="location">BLACKTHORN MANOR</strong></span>
@@ -332,11 +332,11 @@
 
   function refreshGroundMenu(){
     const selected=Number(document.getElementById('level-select').value)||0;
-    const names=['Moonlit Courtyard','Shattered Archives','Blackthorn Manor'];document.getElementById('hunting-ground-name').textContent=names[selected];
-    for(let i=0;i<3;i++){const option=document.getElementById('ground-'+i);option.setAttribute('aria-pressed',String(i===selected));}
+    const names=['Moonlit Courtyard','Shattered Archives','Blackthorn Manor','Haunted Graveyard'];document.getElementById('hunting-ground-name').textContent=names[selected];
+    for(let i=0;i<4;i++){const option=document.getElementById('ground-'+i);option.setAttribute('aria-pressed',String(i===selected));}
     
   }
-  for(let i=0;i<3;i++)document.getElementById('ground-'+i).addEventListener('click',()=>{
+  for(let i=0;i<4;i++)document.getElementById('ground-'+i).addEventListener('click',()=>{
     selectLevel(i);
     refreshGroundMenu();document.getElementById('hunting-grounds').open=false;
   });
@@ -410,7 +410,23 @@
       spawns:[{x:240,y:70},{x:240,y:350},{x:100,y:540},{x:370,y:170},{x:560,y:300},{x:400,y:520},{x:730,y:180},{x:870,y:330},{x:720,y:470},{x:870,y:550}],
       doors:[[307,188,0,72],[307,392,0,72],[643,128,0,72],[643,380,0,72]]}
   ];
-  const LEVELS=[LEVEL_DEFINITIONS[1],LEVEL_DEFINITIONS[2],LEVEL_DEFINITIONS[0]];
+  LEVEL_DEFINITIONS.push({"visualIndex":3,"name":"HAUNTED GRAVEYARD","description":"The paths loop beyond the cemetery walls. Corner lanterns cut the dark; the ruined house feeds the Amalgam once.","start":{"x":126,"y":300},"rooms":[{"x":28,"y":28,"w":904,"h":544,"name":"HAUNTED GRAVEYARD"}],"walls":[{"x":14,"y":14,"w":410,"h":14},{"x":536,"y":14,"w":410,"h":14},{"x":14,"y":572,"w":410,"h":14},{"x":536,"y":572,"w":410,"h":14},{"x":14,"y":28,"w":14,"h":216},{"x":14,"y":356,"w":14,"h":216},{"x":932,"y":28,"w":14,"h":216},{"x":932,"y":356,"w":14,"h":216},{"x":380,"y":200,"w":200,"h":200},{"x":175,"y":67,"w":50,"h":34},{"x":229,"y":128,"w":50,"h":34},{"x":273,"y":189,"w":50,"h":34},{"x":297,"y":250,"w":50,"h":34},{"x":297,"y":311,"w":50,"h":34},{"x":273,"y":372,"w":50,"h":34},{"x":229,"y":433,"w":50,"h":34},{"x":175,"y":494,"w":50,"h":34},{"x":735,"y":67,"w":50,"h":34},{"x":681,"y":128,"w":50,"h":34},{"x":637,"y":189,"w":50,"h":34},{"x":613,"y":250,"w":50,"h":34},{"x":613,"y":311,"w":50,"h":34},{"x":637,"y":372,"w":50,"h":34},{"x":681,"y":433,"w":50,"h":34},{"x":735,"y":494,"w":50,"h":34}],"graves":[{"x":175,"y":67,"w":50,"h":34,"angle":-1.5707963267948966},{"x":229,"y":128,"w":50,"h":34,"angle":-1.5707963267948966},{"x":273,"y":189,"w":50,"h":34,"angle":-1.5707963267948966},{"x":297,"y":250,"w":50,"h":34,"angle":-1.5707963267948966},{"x":297,"y":311,"w":50,"h":34,"angle":-1.5707963267948966},{"x":273,"y":372,"w":50,"h":34,"angle":-1.5707963267948966},{"x":229,"y":433,"w":50,"h":34,"angle":-1.5707963267948966},{"x":175,"y":494,"w":50,"h":34,"angle":-1.5707963267948966},{"x":735,"y":67,"w":50,"h":34,"angle":1.5707963267948966},{"x":681,"y":128,"w":50,"h":34,"angle":1.5707963267948966},{"x":637,"y":189,"w":50,"h":34,"angle":1.5707963267948966},{"x":613,"y":250,"w":50,"h":34,"angle":1.5707963267948966},{"x":613,"y":311,"w":50,"h":34,"angle":1.5707963267948966},{"x":637,"y":372,"w":50,"h":34,"angle":1.5707963267948966},{"x":681,"y":433,"w":50,"h":34,"angle":1.5707963267948966},{"x":735,"y":494,"w":50,"h":34,"angle":1.5707963267948966}],"ports":[{"x":480,"y":178},{"x":480,"y":422},{"x":358,"y":300},{"x":602,"y":300}],"spawns":[{"x":480,"y":178},{"x":480,"y":422},{"x":358,"y":300},{"x":602,"y":300}],"doors":[[424,21,112,0],[424,579,112,0],[21,244,0,112],[939,244,0,112]]});
+  const LEVELS=[LEVEL_DEFINITIONS[1],LEVEL_DEFINITIONS[2],LEVEL_DEFINITIONS[0],LEVEL_DEFINITIONS[3]];
+  // Cemetery gates form paired, bidirectional corridors. Only this map wraps.
+  function graveyard(){return LEVELS[levelIndex].visualIndex===3;}
+  function wrapActor(a){
+    if(!graveyard())return false;let moved=false;
+    if(a.y>244+a.radius&&a.y<356-a.radius){if(a.x<20){a.x=938;moved=true;}else if(a.x>940){a.x=22;moved=true;}}
+    if(a.x>424+a.radius&&a.x<536-a.radius){if(a.y<20){a.y=578;moved=true;}else if(a.y>580){a.y=22;moved=true;}}
+    if(moved){pathRefresh=0;a.stuckTime=0;}return moved;
+  }
+  function portalNeighbor(col,row,dx,dy){
+    if(!graveyard())return null;
+    if(row>=22&&row<=27&&dy===0){if(col===1&&dx===-1)return row*PATH_COLS+78;if(col===78&&dx===1)return row*PATH_COLS+1;}
+    if(col>=37&&col<=42&&dx===0){if(row===1&&dy===-1)return 48*PATH_COLS+col;if(row===48&&dy===1)return PATH_COLS+col;}
+    return null;
+  }
+
   let levelIndex=0;
   function selectLevel(index) {
     levelIndex=(index+LEVELS.length)%LEVELS.length;
@@ -473,7 +489,7 @@
     const next=new Int32Array(total);next.fill(-2);const queue=new Int32Array(total),field=new Array(total).fill(false);let head=0,tail=0;
     if(start>=0){next[start]=-1;field[start]=true;queue[tail++]=start;}
     while(head<tail){const at=queue[head++],col=at%PATH_COLS,row=Math.floor(at/PATH_COLS);
-      for(const [dx,dy] of navigationDirections){const x=col+dx,y=row+dy;if(x<0||x>=PATH_COLS||y<0||y>=PATH_ROWS)continue;const n=y*PATH_COLS+x;if(next[n]!==-2||!mask[n])continue;next[n]=at;field[n]=true;queue[tail++]=n;}}
+      for(const [dx,dy] of navigationDirections){const x=col+dx,y=row+dy;if(x<0||x>=PATH_COLS||y<0||y>=PATH_ROWS)continue;const n=portalNeighbor(col,row,dx,dy)??(y*PATH_COLS+x);if(next[n]!==-2||!mask[n])continue;next[n]=at;field[n]=true;queue[tail++]=n;}}
     field.next=next;field.start=start;playerPath=field;radiusPaths.set(radius,field);
   }
   function clearSight(x1,y1,x2,y2,radius){
@@ -494,7 +510,7 @@
   }
   function getEnemyWaypoint(enemy) {
     // Held, wall-checked flanking goals vary approach without adding per-frame jitter.
-    if (clearSight(enemy.x,enemy.y,player.x,player.y,enemy.radius)) {
+    if (clearSight(enemy.x,enemy.y,player.x,player.y,enemy.radius) && !(graveyard()&&Math.hypot(enemy.x-player.x,enemy.y-player.y)>400)) {
       if(enemy.stuckTime>0.5)return {x:player.x,y:player.y};
       const goal={x:player.x+(enemy.approachX||0),y:player.y+(enemy.approachY||0)};
       if(Math.hypot(enemy.x-player.x,enemy.y-player.y)>65 && clearSight(enemy.x,enemy.y,goal.x,goal.y,enemy.radius))return goal;
@@ -503,6 +519,7 @@
     const cell=nearestWalkableCell(enemy.x,enemy.y,enemy.radius,true),field=radiusPaths.get(enemy.radius);
     if(cell<0||!field?.[cell])return null;
     let chosen=cellCenter(cell),at=cell;
+    if(graveyard()&&field.next[cell]>=0){const p=cellCenter(field.next[cell]),c=cellCenter(cell);if(Math.abs(p.x-c.x)>800)return {x:c.x<100?0:960,y:c.y};if(Math.abs(p.y-c.y)>500)return {x:c.x,y:c.y<100?0:600};}
     for(let i=0;i<16;i++){at=field.next[at];if(at<0)break;const p=cellCenter(at);if(!clearSight(enemy.x,enemy.y,p.x,p.y,enemy.radius))break;chosen=p;}
     return clearSight(enemy.x,enemy.y,chosen.x,chosen.y,enemy.radius)?chosen:null;
   }
@@ -519,6 +536,7 @@
     }
     if(distant.length)best=distant[Math.floor(random()*distant.length)];
     if(!best)best={x:590,y:150};
+    if(graveyard()){const p=LEVELS[levelIndex].ports.filter(p=>Math.hypot(p.x-player.x,p.y-player.y)>120);if(p.length)best=p[Math.floor(random()*p.length)];}
     const config=ENEMY_TYPES.boss;
     enemies=[{id:nextEnemyId++,type:"boss",x:best.x,y:best.y,radius:14,hp:config.hp,maxHp:config.hp,
       speed:config.speed,vx:0,vy:0,phase:0,alive:true,hitFlash:0,knockX:0,knockY:0,
@@ -564,10 +582,11 @@
     if(stage === "boss") {
       const boss=enemies.find(e=>e.alive&&e.type === "boss");
       if(!boss)return;
+      if(graveyard()&&!boss.houseHealUsed&&boss.hp<=boss.maxHp*.9){boss.houseHealUsed=true;boss.healTime=1.5;const p=LEVELS[levelIndex].ports.slice().sort((a,b)=>Math.hypot(b.x-player.x,b.y-player.y)-Math.hypot(a.x-player.x,a.y-player.y))[0];boss.x=p.x;boss.y=p.y;boss.vx=boss.vy=0;boss.behavior="pursuit";statusLabel.textContent="THE HOUSE CALLS THE AMALGAM";burst(p.x,p.y,"#8affc1",24);}
       summonTimer-=dt;
       // Thresholds refer to cumulative health lost, not living Ghost count.
       const target=boss.hp/boss.maxHp<=0.6?9:boss.hp/boss.maxHp<=0.8?6:summonTimer<=0?3:0;
-      releaseGhosts(target,boss);
+      releaseGhosts(target,graveyard()?LEVELS[levelIndex].ports[Math.floor(random()*4)]:boss);
     } else if(stage === "ghost-cleanup") {
       // Retry any pending threshold summons before allowing the finale.
       releaseGhosts(9,finaleOrigin);
@@ -594,6 +613,7 @@
       if(Math.hypot(point.x-player.x,point.y-player.y)>180)candidates.push(point);
     }
     const spawnPoints=[];
+    if(graveyard())for(const p of shuffle(LEVELS[levelIndex].ports.filter(p=>Math.hypot(p.x-player.x,p.y-player.y)>180)))spawnPoints.push({...p});
     for(const point of shuffle(candidates)) {
       if(spawnPoints.every(p=>Math.hypot(p.x-point.x,p.y-point.y)>50))spawnPoints.push(point);
       if(spawnPoints.length===wave.roster.length)break;
@@ -921,6 +941,7 @@
         enemy.approachX=Math.cos(angle)*spread;enemy.approachY=Math.sin(angle)*spread;
         enemy.decisionTimer=0.8+random()*1.2;
       }
+      if(enemy.healTime>0){enemy.healTime=Math.max(0,enemy.healTime-dt);enemy.vx=enemy.vy=0;if(enemy.healTime===0){enemy.hp=enemy.maxHp;burst(enemy.x,enemy.y,"#8affc1",30);}continue;}
       const waypoint = getEnemyWaypoint(enemy);
       const oldEnemyX=enemy.x,oldEnemyY=enemy.y;
       const r = enemy.radius;
@@ -964,6 +985,7 @@
       if (enemyCanOccupy(enemy.x, nextY)) enemy.y = nextY;
       else enemy.vy = 0;
 
+      wrapActor(enemy);
       const progress=Math.hypot(enemy.x-oldEnemyX,enemy.y-oldEnemyY);
       if(waypoint && enemy.behavior === "pursuit" && Math.hypot(enemy.x-player.x,enemy.y-player.y)>30 && progress<3*dt)enemy.stuckTime=(enemy.stuckTime||0)+dt;
       else enemy.stuckTime=0;
@@ -1059,6 +1081,7 @@
     const nextY = player.y + dy * player.speed * dt;
     if (canOccupy(player.x, nextY)) player.y = nextY;
 
+    wrapActor(player);
     const targetX = mouse.x - player.x, targetY = mouse.y - player.y;
     const aimLength = Math.hypot(targetX, targetY) || 1;
     player.aimX = targetX / aimLength;
@@ -1097,6 +1120,7 @@
   function ambience() {
     if(ambienceCache.has(levelIndex))return ambienceCache.get(levelIndex);
     const lights=[];
+    if(graveyard()){const sources=[{x:42,y:42,angle:Math.PI/4},{x:918,y:42,angle:Math.PI*3/4},{x:42,y:558,angle:-Math.PI/4},{x:918,y:558,angle:-Math.PI*3/4}];for(const [i,l] of sources.entries()){const points=lightBoundary(l.x,l.y,720).map((p,j)=>{const a=j*Math.PI*2/72,delta=Math.atan2(Math.sin(a-l.angle),Math.cos(a-l.angle));return Math.abs(delta)<.54?p:[l.x,l.y];});lights.push({...l,radius:720,phase:i,points});}for(const [i,l] of LEVELS[levelIndex].ports.entries())lights.push({...l,radius:300,phase:i+4,points:lightBoundary(l.x,l.y,300)});const data={lights,moons:[]};ambienceCache.set(levelIndex,data);return data;}
     // Place sconces on existing wall faces, with pools clipped to solid walls.
     const candidates=walls.slice(4).filter(w=>Math.max(w.w,w.h)>44);
     const stride=Math.max(1,Math.ceil(candidates.length/14));
@@ -1120,6 +1144,32 @@
     g.addColorStop(.4,moon?"rgba(95,139,213,.09)":"rgba(228,131,42,.12)");g.addColorStop(1,"rgba(0,0,0,0)");
     ctx.fillStyle=g;ctx.fillRect(light.x-r,light.y-r,r*2,r*2);ctx.restore();
   }
+
+  function drawGraveyard(){
+    // Dirt and low grass replace the indoor floor. Graves face the central house.
+    ctx.fillStyle='#0d1417';ctx.fillRect(28,28,904,544);
+    for(let i=0;i<380;i++){const x=34+(i*137)%890,y=34+(i*79)%530;ctx.strokeStyle=i%3?'#1b2625':'#28332b';ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-2,y-4);ctx.moveTo(x,y);ctx.lineTo(x+3,y-5);ctx.stroke();}
+    ctx.strokeStyle='#35322b';ctx.lineWidth=26;ctx.globalAlpha=.3;ctx.beginPath();ctx.moveTo(28,300);ctx.lineTo(932,300);ctx.moveTo(480,28);ctx.lineTo(480,572);ctx.stroke();ctx.globalAlpha=1;
+    for(const [x,y,a] of [[332,87,-.4],[620,86,.5],[480,136,0],[480,458,Math.PI],[312,499,2.7],[649,500,-2.7]]){
+      ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.strokeStyle='#aaa28c';ctx.fillStyle='#c1b69c';ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(-10,6);ctx.lineTo(10,20);ctx.moveTo(10,6);ctx.lineTo(-10,20);ctx.stroke();
+      ctx.beginPath();ctx.ellipse(0,-4,6,8,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#252126';ctx.fillRect(-4,-6,3,3);ctx.fillRect(1,-6,3,3);ctx.fillRect(-2,0,4,3);ctx.restore();
+    }
+  }
+  function drawGraveyardObjects(){
+    const level=LEVELS[levelIndex];
+    for(const g of level.graves){ctx.save();ctx.translate(g.x+g.w/2,g.y+g.h/2);ctx.rotate(g.angle);ctx.fillStyle='#343e3b';ctx.strokeStyle='#899382';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-15,22);ctx.lineTo(-15,-10);ctx.quadraticCurveTo(-15,-25,0,-25);ctx.quadraticCurveTo(15,-25,15,-10);ctx.lineTo(15,22);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#161d1e';ctx.fillRect(-2,-12,4,22);ctx.fillRect(-8,-7,16,3);ctx.strokeStyle='#62695e';ctx.beginPath();ctx.moveTo(-8,14);ctx.lineTo(8,14);ctx.stroke();ctx.restore();}
+    ctx.save();ctx.translate(480,300);ctx.fillStyle='#221c28';ctx.strokeStyle='#8d6c60';ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(-100,100);ctx.lineTo(-100,-70);ctx.lineTo(-78,-94);ctx.lineTo(-30,-94);ctx.lineTo(-12,-110);ctx.lineTo(18,-90);ctx.lineTo(58,-96);ctx.lineTo(100,-58);ctx.lineTo(100,100);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#342332';ctx.fillRect(-77,-65,154,130);ctx.strokeStyle='#70504c';ctx.lineWidth=2;for(const y of [-57,-15,26,64]){ctx.beginPath();ctx.moveTo(-75,y);ctx.lineTo(75,y+10);ctx.stroke();}
+    for(const [x,y,a] of [[0,-96,0],[0,96,Math.PI],[-96,0,-Math.PI/2],[96,0,Math.PI/2]]){ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.shadowColor='#ffb254';ctx.shadowBlur=20;ctx.fillStyle='#ffd58c';ctx.fillRect(-18,-4,36,10);ctx.shadowBlur=0;ctx.fillStyle='#4d302a';ctx.fillRect(-2,-4,4,10);ctx.restore();}
+    ctx.strokeStyle='#140f17';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-90,85);ctx.lineTo(-42,30);ctx.lineTo(-62,-8);ctx.moveTo(78,-75);ctx.lineTo(29,-32);ctx.lineTo(48,4);ctx.stroke();
+    ctx.fillStyle='#e5c295';ctx.font='10px monospace';ctx.textAlign='center';ctx.fillText('THE RUINED HOUSE',0,81);ctx.restore();
+    // Readable paired gates, with arrows toward the matching edge.
+    ctx.fillStyle='#bdd5cf';ctx.font='9px monospace';ctx.textAlign='center';for(const [x,y,t] of [[60,287,'< LOOP >'],[900,287,'< LOOP >'],[480,49,'^ LOOP'],[480,555,'LOOP v']])ctx.fillText(t,x,y);
+    for(const e of enemies)if(e.alive&&e.healTime>0){ctx.save();ctx.strokeStyle='#98ffca';ctx.shadowColor='#63ffb3';ctx.shadowBlur=18;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(480,300);ctx.lineTo(e.x,e.y);ctx.stroke();ctx.fillStyle='#d1ffe2';ctx.font='12px monospace';ctx.textAlign='center';ctx.fillText('THE HOUSE RESTORES THE AMALGAM',480,172);ctx.restore();}
+  }
+
   function drawFloor() {
     ctx.fillStyle="#10131e";ctx.fillRect(0,0,WORLD.width,WORLD.height);
     rooms.forEach((room,i)=>{ctx.fillStyle=i%2?"#121521":"#151722";ctx.fillRect(room.x,room.y,room.w,room.h);});
@@ -1146,11 +1196,13 @@
       ctx.fillStyle="#291a25";ctx.fillRect(435,35,32,530);
       ctx.strokeStyle="#62434b";ctx.strokeRect(438,35,26,530);
     }
+    if(graveyard())drawGraveyard();
     const {lights,moons}=ambience();for(const moon of moons)lightPool(moon,true);for(const l of lights)lightPool(l);
     ctx.fillStyle="#b7adbc";ctx.font="9px monospace";for(const r of rooms)ctx.fillText(r.name,r.x+10,r.y+18);
   }
   function drawWalls() {
     walls.forEach((w,index)=>{
+      if(graveyard()&&index>=8)return;
       const furniture=LEVELS[levelIndex].visualIndex===0?index>=30:LEVELS[levelIndex].visualIndex===1?index>=12:index>=10;
       ctx.fillStyle=furniture?"#30212a":"#292735";ctx.fillRect(w.x,w.y,w.w,w.h);
       ctx.strokeStyle=furniture?"#735242":"#71616c";ctx.lineWidth=1;ctx.strokeRect(w.x+.5,w.y+.5,w.w-1,w.h-1);
@@ -1164,6 +1216,7 @@
     });
   }
   function drawAtmosphere() {
+    if(graveyard())drawGraveyardObjects();
     const time=ambientMotion?lastTime/1000:0;
     for(const [i,l] of ambience().lights.entries()) {
       ctx.save();ctx.translate(l.x,l.y);

@@ -65,7 +65,7 @@ function createGameServer({maxRooms=12}={}){
     if(room.state==='playing'&&!room.engine.snapshot().won&&!room.engine.snapshot().gameOver)return json(res,409,{error:'Run is still active.'});
     const live=[...room.members.values()].filter(m=>m.connected);
     if(live.length<2||live.some(m=>!m.ready))return json(res,409,{error:'At least two connected players must be ready.'});
-    if(!Number.isInteger(data.level)||data.level<0||data.level>2)return json(res,400,{error:'Choose a valid level.'});
+    if(!Number.isInteger(data.level)||data.level<0||data.level>3)return json(res,400,{error:'Choose a valid level.'});
     room.engine=makeEngine();room.engine.start(live,data.level,crypto.randomBytes(4).readUInt32LE());room.state='playing';room.revision++;for(const m of room.members.values()){m.input=emptyInput();m.ready=false;}broadcast(room);return json(res,200,{ok:true});
    }
    if(action==='leave'){if(m.stream)m.stream.end();room.members.delete(m.id);if(room.hostId===m.id)room.hostId=room.members.keys().next().value;if(!room.members.size)rooms.delete(room.code);else broadcast(room);return json(res,200,{ok:true});}

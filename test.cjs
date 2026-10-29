@@ -8,7 +8,7 @@ function kill(engine,enemy){while(enemy.alive)hit(engine,enemy);}
 function waitFor(fn,ms=5000){return new Promise((resolve,reject)=>{const started=Date.now();const timer=setInterval(()=>{try{const value=fn();if(value){clearInterval(timer);resolve(value);}else if(Date.now()-started>ms){clearInterval(timer);reject(Error('Timed out'));}}catch(e){clearInterval(timer);reject(e);}},10);});}
 async function main(){
 
- for(let level=0;level<3;level++)for(const teamSize of [2,4]){
+ for(let level=0;level<4;level++)for(const teamSize of [2,4]){
   const team=members.slice(0,teamSize),engine=makeEngine();engine.start(team,level,11);const cmd=commands(team),ids=new Set();
   let snap=engine.snapshot();assert.equal(snap.players.length,teamSize);assert.equal(snap.enemies.length,8);assert.equal(snap.levelIndex,level);
   for(const a of snap.players){assert(!engine.debug.walls.some(w=>engine.debug.circleHitsRect(a.x,a.y,10,w)));for(const b of snap.players)if(a!==b)assert(Math.hypot(a.x-b.x,a.y-b.y)>=28);}
