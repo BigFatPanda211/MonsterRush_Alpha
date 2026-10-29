@@ -12,7 +12,7 @@ async function main(){
   const team=members.slice(0,teamSize),engine=makeEngine();engine.start(team,level,11);const cmd=commands(team),ids=new Set();
   let snap=engine.snapshot();assert.equal(snap.players.length,teamSize);assert.equal(snap.enemies.length,8);assert.equal(snap.levelIndex,level);
   for(const a of snap.players){assert(!engine.debug.walls.some(w=>engine.debug.circleHitsRect(a.x,a.y,10,w)));for(const b of snap.players)if(a!==b)assert(Math.hypot(a.x-b.x,a.y-b.y)>=28);}
-  const initialX=snap.players[0].x;cmd.get('p1').input.right=true;cmd.get('p1').input.fire=true;cmd.get('p2').input.fire=true;engine.tick(1/30,cmd);snap=engine.snapshot();assert(snap.players[0].x>initialX);assert(snap.bullets.some(b=>b.ownerId==='p1'));assert(snap.bullets.some(b=>b.ownerId==='p2'));engine.debug.bullets.length=0;
+  const initialX=snap.players[0].x;cmd.get('p1').input.right=true;cmd.get('p1').input.fire=true;cmd.get('p2').input.fire=true;engine.tick(1/30,cmd);snap=engine.snapshot();assert(snap.players[0].x>initialX);assert(snap.players[0].attackTime>0);assert(snap.bullets.some(b=>b.ownerId==='p2'));engine.debug.bullets.length=0;
   for(const c of cmd.values())c.input.fire=c.input.right=false;
   function strike(e,owner='p1'){engine.debug.bullets.push({id:100000+Math.random(),ownerId:owner,x:e.x,y:e.y,vx:0,vy:0,radius:3,life:1});engine.tick(.001,cmd);}
   function defeat(e){while(e.alive)strike(e);}
@@ -36,6 +36,7 @@ async function main(){
  engine.tick(1/30,commands(members.slice(0,2)));assert.equal(p1.hp,88);assert.equal(p2.hp,100);engine.tick(1/30,commands(members.slice(0,2)));assert.equal(p1.hp,88);
  p1.hp=0;engine.tick(1/30,commands(members.slice(0,2)));assert(!engine.snapshot().gameOver);assert.equal(engine.snapshot().enemies[0].targetId,'p2');p2.hp=0;engine.tick(1/30,commands(members.slice(0,2)));assert(engine.snapshot().gameOver);
  console.log('PASS player-specific contact/invulnerability, survivor targeting and whole-team defeat');
+ if(process.argv.includes('--simulation-only'))return;
  const app=createGameServer();await new Promise(r=>app.server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+app.server.address().port,streams=[];
  async function post(path,data={},session){const res=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json',...(session?{Authorization:'Bearer '+session.token}:{})},body:JSON.stringify(data)});return {status:res.status,data:await res.json()};}
  async function open(session){const controller=new AbortController();const response=await fetch(base+'/api/rooms/'+session.code+'/events?token='+session.token,{signal:controller.signal});assert.equal(response.status,200);const record={controller,latest:null};streams.push(record);(async()=>{let pending='';try{for await(const bytes of response.body){pending+=Buffer.from(bytes).toString();let end;while((end=pending.indexOf('\n\n'))>=0){const chunk=pending.slice(0,end);pending=pending.slice(end+2);if(chunk.startsWith('data: '))record.latest=JSON.parse(chunk.slice(6));}}}catch{}})();return record;}

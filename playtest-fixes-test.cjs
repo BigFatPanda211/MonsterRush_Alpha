@@ -10,13 +10,13 @@ function browser(base,storage=new Map()){
   close(){this.controller.abort();}
  }
  const sandbox={console,document:{body:{classList:{add:()=>{},remove:()=>{},toggle:()=>{}}},getElementById:element,querySelectorAll:()=>[],addEventListener:()=>{}},window:{addEventListener:(k,fn)=>windowCallbacks[k]=fn},requestAnimationFrame:()=>{},setInterval:fn=>timers.push(fn),fetch:(url,opts)=>fetch(base+url,opts),EventSource,sessionStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)}};
- let code=fs.readFileSync(__dirname+'/client.html','utf8').match(/<script>([\s\S]*?)<\/script>/)[1];code=code.replace('  // Initial mouse aim points','  globalThis.client={network,input,player,frame,chooseHunter};\n  // Initial mouse aim points');vm.createContext(sandbox);vm.runInContext(code,sandbox);
+ let code=fs.readFileSync(__dirname+'/client.html','utf8').match(/<script>([\s\S]*?)<\/script>/)[1];code=code.replace('  // Initial mouse aim points','  globalThis.client={network,input,player,frame,chooseHunter};\n  // Initial mouse aim points');vm.createContext(sandbox);sandbox.MONSTER_CLASSES=require('./classes.js');vm.runInContext(code,sandbox);
  return {client:sandbox.client,element,elements,storage,callbacks,windowCallbacks,close:()=>streams.forEach(s=>s.close())};
 }
 
 const {makeEngine}=require('./engine.cjs');
 (async()=>{
- const members=[{id:'a',slot:1,hunter:'warden'},{id:'b',slot:2,hunter:'warden'}],engine=makeEngine();engine.start(members,0,12);
+ const members=[{id:'a',slot:1,hunter:'riftwalker'},{id:'b',slot:2,hunter:'warden'}],engine=makeEngine();engine.start(members,0,12);
  const cmd=new Map(members.map(m=>[m.id,{connected:true,input:{up:false,down:false,left:false,right:false,fire:false,charge:false,releaseSeq:0,aimX:480,aimY:300}}]));
  const before=engine.snapshot(),ghost=before.enemies.find(e=>e.type==='ghost'),wraith=before.enemies.find(e=>e.type==='wraith');assert.ok(wraith.speed>ghost.speed*1.35);assert.equal(before.players[0].speed,235);
  for(const e of engine.debug.enemies){e.speed=0;e.x=850;e.y=500;e.abilityCooldown=99;}

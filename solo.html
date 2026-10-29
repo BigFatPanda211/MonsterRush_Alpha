@@ -102,6 +102,7 @@
     .hunting-grounds{width:min(100%,620px);margin:4px auto 0;border:1px solid #7b6040;border-radius:10px;background:#0c0b14;overflow:hidden}.hunting-grounds summary{display:flex;gap:14px;align-items:center;padding:15px 18px;cursor:pointer;list-style:none;color:#efdbb4}.hunting-grounds summary::-webkit-details-marker{display:none}.hunting-grounds summary:focus-visible{outline:2px solid #ffd166;outline-offset:-3px}.hunting-grounds small{display:block;font-size:.6rem;letter-spacing:.14em;color:#bba484;margin-bottom:6px}.hunting-grounds strong{font-family:Georgia,serif;font-size:1.15rem;letter-spacing:.04em}.hamburger-icon{display:grid;gap:4px;flex-shrink:0}.hamburger-icon i{display:block;width:21px;height:2px;background:#e8c58a}.ground-chevron{margin-left:auto;font-size:1.4rem}.hunting-grounds[open] .ground-chevron{transform:rotate(45deg)}.ground-options{border-top:1px solid #4b392b;padding:12px;display:grid;gap:8px}.ground-options p{margin:2px 5px 8px;color:#b5a7b9;font-size:.7rem;line-height:1.6}.ground-options button{text-align:left;padding:13px;display:grid;gap:6px;background:#17131e;border-color:#43374c;color:#c7bdcd;line-height:1.5}.ground-options button b{font-family:Georgia,serif;font-size:1.1rem;color:#efdbb4}.ground-options button>span:last-child{font-size:.7rem}.ground-chapter{font-size:.58rem;letter-spacing:.12em;color:#bfa173}.ground-options button[aria-pressed=true]{border-color:#e8c58a;background:#27202b}.ground-options button:disabled{cursor:default}
     .game-menu{grid-auto-rows:max-content}.hunting-grounds{height:max-content;min-height:max-content;align-self:start}
     .mode-switch{display:flex;border:1px solid #665038;border-radius:7px;overflow:hidden;margin-left:auto}.game-toolbar .mode-switch button{margin:0;border:0;border-radius:0;padding:9px 14px;color:#c8b6c9;background:#100d17}.game-toolbar .mode-switch button[aria-pressed=true]{background:#3b2c24;color:#ffe1a3;box-shadow:inset 0 -2px #e8c58a}.game-toolbar #fullscreen-toggle{margin-left:0}body:not(.menu-mode) #game{cursor:none}@media(max-width:600px){.mode-switch{margin-left:0}.game-toolbar .mode-switch button{padding:8px 10px}}
+    .class-preview{max-width:650px;margin:0 auto;color:#d6c7d2;font-size:.72rem;line-height:1.65;text-align:center;padding:12px 16px;border:1px solid #5c4735;border-radius:8px;background:#17111d}
   </style>
 </head>
 <body class="menu-mode">
@@ -116,7 +117,7 @@
 
 <section id="play-arena" class="play-arena" aria-label="Game and field guide"><div class="game-toolbar"><span>BLACKTHORN EXPEDITIONS</span><nav class="mode-switch" aria-label="Play mode"><button id="mode-solo" aria-pressed="true">Solo</button><button id="mode-multiplayer" aria-pressed="false">Multiplayer</button></nav><button id="fullscreen-toggle" aria-pressed="false">Enter fullscreen</button><span id="fullscreen-message" role="status"></span></div><aside class="controls-sidebar" aria-label="Controls and settings"><h2>FIELD CONTROLS</h2><section class="instructions">
       <div class="tip"><b>MOVEMENT</b><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to move. You cannot walk through walls.</div>
-      <div class="tip"><b>AIM + SHOOT</b> Move the mouse to aim. Hold left mouse to fire. Hold right mouse to charge; release after 0.35-1.2s for a 2-4 damage bolt. Full charge: 1s. Recharge: 1.25s.</div>
+      <div class="tip"><b>YOUR CLASS</b><span id="class-controls"></span></div>
       <div class="tip"><b>COMBAT</b> Ghosts pursue, Wraiths pause then dash, Brutes endure. Survive three rising waves, then defeat the Amalgam boss to win. Magenta Ghosts pursue; purple Wraiths dash; cyan Brutes endure. Press <kbd>R</kbd> to retry. After the boss, <kbd>N</kbd> advances to the next layout.</div>
     </section><div class="atmosphere-controls" aria-label="Sound settings"><button id="sound-mute" aria-pressed="false">Sound: on</button><label>Volume <input id="sound-volume" type="range" min="0" max="100" value="35" aria-label="Sound volume"></label></div><label class="atmosphere-controls"><input id="ambient-motion" type="checkbox" checked> Candle flicker and drifting dust</label><button id="return-menu" class="return-menu">Change hunter / level / Esc</button></aside><div class="game-stage"><div class="game-menu"><div class="menu-heading">THE HUNT AWAITS</div>    <section id="ready-room" class="ready-room">
       <div class="step">BLACKTHORN EXPEDITIONS</div><h2>Choose your hunter. Enter the haunt.</h2>
@@ -125,11 +126,11 @@
       <button id="start-game" class="start-button">Start expedition</button>
       <span id="ready-choice">THE WARDEN / MOONLIT COURTYARD</span>
     </section>    <section class="hunters" aria-label="Choose your hunter">
-      <button class="hunter-card" data-hunter="warden" aria-pressed="true"><canvas id="hunter-warden" width="160" height="200"></canvas><b>THE WARDEN</b><span>AMBER / ARMORED SHIELD</span></button>
-      <button class="hunter-card" data-hunter="riftwalker" aria-pressed="false"><canvas id="hunter-riftwalker" width="160" height="200"></canvas><b>THE RIFTWALKER</b><span>BLUE / SPLIT CLOAK</span></button>
-      <button class="hunter-card" data-hunter="hexkeeper" aria-pressed="false"><canvas id="hunter-hexkeeper" width="160" height="200"></canvas><b>THE HEXKEEPER</b><span>EMERALD / RUNIC HOOD</span></button>
-      <button class="hunter-card" data-hunter="revenant" aria-pressed="false"><canvas id="hunter-revenant" width="160" height="200"></canvas><b>THE REVENANT</b><span>CORAL / HAUNTED DUELIST</span></button>
-    </section>    <p class="hunter-note">Choose your hunter / Same abilities for now / Colors and silhouettes prepare the roster for multiplayer.</p>    <div class="level-controls" hidden style="display:none!important">
+      <button class="hunter-card" data-hunter="warden" aria-pressed="true"><canvas id="hunter-warden" width="160" height="200"></canvas><b>THE WARDEN</b><span>MELEE / SHIELD &amp; HAMMER</span></button>
+      <button class="hunter-card" data-hunter="riftwalker" aria-pressed="false"><canvas id="hunter-riftwalker" width="160" height="200"></canvas><b>THE RIFTWALKER</b><span>RANGED / SPECTRAL CROSSBOW</span></button>
+      <button class="hunter-card" data-hunter="hexkeeper" aria-pressed="false"><canvas id="hunter-hexkeeper" width="160" height="200"></canvas><b>THE HEXKEEPER</b><span>SUPPORT / FLOATING GRIMOIRE</span></button>
+      <button class="hunter-card" data-hunter="revenant" aria-pressed="false"><canvas id="hunter-revenant" width="160" height="200"></canvas><b>THE REVENANT</b><span>MELEE / TWIN BLADES</span></button>
+    </section>    <p class="hunter-note">Four hunters. Four ways to survive.</p><p id="class-preview" class="class-preview"></p>    <div class="level-controls" hidden style="display:none!important">
       <label for="level-select">LEVEL</label>
       <select id="level-select" aria-label="Choose level (starts a fresh run)">
         <option value="0">01 / Moonlit Courtyard</option><option value="1">02 / Shattered Archives</option><option value="2">03 / Blackthorn Manor</option>
@@ -140,7 +141,7 @@
       <canvas id="game" width="960" height="600" tabindex="0" aria-label="Game canvas. Move with WASD, aim with the mouse, and click to shoot."></canvas>
       <div class="hud">
         <span>LOCATION: <strong id="location">BLACKTHORN MANOR</strong></span>
-        <span id="charge-label">CHARGE: READY</span><span id="ping-label">SOLO / LOCAL</span><span>PLAYER: <strong id="player-pos">X 0 / Y 0</strong></span>
+        <span id="ability-label">SPACE / ABILITY READY</span><span id="charge-label">CHARGE: READY</span><span id="ping-label">SOLO / LOCAL</span><span>PLAYER: <strong id="player-pos">X 0 / Y 0</strong></span>
         <span>HP: <strong id="player-hp">100</strong> <meter id="health-meter" min="0" max="100" low="35" high="70" optimum="100" value="100" aria-label="Health"></meter> <strong id="health-warning" aria-live="polite"></strong></span>
         <span>STAGE: <strong id="stage">WAVE 1</strong></span><span>REMAINING: <strong id="defeated">0 / 5</strong></span>
         <span>SCORE: <strong id="score">0</strong></span><span>STATUS: <strong id="status">EXPLORING</strong></span>
@@ -151,6 +152,7 @@
       <div class="enemy-card"><canvas id="guide-brute" width="160" height="90" aria-label="Brute: cyan armored head with magenta horns"></canvas><b>03 / BRUTE</b><span>HEAVY TANK / RESISTS KNOCKBACK</span></div>
     </section></aside><dialog id="solo-menu-dialog" aria-labelledby="solo-menu-title" aria-describedby="solo-menu-description"><h2 id="solo-menu-title">Hunt paused</h2><p id="solo-menu-description">Resume your hunt, or return to character and level selection. Returning to selection ends this run.</p><button id="solo-resume" autofocus>Resume hunt</button> <button id="solo-confirm-menu">Return to selection</button></dialog></section>
   </main>
+<script src="classes.js"></script>
 <script>
 (() => {
   "use strict";
@@ -182,6 +184,8 @@
     function cue(name,quiet=1){
       if(!context)return;const now=context.currentTime;if(now-(last.get(name)??-100)<(name==='shot'?.07:.12))return;last.set(name,now);
       if(name==='charge')tone(400,55,.3,'sawtooth',.17*quiet);
+      if(name==='swing')tone(440,90,.12,'triangle',.16);
+      if(name==='ability')tone(330,660,.3,'sine',.16);
       if(name==='shot')tone(240,65,.085,'triangle',.2*quiet);
       if(name==='hit')tone(750,180,.055,'square',.05);
       if(name==='kill'){tone(320,65,.22,'triangle',.17);tone(980,110,.16,'sine',.08);}
@@ -200,13 +204,15 @@
       if(previous){
         if(shot>previous.shot){const b=state.bullets.find(b=>b.id===shot);cue(b?.charged?'charge':'shot',b?.ownerId===state.player.id?1:.45);}
         if(state.player.hp<previous.hp)cue('hurt');
+        if(state.player.attackSerial!==previous.attackSerial&&['warden','revenant'].includes(state.player.hunter))cue('swing');
+        if((state.player.abilityCooldown||0)>previous.abilityCooldown+.5)cue('ability');
         let hit=false,dash=false;for(const e of state.enemies){const old=previous.enemies.get(e.id);if(old&&e.hp<old.hp)hit=true;if(e.behavior==='windup'&&old?.behavior!=='windup')dash=true;}
         if(hit)cue('hit');if(dash)cue('dash');if(state.score>previous.score)cue('kill');
         if(state.waveIndex!==previous.waveIndex)cue('wave');
         if(state.stage!==previous.stage){if(state.stage==='boss-intro')cue('boss');if(state.stage==='last-gasp')cue('finale');}
         if(state.won&&!previous.won)cue('win');if(state.gameOver&&!previous.gameOver)cue('lose');
       }else cue('wave');
-      previous={shot:Math.max(shot,previous?.shot||0),hp:state.player.hp,enemies:new Map(state.enemies.map(e=>[e.id,{hp:e.hp,behavior:e.behavior}])),waveIndex:state.waveIndex,stage:state.stage,score:state.score,won:state.won,gameOver:state.gameOver};
+      previous={attackSerial:state.player.attackSerial,abilityCooldown:state.player.abilityCooldown||0,shot:Math.max(shot,previous?.shot||0),hp:state.player.hp,enemies:new Map(state.enemies.map(e=>[e.id,{hp:e.hp,behavior:e.behavior}])),waveIndex:state.waveIndex,stage:state.stage,score:state.score,won:state.won,gameOver:state.gameOver};
     }
     muteButton.addEventListener('click',()=>{unlock();muted=!muted;save();});slider.addEventListener('input',()=>{unlock();volume=Math.max(0,Math.min(1,Number(slider.value)/100));save();});
     document.addEventListener('pointerdown',unlock);document.addEventListener('keydown',unlock);
@@ -292,7 +298,7 @@
     x: 112, y: 156, radius: 10, speed: 235,
     aimX: 1, aimY: 0, moving: false
   };
-  const input = { up: false, down: false, left: false, right: false, fire: false, charge:false, releaseSeq:0 };
+  const input = { up: false, down: false, left: false, right: false, fire: false, charge:false, releaseSeq:0, abilitySeq:0 };
   // Fullscreen includes the game, side panels, and confirmation dialogs.
   const arena=document.getElementById('play-arena'),fullscreenButton=document.getElementById('fullscreen-toggle'),fullscreenMessage=document.getElementById('fullscreen-message');
   fullscreenButton.addEventListener('click',async()=>{
@@ -327,7 +333,7 @@
     refreshGroundMenu();document.getElementById('hunting-grounds').open=false;
   });
 
-  function refreshReadyChoice() {document.getElementById("ready-choice").textContent=HUNTERS[player.hunter].name+" / "+LEVELS[levelIndex].name;}
+  function refreshReadyChoice() {refreshClassInfo();document.getElementById("ready-choice").textContent=HUNTERS[player.hunter].name+" / "+LEVELS[levelIndex].name;}
   function showMenu() {
     runState="menu";input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;
     document.body.classList.add("menu-mode");refreshReadyChoice();
@@ -641,11 +647,13 @@
   }
 
   window.addEventListener("keydown", (event) => {
+    if(["INPUT","TEXTAREA","SELECT"].includes(event.target?.tagName)&&event.key!=="Escape")return;
     if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(event.key.toLowerCase())) {
       event.preventDefault();
     }
     if(event.key === "Escape"){if(document.fullscreenElement)return;event.preventDefault();if(event.repeat)return;if(soloMenuDialog.open)resumeSoloHunt();else openSoloMenu();return;}
     if(runState !== "playing")return;
+    if(event.key===' '){if(!event.repeat)input.abilitySeq++;return;}
     if (event.key.toLowerCase() === "r") resetCombat();
     if(event.key.toLowerCase() === "n" && !event.repeat) nextLevel();
     setKey(event.key, true);
@@ -686,6 +694,56 @@
     resetCombat();
   }
 
+  const CLASS_RULES=MONSTER_CLASSES;
+  let classEffects=[];
+  function classActors(){return [player];}
+  function resetClassState(actor){Object.assign(actor,{abilityCooldown:0,abilityTime:0,lastAbilitySeq:0,pactHealing:0,attackTime:0,attackSide:1,attackSerial:0});}
+  function attackDirection(){const x=mouse.x-player.x,y=mouse.y-player.y,l=Math.hypot(x,y)||1;return {x:x/l,y:y/l};}
+  function moveClassDash(distance){const d=attackDirection(),x=player.x,y=player.y;for(let i=0;i<distance;i+=2){if(!canOccupy(player.x+d.x*2,player.y+d.y*2))break;player.x+=d.x*2;player.y+=d.y*2;}classEffects.push({type:'dash',x,y,endX:player.x,endY:player.y,life:.25,maxLife:.25,color:HUNTERS[player.hunter].color});}
+  function queueMelee(x,y,reach,cone,damage,knockback=1,owner=player){
+    const d=attackDirection();classEffects.push({type:'slash',x,y,radius:reach,angle:Math.atan2(d.y,d.x),cone,life:.18,maxLife:.18,color:HUNTERS[owner.hunter].color});
+    for(const e of enemies){if(!e.alive)continue;const dx=e.x-x,dy=e.y-y,l=Math.hypot(dx,dy);if(l>reach+e.radius||l>1&&(dx*d.x+dy*d.y)/l<cone||!clearSight(x,y,e.x,e.y,2))continue;bullets.push({id:nextBulletId++,ownerId:owner.id,targetId:e.id,x:e.x,y:e.y,vx:0,vy:0,hitX:d.x,hitY:d.y,radius:1,life:.08,damage,knockback,melee:true});}
+  }
+  function fireClassCharge(){
+    const d=attackDirection(),full=player.chargeTime>=1;
+    if(player.hunter==='warden')queueMelee(player.x,player.y,full?82:64,-1,full?4:2,2.5);
+    else if(player.hunter==='revenant'){moveClassDash(full?70:40);queueMelee(player.x,player.y,65,-.15,full?3:2,1.5);}
+    else if(player.hunter==='hexkeeper'){let x=player.x,y=player.y;const range=Math.min(180,Math.hypot(mouse.x-x,mouse.y-y));for(let i=0;i<range;i+=3){if(pointHitsWall(x+d.x*3,y+d.y*3))break;x+=d.x*3;y+=d.y*3;}classEffects.push({type:'rune',ownerId:player.id,x,y,radius:full?75:55,damage:full?3:2,life:.65,maxLife:.65,color:'#43e6a0'});}
+    else{const x=player.x+d.x*18-d.y*12,y=player.y+d.y*18+d.x*12;if(!clearSight(player.x,player.y,x,y,5))return false;bullets.push({id:nextBulletId++,ownerId:player.id,x,y,vx:d.x*650,vy:d.y*650,radius:5,life:1.4,damage:full?4:2,charged:true,piercing:true,hitIds:[]});muzzle={x,y,ux:d.x,uy:d.y,life:.12};}
+    player.attackTime=.2;player.attackSerial=(player.attackSerial||0)+1;player.chargeCooldown=1.25;shootTimer=Math.max(shootTimer,.25);return true;
+  }
+  function updateClass(dt){
+    player.abilityCooldown=Math.max(0,(player.abilityCooldown||0)-dt);player.abilityTime=Math.max(0,(player.abilityTime||0)-dt);player.attackTime=Math.max(0,(player.attackTime||0)-dt);
+    if((input.abilitySeq||0)<=(player.lastAbilitySeq||0))return;player.lastAbilitySeq=input.abilitySeq;
+    if(player.hp<=0||player.abilityCooldown>0||gameOver||won||stage==='wave-break'||stage==='boss-intro')return;
+    const rule=CLASS_RULES[player.hunter];player.abilityCooldown=rule.abilityCooldown;player.abilityTime=rule.abilityDuration;
+    if(player.hunter==='riftwalker'){moveClassDash(100);player.invulnerability=Math.max(player.invulnerability,.3);}
+    if(player.hunter==='hexkeeper')classEffects.push({type:'sanctuary',ownerId:player.id,x:player.x,y:player.y,radius:85,life:4,maxLife:4,color:'#43e6a0'});
+    if(player.hunter==='revenant')player.pactHealing=0;burst(player.x,player.y,HUNTERS[player.hunter].color,14);
+  }
+  function updateClassEffects(dt){
+    const additions=[];
+    for(const e of classEffects){const elapsed=Math.min(dt,e.life);e.life-=dt;
+      if(e.type==='sanctuary'&&!won&&!gameOver&&stage!=='wave-break'&&stage!=='boss-intro')for(const a of classActors())if(a.hp>0&&a.connected!==false&&Math.hypot(a.x-e.x,a.y-e.y)<=e.radius&&clearSight(e.x,e.y,a.x,a.y,2)){a.hp=Math.min(100,a.hp+5*elapsed);if(a.id===player.id)player.hp=a.hp;}
+      if(e.type==='rune'&&e.life<=0){const owner=classActors().find(a=>a.id===e.ownerId);if(owner)for(const target of enemies)if(target.alive&&Math.hypot(target.x-e.x,target.y-e.y)<e.radius+target.radius&&clearSight(e.x,e.y,target.x,target.y,2))bullets.push({id:nextBulletId++,ownerId:owner.id,targetId:target.id,x:target.x,y:target.y,vx:0,vy:0,radius:1,life:.08,damage:e.damage,melee:true,slow:1.2});additions.push({type:'blast',x:e.x,y:e.y,radius:e.radius,life:.22,maxLife:.22,color:e.color});}
+    }classEffects=classEffects.filter(e=>e.life>0).concat(additions);
+  }
+  function shieldBlocks(enemy){
+    for(const g of classActors()){if(g.hunter!=='warden'||g.abilityTime<=0||g.hp<=0||g.connected===false)continue;const dx=enemy.x-g.x,dy=enemy.y-g.y,l=Math.hypot(dx,dy)||1,px=player.x-g.x,py=player.y-g.y;
+      if(Math.hypot(px,py)<=80&&(px*g.aimX+py*g.aimY)<=18&&(dx*g.aimX+dy*g.aimY)/l>.25&&clearSight(g.x,g.y,player.x,player.y,2)){enemy.knockX=dx/l*160;enemy.knockY=dy/l*160;return true;}
+    }return false;
+  }
+  function onClassDamage(bullet,enemy){
+    if(bullet.slow)enemy.slowTime=Math.max(enemy.slowTime||0,bullet.slow);const owner=classActors().find(a=>a.id===bullet.ownerId);
+    if(owner?.hunter==='revenant'&&owner.abilityTime>0&&owner.hp>0){const heal=Math.min(12-(owner.pactHealing||0),Math.min(enemy.hp,bullet.damage||1)*.8);if(heal>0){owner.hp=Math.min(100,owner.hp+heal);owner.pactHealing=(owner.pactHealing||0)+heal;if(owner.id===player.id)player.hp=owner.hp;}}
+  }
+  function updateClassHud(){const r=CLASS_RULES[player.hunter];document.getElementById('ability-label').textContent=r.ability.toUpperCase()+': '+(player.abilityTime>0?'ACTIVE':player.abilityCooldown>0?player.abilityCooldown.toFixed(1)+'s':'SPACE / READY');}
+  function refreshClassInfo(){const r=CLASS_RULES[player.hunter];document.getElementById('class-preview').textContent=r.role+' / '+r.weapon+' — '+r.normal+' Charged: '+r.charged+' '+r.skill;document.getElementById('class-controls').textContent=r.normal+' Hold right mouse, release to charge. '+r.charged+' '+r.skill;}
+  function drawClassEffects(){for(const e of classEffects){ctx.save();ctx.globalAlpha=e.type==='sanctuary'?.3:.75;ctx.strokeStyle=e.color;ctx.fillStyle=e.color;ctx.shadowColor=e.color;ctx.shadowBlur=8;ctx.lineWidth=2;
+    if(e.type==='dash'){ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.endX,e.endY);ctx.stroke();}
+    else if(e.type==='slash'){const arc=e.cone<-.9?Math.PI:Math.acos(e.cone);ctx.beginPath();ctx.arc(e.x,e.y,e.radius,e.angle-arc,e.angle+arc);ctx.stroke();}
+    else{ctx.beginPath();ctx.arc(e.x,e.y,e.radius,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=.08;ctx.fill();ctx.globalAlpha=.8;ctx.translate(e.x,e.y);ctx.rotate(Math.PI/4);ctx.strokeRect(-e.radius*.45,-e.radius*.45,e.radius*.9,e.radius*.9);}ctx.restore();}}
+
   function updateCharge(dt){
     player.chargeCooldown=Math.max(0,(player.chargeCooldown||0)-dt);
     if(player.hp<=0||gameOver||won||stage==='boss-intro'||stage==='wave-break'){player.chargeTime=0;player.lastReleaseSeq=input.releaseSeq||0;return;}
@@ -693,9 +751,7 @@
     if((input.releaseSeq||0)>(player.lastReleaseSeq||0)){
       player.lastReleaseSeq=input.releaseSeq;
       if(player.chargeTime>=.35&&player.chargeCooldown<=0){
-        const dx=mouse.x-player.x,dy=mouse.y-player.y,l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l;
-        const x=player.x+ux*17,y=player.y+uy*17;
-        if(clearSight(player.x,player.y,x,y,6)){bullets.push({id:nextBulletId++,ownerId:player.id,x,y,vx:ux*650,vy:uy*650,radius:6,life:1.4,damage:player.chargeTime>=1?4:2,charged:true});muzzle={x,y,ux,uy,life:.12};player.chargeCooldown=1.25;shootTimer=Math.max(shootTimer,.25);}
+        fireClassCharge();
       }player.chargeTime=0;
     }
     if(!input.charge)player.chargeTime=0;
@@ -703,24 +759,28 @@
   function fireBullet() {
     if (runState !== "playing" || gameOver || won || (stage === "boss-intro" || stage === "wave-break") || shootTimer > 0) return;
     if(input.charge)return;
+    const rule=CLASS_RULES[player.hunter];player.attackTime=.16;player.attackSerial=(player.attackSerial||0)+1;player.attackSide=-(player.attackSide||1);
+    if(rule.reach){queueMelee(player.x,player.y,rule.reach,rule.cone,rule.damage);shootTimer=rule.cooldown;return;}
     const dx = mouse.x - player.x;
     const dy = mouse.y - player.y;
     const len = Math.hypot(dx, dy) || 1;
     const ux = len > 1 ? dx / len : player.aimX, uy = len > 1 ? dy / len : player.aimY;
-    const mx = player.x + ux * (player.radius + 5), my = player.y + uy * (player.radius + 5);
+    const side=player.hunter==='hexkeeper'?17:12;
+    const mx = player.x + ux * 18-uy*side, my = player.y + uy * 18+ux*side;
     shootTimer = COMBAT.cooldown;
     // Test the muzzle offset to prevent a bolt spawning across a nearby thin wall.
     if (!clearSight(player.x, player.y, mx, my, 3)) {
       burst(player.x + ux*10, player.y + uy*10, COLORS.wall, 4); return;
     }
     muzzle = { x: mx, y: my, ux, uy, life: 0.055 };
+    const shotLength=Math.hypot(mouse.x-mx,mouse.y-my)||1,sx=(mouse.x-mx)/shotLength,sy=(mouse.y-my)/shotLength;
     bullets.push({
       id: nextBulletId++, ownerId: player.id,
-      x: player.x + ux * (player.radius + 5),
-      y: player.y + uy * (player.radius + 5),
-      vx: ux * 560, vy: uy * 560, radius: 3, life: 1.15
+      x: mx,
+      y: my,
+      vx: sx * (player.hunter==='hexkeeper'?390:600), vy: sy * (player.hunter==='hexkeeper'?390:600), radius: 3, life: 1.15, slow:player.hunter==='hexkeeper'?1.2:0, color:HUNTERS[player.hunter].color
     });
-    shootTimer = SHOOT_COOLDOWN;
+    shootTimer = rule.cooldown;
     statusLabel.textContent = "FIRING";
   }
 
@@ -749,7 +809,7 @@
     enemy.knockX*=Math.exp(-12*dt);enemy.knockY*=Math.exp(-12*dt);
   }
   function damagePlayer(enemy) {
-    if(player.invulnerability>0||gameOver||won)return;
+    if(player.invulnerability>0||gameOver||won||shieldBlocks(enemy))return;
     player.hp=Math.max(0,player.hp-(enemy.damage ?? ENEMY_TYPES[enemy.type].damage));
     player.invulnerability=COMBAT.invulnerability;damageFlash=0.22;
     burst(player.x,player.y,COLORS.wall,12);
@@ -783,7 +843,9 @@
     return {x:pursuitX,y:pursuitY};
   }
   function updateCombat(dt) {
+    updateClass(dt);
     updateCharge(dt);
+    updateClassEffects(dt);
     if(runState !== "playing")return;
     shootTimer = Math.max(0, shootTimer - dt);
     damageFlash = Math.max(0, damageFlash - dt);
@@ -817,6 +879,7 @@
     for (const enemy of enemies) {
       if (!enemy.alive) continue;
       enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);
+      enemy.slowTime=Math.max(0,(enemy.slowTime||0)-dt);
       enemy.decisionTimer=(enemy.decisionTimer||0)-dt;
       if(enemy.decisionTimer<=0) {
         const spread=enemy.type === "wraith"?75:enemy.type === "ghost"?40:20;
@@ -852,7 +915,7 @@
         }
       }
       const intent = enemyIntent(enemy, dt, desiredX, desiredY);
-      desiredX = intent.x; desiredY = intent.y;
+      desiredX = intent.x*(enemy.slowTime>0?.55:1); desiredY = intent.y*(enemy.slowTime>0?.55:1);
       // Acceleration smoothing makes turns gradual, rather than snapping.
       const blend = 1 - Math.exp(-7 * dt);
       enemy.vx += (desiredX - enemy.vx) * blend;
@@ -890,22 +953,24 @@
         const oldX=bullet.x,oldY=bullet.y;
         bullet.x += stepX;
         bullet.y += stepY;
-        trails.push({x:oldX,y:oldY,endX:bullet.x,endY:bullet.y,life:0.065});
+        if(!bullet.melee)trails.push({x:oldX,y:oldY,endX:bullet.x,endY:bullet.y,life:0.065});
         if (pointHitsWall(bullet.x, bullet.y) || (bullet.charged && walls.some(w=>circleHitsRect(bullet.x,bullet.y,bullet.radius,w)))) {
           burst(bullet.x,bullet.y,COLORS.wall,4);
           bullet.life = 0;
           break;
         }
         for (const enemy of enemies) {
-          if (!enemy.alive) continue;
+          if (!enemy.alive || bullet.hitIds?.includes(enemy.id) || bullet.targetId!==undefined&&bullet.targetId!==enemy.id) continue;
           if (Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y) < bullet.radius + enemy.radius) {
+            onClassDamage(bullet,enemy);
             enemy.hp -= bullet.damage || 1;
+            if(bullet.piercing)bullet.hitIds.push(enemy.id);
             if(enemy.type === "boss")updateBossEncounter(0);
             enemy.hitFlash = 0.12;
             const speed=Math.hypot(bullet.vx,bullet.vy)||1;
-            enemy.knockX=bullet.vx/speed*COMBAT.knockback*ENEMY_TYPES[enemy.type].knockbackScale;enemy.knockY=bullet.vy/speed*COMBAT.knockback*ENEMY_TYPES[enemy.type].knockbackScale;
+            enemy.knockX=(bullet.hitX??bullet.vx/speed)*COMBAT.knockback*ENEMY_TYPES[enemy.type].knockbackScale*(bullet.knockback||1);enemy.knockY=(bullet.hitY??bullet.vy/speed)*COMBAT.knockback*ENEMY_TYPES[enemy.type].knockbackScale*(bullet.knockback||1);
             burst(bullet.x,bullet.y,COLORS.pink);
-            bullet.life = 0;
+            if(!bullet.piercing)bullet.life = 0;
             if (enemy.hp <= 0) {
               enemy.alive = false;
               defeated += 1;
@@ -1115,7 +1180,7 @@
   });
   function chooseHunter(id) {
     if(!HUNTERS[id])return;
-    player.hunter=id;
+    player.hunter=id;refreshClassInfo();
     if(runState === "menu")refreshReadyChoice();
     for(const card of document.querySelectorAll(".hunter-card"))card.setAttribute("aria-pressed",String(card.dataset.hunter===id));
   }
@@ -1146,8 +1211,21 @@
       c.fillStyle=look.accent;polygon(c,[[-3,-3],[3,-3],[2,1],[0,3],[-2,1]]);
       c.strokeStyle=look.color;c.beginPath();c.moveTo(-1,-1);c.lineTo(1,-1);c.stroke();
     }
-    // Barrel/tip marks forward regardless of body silhouette.
-    c.shadowBlur=4;c.fillStyle=look.color;c.fillRect(3,-12,2.5,9);c.fillStyle=look.accent;c.fillRect(3,-13,2.5,2);
+    c.save();if(actor.attackTime>0)c.rotate((actor.attackSide||1)*.35);
+    // Arms end in hands; weapons sit outside the torso, never across the face.
+    c.shadowBlur=3;c.lineWidth=1.7;c.fillStyle='#15151f';c.strokeStyle=look.color;
+    if(actor.hunter==='warden'){
+      polygon(c,[[-19,-8],[-11,-9],[-10,3],[-15,8],[-20,2]]);c.fillStyle=look.accent;c.fillRect(-16,-5,2,9);
+      c.strokeStyle=look.accent;c.beginPath();c.moveTo(7,2);c.lineTo(13,0);c.lineTo(13,-10);c.stroke();c.fillStyle=look.color;c.fillRect(8,-15,11,6);c.strokeRect(8,-15,11,6);c.fillStyle=look.accent;c.fillRect(11,-14,2,4);
+    }else if(actor.hunter==='riftwalker'){
+      c.strokeStyle=look.accent;c.beginPath();c.moveTo(6,2);c.lineTo(12,3);c.lineTo(12,-13);c.stroke();c.strokeStyle=look.color;c.beginPath();c.moveTo(4,-10);c.lineTo(7,-15);c.lineTo(17,-15);c.lineTo(20,-10);c.moveTo(4,-10);c.lineTo(20,-10);c.stroke();c.fillStyle=look.accent;c.fillRect(11,-19,2,11);
+    }else if(actor.hunter==='hexkeeper'){
+      c.fillStyle='#14251f';polygon(c,[[11,-10],[17,-8],[23,-10],[23,4],[17,6],[11,4]]);c.strokeStyle=look.accent;c.beginPath();c.moveTo(17,-7);c.lineTo(17,4);c.moveTo(13,-3);c.lineTo(15,-2);c.moveTo(19,-2);c.lineTo(21,-3);c.stroke();c.fillStyle=look.color;c.beginPath();c.arc(17,-17,2.6,0,Math.PI*2);c.fill();c.fillStyle=look.accent;c.fillRect(7,1,3,3);
+    }else{
+      for(const side of [-1,1]){c.strokeStyle=look.accent;c.beginPath();c.moveTo(side*7,2);c.lineTo(side*12,0);c.stroke();c.fillStyle='#30202b';polygon(c,[[side*12,1],[side*11,-8],[side*15,-17],[side*16,-6]]);c.fillStyle=look.color;c.fillRect(side*12-1,0,3,3);}
+    }
+    c.restore();
+    if(marker&&actor.abilityTime>0){c.strokeStyle=look.color;c.lineWidth=3;c.shadowBlur=12;c.beginPath();if(actor.hunter==='warden')c.arc(0,0,26,-Math.PI+.25,-.25);else c.arc(0,0,19,0,Math.PI*2);c.stroke();}
     c.restore();
     if(marker){
       const local=actor.id===player.id,slotColors=['#ffd166','#61cfff','#73f0b0','#ff91ad'],color=slotColors[(actor.slot||1)-1];
@@ -1170,7 +1248,7 @@
       const id=card.dataset.hunter;card.style.setProperty("--hunter",HUNTERS[id].color);
       card.addEventListener("click",()=>chooseHunter(id));
       const guide=document.getElementById("hunter-"+id),c=guide.getContext("2d");
-      c.save();c.translate(80,104);c.scale(4.4,4.4);
+      c.save();c.translate(80,104);c.scale(2.9,2.9);
       drawHunter(c,{hunter:id,x:0,y:0,aimX:0,aimY:-1,moving:false,invulnerability:0,slot:1},0,false);c.restore();
     }
   }
@@ -1182,10 +1260,11 @@
     }
     // Projectiles are simple neon diamonds.
     for (const bullet of bullets) {
+      if(bullet.melee)continue;
       ctx.save();
       ctx.translate(bullet.x, bullet.y);
       ctx.rotate(Math.atan2(bullet.vy, bullet.vx));
-      ctx.fillStyle = bullet.charged?'#ffd166':COLORS.pink;
+      ctx.fillStyle = bullet.charged?'#ffd166':(bullet.color||COLORS.pink);
       ctx.shadowColor = ctx.fillStyle;
       ctx.shadowBlur = bullet.charged?22:14;
       ctx.fillRect(bullet.charged?-9:-5,bullet.charged?-4:-2,bullet.charged?18:10,bullet.charged?8:4);
@@ -1376,12 +1455,14 @@
     if(runState !== "playing"){sound.observe({active:false});requestAnimationFrame(frame);return;}
     update(dt);
     updateCombat(dt);
+    updateClassHud();
     document.getElementById('charge-label').textContent=player.chargeTime>0?'CHARGE: '+Math.round(Math.min(1,player.chargeTime)*100)+'%':player.chargeCooldown>0?'RECHARGE: '+player.chargeCooldown.toFixed(1)+'s':'CHARGE: READY';
     sound.observe({active:true,player,bullets,enemies,waveIndex,stage,score,won,gameOver});
     drawFloor();
     drawDoors();
     drawWalls();
     drawAtmosphere();
+    drawClassEffects();
     drawBulletsAndEnemies();
     drawPlayer();
     drawEffects();

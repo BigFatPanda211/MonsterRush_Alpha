@@ -10,7 +10,7 @@ Node.js 22 recommended. No runtime dependencies. Run `npm start` and open http:/
 
 Courtyard → Archives → Manor; three waves of 8/12/16, then boss, health-based Ghost summons and final Wraith. Shared score and authoritative enemy state; separate player health and weapons. No friendly fire. Dead hunters spectate until the next run; surviving teammates can finish. Everyone readies up again, then the host chooses/restarts a map. Survivors receive up to 15 HP between waves; dead hunters do not revive mid-run.
 
-Enemy HP scales with party size at run start: 1.5x for two, 2x for three, 2.5x for four, rounded up. Speeds and damage remain at solo Rising Dread tuning. All four hunters remain cosmetic identities with equal gameplay stats.
+Enemy HP scales with party size at run start: 1.5x for two, 2x for three, 2.5x for four, rounded up. Speeds and damage remain at solo Rising Dread tuning. The four hunters now have distinct weapons, charged attacks and Space abilities. Health (100) and movement speed (235) remain equal. See CLASS-GUIDE.md.
 
 Short connection interruptions allow reconnecting for ten seconds. Refreshing the same tab restores its session if still valid. Stale controls stop after 350ms. Lost hosts transfer ownership when leaving or after their grace period. Rooms reject new players during an active run; create a new room for a different team.
 
@@ -29,3 +29,5 @@ One running instance owns in-memory rooms. Restart/redeploy clears them; there i
 Controls: WASD/arrows move, mouse aims, hold left mouse fires, Escape leaves room. R/N direct you to shared room controls rather than resetting only one client. Client interpolation smooths state at the cost of some visible input delay; prediction/lag compensation and revives are not implemented.
 
 Original approved solo Rising Dread remains available at /solo. Solo source is embedded read-only by the server adapter to preserve its authored game behavior. Net adapters change authority, target selection, scaling, team healing and snapshot ownership.
+
+`node classes-test.cjs` verifies class damage, shielding, piercing, slows, healing caps, no revive, wall separation and dash safety. `node test.cjs --simulation-only` runs the full encounter suite without opening network sockets. Keep classes.js next to the HTML files; the Node server serves it and the authoritative engine imports the same class rules.

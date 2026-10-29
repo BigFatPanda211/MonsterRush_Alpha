@@ -7,6 +7,8 @@ function makeEngine(){
  script=script.replace(/  \/\/ Local synthesized audio:[\s\S]*?(?=  \/\/ All world coordinates)/, '  const sound={reset(){}};\n');
  function replace(a,b){if(!script.includes(a))throw Error('Engine source mismatch: '+a.slice(0,70));script=script.replace(a,b);}
  replace('      enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);','      netTarget(enemy);\n      enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);');
+ replace('  function classActors(){return [player];}','  function classActors(){return netActors;}');
+ replace('    updateClass(dt);','    // Per-actor abilities are advanced in netTick.');
  replace('    updateCharge(dt);','    // Charge is advanced once per actor below.');
  replace('    player.invulnerability = Math.max(0, player.invulnerability-dt);','    // Protection is advanced separately for every network actor.');
  replace('if(player.hp<=0){gameOver=true;input.fire=false;input.charge=false;statusLabel.textContent="YOU WERE CAUGHT";}','if(player.hp<=0){input.fire=false;input.charge=false;}\n    netCommit();');
@@ -19,7 +21,7 @@ function makeEngine(){
  replace('hp: config.hp+wave.hpBonus, maxHp: config.hp+wave.hpBonus','hp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty), maxHp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty)');
  const bridge=`
   let netActors=[],netActive=null,netClock=0,netCache=new Map(),netDifficulty=1;
-  function netCommit(){if(netActive)for(const k of ['x','y','aimX','aimY','moving','hp','invulnerability','chargeTime','chargeCooldown','lastReleaseSeq'])netActive[k]=player[k];}
+  function netCommit(){if(netActive)for(const k of ['x','y','aimX','aimY','moving','hp','invulnerability','chargeTime','chargeCooldown','lastReleaseSeq','abilityCooldown','abilityTime','lastAbilitySeq','pactHealing','attackTime','attackSide','attackSerial'])netActive[k]=player[k];}
   function netHeal(){for(const a of netActors)if(a.connected&&a.hp>0)a.hp=Math.min(100,a.hp+15);if(netActive)player.hp=netActive.hp;}
   function netUse(actor){netActive=actor;Object.assign(player,actor);}
   function netTarget(enemy){
@@ -44,6 +46,7 @@ function makeEngine(){
       candidates.sort((a,b)=>a.d-b.d);const p=candidates[0];if(!p)throw Error('No safe team spawn');
       netActors.push({id:m.id,hunter:m.hunter,slot:m.slot,x:p.x,y:p.y,radius:10,speed:235,aimX:1,aimY:0,moving:false,hp:100,invulnerability:0,cooldown:0,chargeTime:0,chargeCooldown:0,lastReleaseSeq:0,connected:true});
     }
+    for(const actor of netActors)resetClassState(actor);
     netUse(netActors[0]);buildPlayerPath(11);
   }
   function netTick(dt,commands){
@@ -51,9 +54,9 @@ function makeEngine(){
     for(const actor of netActors){
       const command=commands.get(actor.id);actor.connected=!!command?.connected;
       actor.invulnerability=Math.max(0,actor.invulnerability-dt);actor.cooldown=Math.max(0,actor.cooldown-dt);
-      if(!actor.connected||actor.hp<=0||gameOver||won){actor.chargeTime=0;continue;}
+      if(!actor.connected||actor.hp<=0||gameOver||won){actor.chargeTime=0;actor.abilityTime=0;continue;}
       netUse(actor);Object.assign(input,command.input);Object.assign(mouse,{x:command.input.aimX,y:command.input.aimY});
-      update(dt);shootTimer=actor.cooldown;updateCharge(dt);if(input.fire)fireBullet();actor.cooldown=shootTimer;netCommit();
+      update(dt);shootTimer=actor.cooldown;updateClass(dt);updateCharge(dt);if(input.fire)fireBullet();actor.cooldown=shootTimer;netCommit();
     }
     input.fire=false;input.charge=false;
     const live=netActors.filter(a=>a.connected&&a.hp>0);
@@ -62,14 +65,14 @@ function makeEngine(){
   }
   globalThis.engine={start:netStart,tick:netTick,snapshot:()=>({levelIndex,waveIndex,waveDelay,stage,score,won,gameOver,summonsUsed,finaleSpawned,difficulty:netDifficulty,
     status:statusLabel.textContent,players:netActors.map(a=>({...a})),enemies:enemies.filter(e=>e.alive).map(e=>({...e})),
-    bullets:bullets.map(b=>({...b})),particles:particles.map(p=>({...p})),trails:trails.map(t=>({...t})),muzzle:muzzle?{...muzzle}:null}),
+    classEffects:classEffects.map(e=>({...e})),bullets:bullets.map(b=>({...b})),particles:particles.map(p=>({...p})),trails:trails.map(t=>({...t})),muzzle:muzzle?{...muzzle}:null}),
     debug:{get actors(){return netActors},get enemies(){return enemies},get bullets(){return bullets},get walls(){return walls},circleHitsRect,clearSight,
     setActor:(id,values)=>Object.assign(netActors.find(a=>a.id===id),values),spawnBoss,updateBossEncounter}};
  `;
  script=script.slice(0,script.indexOf('  // Initial mouse aim points'))+bridge+'\n})();';
  const labels={},context=new Proxy({}, {get:(o,k)=>o[k]??(()=>{}),set:(o,k,v)=>(o[k]=v,true)});
  const canvas={getContext:()=>context,addEventListener:()=>{},focus:()=>{}};
- const sandbox={document:{body:{classList:{add:()=>{},remove:()=>{}}},getElementById:id=>id==='game'?canvas:(labels[id]??={style:{},setAttribute:()=>{},addEventListener:()=>{}}),querySelectorAll:()=>[],addEventListener:()=>{}},window:{addEventListener:()=>{}},requestAnimationFrame:()=>{}};
+ const sandbox={MONSTER_CLASSES:require('./classes.js'),document:{body:{classList:{add:()=>{},remove:()=>{}}},getElementById:id=>id==='game'?canvas:(labels[id]??={style:{},setAttribute:()=>{},addEventListener:()=>{}}),querySelectorAll:()=>[],addEventListener:()=>{}},window:{addEventListener:()=>{}},requestAnimationFrame:()=>{}};
  vm.createContext(sandbox);vm.runInContext(script,sandbox,{timeout:10000});return sandbox.engine;
 }
 module.exports={makeEngine};
