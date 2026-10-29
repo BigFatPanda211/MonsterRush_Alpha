@@ -2,12 +2,12 @@
 const http=require('node:http'),fs=require('node:fs'),crypto=require('node:crypto'),path=require('node:path');
 const {makeEngine}=require('./engine.cjs');
 const HUNTERS=['warden','riftwalker','hexkeeper','revenant'];
-const emptyInput=()=>({up:false,down:false,left:false,right:false,fire:false,aimX:480,aimY:300});
+const emptyInput=()=>({up:false,down:false,left:false,right:false,fire:false,charge:false,releaseSeq:0,aimX:480,aimY:300});
 function createGameServer({maxRooms=12}={}){
  const rooms=new Map();let timer;
  function json(res,code,data){res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));}
  function requireMember(req,room){const token=(req.headers.authorization||'').replace(/^Bearer /,'');return [...room.members.values()].find(m=>m.token===token);}
- function sanitizeInput(value={}){const clean=emptyInput();for(const k of ['up','down','left','right','fire'])clean[k]=value[k]===true;for(const k of ['aimX','aimY'])clean[k]=typeof value[k]==='number'&&Number.isFinite(value[k])?Math.max(-2000,Math.min(3000,value[k])):clean[k];return clean;}
+ function sanitizeInput(value={}){const clean=emptyInput();for(const k of ['up','down','left','right','fire','charge'])clean[k]=value[k]===true;for(const k of ['aimX','aimY'])clean[k]=typeof value[k]==='number'&&Number.isFinite(value[k])?Math.max(-2000,Math.min(3000,value[k])):clean[k];clean.releaseSeq=Number.isSafeInteger(value.releaseSeq)&&value.releaseSeq>=0?value.releaseSeq:0;return clean;}
  function publicState(room){return {code:room.code,hostId:room.hostId,state:room.state,revision:room.revision,
    members:[...room.members.values()].map(({id,hunter,slot,ready,connected})=>({id,hunter,slot,ready,connected})),world:room.state==='playing'?room.engine.snapshot():null};}
  function broadcast(room){const data='data: '+JSON.stringify(publicState(room))+'\n\n';for(const m of room.members.values())if(m.stream&&!m.stream.writableNeedDrain)m.stream.write(data);}

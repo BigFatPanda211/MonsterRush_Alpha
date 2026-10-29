@@ -7,8 +7,9 @@ function makeEngine(){
  script=script.replace(/  \/\/ Local synthesized audio:[\s\S]*?(?=  \/\/ All world coordinates)/, '  const sound={reset(){}};\n');
  function replace(a,b){if(!script.includes(a))throw Error('Engine source mismatch: '+a.slice(0,70));script=script.replace(a,b);}
  replace('      enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);','      netTarget(enemy);\n      enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);');
+ replace('    updateCharge(dt);','    // Charge is advanced once per actor below.');
  replace('    player.invulnerability = Math.max(0, player.invulnerability-dt);','    // Protection is advanced separately for every network actor.');
- replace('if(player.hp<=0){gameOver=true;input.fire=false;statusLabel.textContent="YOU WERE CAUGHT";}','if(player.hp<=0){input.fire=false;}\n    netCommit();');
+ replace('if(player.hp<=0){gameOver=true;input.fire=false;input.charge=false;statusLabel.textContent="YOU WERE CAUGHT";}','if(player.hp<=0){input.fire=false;input.charge=false;}\n    netCommit();');
  replace('const safe=p=>!walls.some','const safe=p=>!netActors.some(a=>a.connected&&a.hp>0&&Math.hypot(a.x-p.x,a.y-p.y)<(finale?40:100)) && !walls.some');
  replace('if(distance>300)distant.push(point);','if(distance>300 && netActors.every(a=>!a.connected||a.hp<=0||Math.hypot(a.x-point.x,a.y-point.y)>180))distant.push(point);');
 
@@ -18,7 +19,7 @@ function makeEngine(){
  replace('hp: config.hp+wave.hpBonus, maxHp: config.hp+wave.hpBonus','hp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty), maxHp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty)');
  const bridge=`
   let netActors=[],netActive=null,netClock=0,netCache=new Map(),netDifficulty=1;
-  function netCommit(){if(netActive)for(const k of ['x','y','aimX','aimY','moving','hp','invulnerability'])netActive[k]=player[k];}
+  function netCommit(){if(netActive)for(const k of ['x','y','aimX','aimY','moving','hp','invulnerability','chargeTime','chargeCooldown','lastReleaseSeq'])netActive[k]=player[k];}
   function netHeal(){for(const a of netActors)if(a.connected&&a.hp>0)a.hp=Math.min(100,a.hp+15);if(netActive)player.hp=netActive.hp;}
   function netUse(actor){netActive=actor;Object.assign(player,actor);}
   function netTarget(enemy){
@@ -41,7 +42,7 @@ function makeEngine(){
         if(d<120 && radiusPaths.get(11)?.[i] && !walls.some(w=>circleHitsRect(p.x,p.y,10,w))&&netActors.every(a=>Math.hypot(a.x-p.x,a.y-p.y)>=28))candidates.push({...p,d});
       }
       candidates.sort((a,b)=>a.d-b.d);const p=candidates[0];if(!p)throw Error('No safe team spawn');
-      netActors.push({id:m.id,hunter:m.hunter,slot:m.slot,x:p.x,y:p.y,radius:10,speed:210,aimX:1,aimY:0,moving:false,hp:100,invulnerability:0,cooldown:0,connected:true});
+      netActors.push({id:m.id,hunter:m.hunter,slot:m.slot,x:p.x,y:p.y,radius:10,speed:235,aimX:1,aimY:0,moving:false,hp:100,invulnerability:0,cooldown:0,chargeTime:0,chargeCooldown:0,lastReleaseSeq:0,connected:true});
     }
     netUse(netActors[0]);buildPlayerPath(11);
   }
@@ -50,11 +51,11 @@ function makeEngine(){
     for(const actor of netActors){
       const command=commands.get(actor.id);actor.connected=!!command?.connected;
       actor.invulnerability=Math.max(0,actor.invulnerability-dt);actor.cooldown=Math.max(0,actor.cooldown-dt);
-      if(!actor.connected||actor.hp<=0||gameOver||won)continue;
+      if(!actor.connected||actor.hp<=0||gameOver||won){actor.chargeTime=0;continue;}
       netUse(actor);Object.assign(input,command.input);Object.assign(mouse,{x:command.input.aimX,y:command.input.aimY});
-      update(dt);shootTimer=actor.cooldown;if(input.fire)fireBullet();actor.cooldown=shootTimer;netCommit();
+      update(dt);shootTimer=actor.cooldown;updateCharge(dt);if(input.fire)fireBullet();actor.cooldown=shootTimer;netCommit();
     }
-    input.fire=false;
+    input.fire=false;input.charge=false;
     const live=netActors.filter(a=>a.connected&&a.hp>0);
     if(live.length&&!won&&!gameOver){netUse(live[0]);updateCombat(dt);netCommit();}
     if(netActors.length&&netActors.every(a=>a.hp<=0||!commands.has(a.id))){gameOver=true;statusLabel.textContent='TEAM DEFEATED';}

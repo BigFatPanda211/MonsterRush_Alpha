@@ -92,6 +92,14 @@
     .play-arena:fullscreen{width:100vw;height:100dvh;padding:14px;background:#08090f;overflow:auto;align-content:start}.play-arena:fullscreen #game{width:min(100%,calc((100dvh - 165px) * 1.6));margin:auto}.play-arena:fullscreen .controls-sidebar,.play-arena:fullscreen .enemy-sidebar{max-height:calc(100dvh - 75px);overflow:auto}
     @media(max-width:1050px){.play-arena{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.play-arena .game-frame{grid-column:1 / -1;grid-row:2}.controls-sidebar{grid-column:1;grid-row:3}.enemy-sidebar{grid-column:2;grid-row:3}.enemy-sidebar .bestiary{grid-template-columns:repeat(3,minmax(0,1fr))}.enemy-sidebar .enemy-card canvas{width:100%}.play-arena:fullscreen .controls-sidebar,.play-arena:fullscreen .enemy-sidebar{max-height:none}}
     @media(max-width:600px){body{padding:8px}.play-arena{grid-template-columns:minmax(0,1fr)}.controls-sidebar,.enemy-sidebar{grid-column:1}.enemy-sidebar{grid-row:4}.game-toolbar{font-size:.65rem}.hud{gap:7px;padding:8px;font-size:.65rem}}
+    .game-stage{position:relative;min-width:0;grid-column:2;min-height:620px;background:radial-gradient(ellipse at 50% 20%,#3b223d,#08090f 70%);border-radius:10px;overflow:hidden}
+    .game-menu{display:none;position:absolute;inset:0;z-index:2;overflow:auto;padding:24px;background:linear-gradient(#0b0b15e8,#211323f5);align-content:start;gap:12px}
+    .menu-heading{text-align:center;color:#e8c58a;font-family:Georgia,serif;font-size:1.6rem;letter-spacing:.16em;margin:8px}
+    body.menu-mode .play-arena{display:grid}body.menu-mode .game-frame{display:block;visibility:hidden}body.menu-mode .game-menu,body.run-ended .game-menu{display:grid}
+    .game-menu .ready-room{display:block!important;border:0;background:transparent;padding:0;margin:0;text-align:center}.game-menu .ready-room .step,.game-menu .ready-room p,.game-menu .ready-room h2{display:none}.game-menu .hunters{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.game-menu .hunter-card{border-radius:8px;padding:8px}.game-menu .hunter-card canvas{height:65px}.game-menu .hunter-note{display:block!important;text-align:center;margin:0;font-size:.7rem}.game-menu .room-panel{border:0;background:transparent;margin:0;padding:0}.game-menu .room-panel h2,.game-menu .room-panel>p:first-of-type{display:none}.game-menu .room-actions{justify-content:center}.game-menu #room-label,.game-menu #room-roster,.game-menu #room-message{text-align:center}.game-menu .level-controls{justify-content:center}.game-menu .room-panel input{width:125px}.game-menu #room-message{margin:4px 0}.game-menu .start-button{margin:0}
+    body:not(.menu-mode) .game-stage{min-height:0}body.run-ended .game-stage{min-height:620px}
+    @media(max-width:1050px){.play-arena .game-stage{grid-column:1 / -1;grid-row:2}.game-stage .game-frame{grid-column:auto;grid-row:auto}}
+    @media(max-width:600px){.game-menu{padding:12px}.game-stage{min-height:720px}.menu-heading{font-size:1.15rem}}
   </style>
 </head>
 <body class="menu-mode">
@@ -100,49 +108,49 @@
       <h1>MONSTER RUSH</h1>
       <div class="step">STEP 08 // SHARED HUNT</div>
     </header>
-    <section class="room-panel" aria-label="Multiplayer room">
-      <h2>Hunt together</h2><p>Choose a hunter, create or join a room, then ready up. Two to four players.</p>
-      <div class="room-actions"><button id="create-room">Create room</button><input id="room-code" maxlength="6" placeholder="Room code" aria-label="Room code"><button id="join-room">Join room</button><button id="leave-room" hidden>Leave room</button></div>
-      <div id="room-label">Not connected</div><div id="room-roster" aria-live="polite"></div>
-      <div class="room-actions"><button id="room-ready" disabled>Ready</button><label>Level <select id="room-level"><option value="0">Moonlit Courtyard</option><option value="1">Shattered Archives</option><option value="2">Blackthorn Manor</option></select></label><button id="room-start" disabled>Host: start hunt</button></div>
-      <p id="room-message" role="status">Run the included server. Friends need the same server address and room code.</p><a href="/solo">Play preserved solo build</a>
-    </section>
-    <section id="ready-room" class="ready-room">
+
+
+
+
+
+<section id="play-arena" class="play-arena" aria-label="Game and field guide"><div class="game-toolbar"><span>BLACKTHORN EXPEDITIONS</span><button id="fullscreen-toggle" aria-pressed="false">Enter fullscreen</button><span id="fullscreen-message" role="status"></span></div><aside class="controls-sidebar" aria-label="Controls and settings"><h2>FIELD CONTROLS</h2><section class="instructions">
+      <div class="tip"><b>MOVEMENT</b><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to move. You cannot walk through walls.</div>
+      <div class="tip"><b>AIM + SHOOT</b> Move the mouse to aim. Hold left mouse to fire. Hold right mouse to charge; release after 0.35-1.2s for a 2-4 damage bolt. Full charge: 1s. Recharge: 1.25s.</div>
+      <div class="tip"><b>COMBAT</b> Ghosts pursue, Wraiths pause then dash, Brutes endure. Survive three rising waves, then defeat the Amalgam boss to win. Magenta Ghosts pursue; purple Wraiths dash; cyan Brutes endure. After the hunt, ready up above so the host can restart or choose another level.</div>
+    </section><div class="atmosphere-controls" aria-label="Sound settings"><button id="sound-mute" aria-pressed="false">Sound: on</button><label>Volume <input id="sound-volume" type="range" min="0" max="100" value="35" aria-label="Sound volume"></label></div><label class="atmosphere-controls"><input id="ambient-motion" type="checkbox" checked> Candle flicker and drifting dust</label><button id="return-menu" class="return-menu">Room menu / Esc</button></aside><div class="game-stage"><div class="game-menu"><div class="menu-heading">THE HUNT AWAITS</div>    <section id="ready-room" class="ready-room">
       <div class="step">BLACKTHORN EXPEDITIONS</div><h2>Pick your hunter. Ready up together.</h2>
       <p>Select a character and a level below. Survive three rising waves, then survive the Amalgam.</p>
       <p>WASD / move / Mouse / aim / Hold left click / fire / R / retry / Esc / room menu</p>
       <button id="start-game" class="start-button">Start expedition</button>
       <span id="ready-choice">THE WARDEN / MOONLIT COURTYARD</span>
-    </section>
-    <div class="level-controls">
+    </section>    <section class="hunters" aria-label="Choose your hunter">
+      <button class="hunter-card" data-hunter="warden" aria-pressed="true"><canvas id="hunter-warden" width="160" height="100"></canvas><b>THE WARDEN</b><span>AMBER / ARMORED SHIELD</span></button>
+      <button class="hunter-card" data-hunter="riftwalker" aria-pressed="false"><canvas id="hunter-riftwalker" width="160" height="100"></canvas><b>THE RIFTWALKER</b><span>BLUE / SPLIT CLOAK</span></button>
+      <button class="hunter-card" data-hunter="hexkeeper" aria-pressed="false"><canvas id="hunter-hexkeeper" width="160" height="100"></canvas><b>THE HEXKEEPER</b><span>EMERALD / RUNIC HOOD</span></button>
+      <button class="hunter-card" data-hunter="revenant" aria-pressed="false"><canvas id="hunter-revenant" width="160" height="100"></canvas><b>THE REVENANT</b><span>CORAL / HAUNTED DUELIST</span></button>
+    </section>    <p class="hunter-note">Choose your hunter / Same abilities / Distinct silhouettes identify your team.</p>    <section class="room-panel" aria-label="Multiplayer room">
+      <h2>Hunt together</h2><p>Choose a hunter, create or join a room, then ready up. Two to four players.</p>
+      <div class="room-actions"><button id="create-room">Create room</button><input id="room-code" maxlength="6" placeholder="Room code" aria-label="Room code"><button id="join-room">Join room</button><button id="leave-room" hidden>Leave room</button></div>
+      <div id="room-label">Not connected</div><div id="room-roster" aria-live="polite"></div>
+      <div class="room-actions"><button id="room-ready" disabled>Ready</button><label>Level <select id="room-level"><option value="0">Moonlit Courtyard</option><option value="1">Shattered Archives</option><option value="2">Blackthorn Manor</option></select></label><button id="room-start" disabled>Host: start hunt</button></div>
+      <p id="room-message" role="status">Create a hunt or enter your friend's room code. Choose a hunter, then Ready.</p><a href="/solo">Play preserved solo build</a>
+    </section>    <div class="level-controls">
       <label for="level-select">LEVEL</label>
       <select id="level-select" aria-label="Choose level (starts a fresh run)">
         <option value="0">01 / Moonlit Courtyard</option><option value="1">02 / Shattered Archives</option><option value="2">03 / Blackthorn Manor</option>
       </select>
       <button id="next-level" disabled>Next level / N</button>
       <span id="level-description">Tight rooms and winding doorways.</span>
-    </div>
-    <section class="hunters" aria-label="Choose your hunter">
-      <button class="hunter-card" data-hunter="warden" aria-pressed="true"><canvas id="hunter-warden" width="160" height="100"></canvas><b>THE WARDEN</b><span>AMBER / ARMORED SHIELD</span></button>
-      <button class="hunter-card" data-hunter="riftwalker" aria-pressed="false"><canvas id="hunter-riftwalker" width="160" height="100"></canvas><b>THE RIFTWALKER</b><span>BLUE / SPLIT CLOAK</span></button>
-      <button class="hunter-card" data-hunter="hexkeeper" aria-pressed="false"><canvas id="hunter-hexkeeper" width="160" height="100"></canvas><b>THE HEXKEEPER</b><span>EMERALD / RUNIC HOOD</span></button>
-      <button class="hunter-card" data-hunter="revenant" aria-pressed="false"><canvas id="hunter-revenant" width="160" height="100"></canvas><b>THE REVENANT</b><span>CORAL / HAUNTED DUELIST</span></button>
-    </section>
-    <p class="hunter-note">Choose your hunter / Same abilities / Distinct silhouettes identify your team.</p>
-<section id="play-arena" class="play-arena" aria-label="Game and field guide"><div class="game-toolbar"><span>BLACKTHORN EXPEDITIONS</span><button id="fullscreen-toggle" aria-pressed="false">Enter fullscreen</button><span id="fullscreen-message" role="status"></span></div><aside class="controls-sidebar" aria-label="Controls and settings"><h2>FIELD CONTROLS</h2><section class="instructions">
-      <div class="tip"><b>MOVEMENT</b><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to move. You cannot walk through walls.</div>
-      <div class="tip"><b>AIM + SHOOT</b> Move the mouse to aim. Hold left mouse to fire (0.18s cooldown).</div>
-      <div class="tip"><b>COMBAT</b> Ghosts pursue, Wraiths pause then dash, Brutes endure. Survive three rising waves, then defeat the Amalgam boss to win. Magenta Ghosts pursue; purple Wraiths dash; cyan Brutes endure. After the hunt, ready up above so the host can restart or choose another level.</div>
-    </section><div class="atmosphere-controls" aria-label="Sound settings"><button id="sound-mute" aria-pressed="false">Sound: on</button><label>Volume <input id="sound-volume" type="range" min="0" max="100" value="35" aria-label="Sound volume"></label></div><label class="atmosphere-controls"><input id="ambient-motion" type="checkbox" checked> Candle flicker and drifting dust</label><button id="return-menu" class="return-menu">Room menu / Esc</button></aside><section class="game-frame" aria-label="Monster Rush game">
+    </div></div><section class="game-frame" aria-label="Monster Rush game">
       <canvas id="game" width="960" height="600" tabindex="0" aria-label="Game canvas. Move with WASD, aim with the mouse, and click to shoot."></canvas>
       <div class="hud">
         <span>LOCATION: <strong id="location">BLACKTHORN MANOR</strong></span>
-        <span>PLAYER: <strong id="player-pos">X 0 / Y 0</strong></span>
+        <span id="charge-label">CHARGE: READY</span><span id="ping-label">PING: measuring...</span><span>PLAYER: <strong id="player-pos">X 0 / Y 0</strong></span>
         <span>HP: <strong id="player-hp">100</strong> <meter id="health-meter" min="0" max="100" low="35" high="70" optimum="100" value="100" aria-label="Health"></meter> <strong id="health-warning" aria-live="polite"></strong></span>
         <span>STAGE: <strong id="stage">WAVE 1</strong></span><span>REMAINING: <strong id="defeated">0 / 5</strong></span>
         <span>SCORE: <strong id="score">0</strong></span><span>STATUS: <strong id="status">EXPLORING</strong></span>
       </div>
-    </section><aside class="enemy-sidebar" aria-label="Enemy types"><h2>KNOW YOUR ENEMY</h2><section class="bestiary" aria-label="Enemy visual guide">
+    </section></div><aside class="enemy-sidebar" aria-label="Enemy types"><h2>KNOW YOUR ENEMY</h2><section class="bestiary" aria-label="Enemy visual guide">
       <div class="enemy-card"><canvas id="guide-ghost" width="160" height="90" aria-label="Ghost: rounded magenta shroud with cyan eyes"></canvas><b>01 / GHOST</b><span>STANDARD PURSUER / RELENTLESS</span></div>
       <div class="enemy-card"><canvas id="guide-wraith" width="160" height="90" aria-label="Wraith: jagged purple spirit with cyan eyes"></canvas><b>02 / WRAITH</b><span>FAST FLANKER / PAUSE / DASH</span></div>
       <div class="enemy-card"><canvas id="guide-brute" width="160" height="90" aria-label="Brute: cyan armored head with magenta horns"></canvas><b>03 / BRUTE</b><span>HEAVY TANK / RESISTS KNOCKBACK</span></div>
@@ -178,6 +186,7 @@
     }
     function cue(name,quiet=1){
       if(!context)return;const now=context.currentTime;if(now-(last.get(name)??-100)<(name==='shot'?.07:.12))return;last.set(name,now);
+      if(name==='charge')tone(400,55,.3,'sawtooth',.17*quiet);
       if(name==='shot')tone(240,65,.085,'triangle',.2*quiet);
       if(name==='hit')tone(750,180,.055,'square',.05);
       if(name==='kill'){tone(320,65,.22,'triangle',.17);tone(980,110,.16,'sine',.08);}
@@ -194,7 +203,7 @@
       if(bed)bed.gain.setTargetAtTime(state.won||state.gameOver?0:.035,context.currentTime,.4);
       const shot=Math.max(0,...state.bullets.map(b=>b.id));
       if(previous){
-        if(shot>previous.shot){const b=state.bullets.find(b=>b.id===shot);cue('shot',b?.ownerId===state.player.id?1:.45);}
+        if(shot>previous.shot){const b=state.bullets.find(b=>b.id===shot);cue(b?.charged?'charge':'shot',b?.ownerId===state.player.id?1:.45);}
         if(state.player.hp<previous.hp)cue('hurt');
         let hit=false,dash=false;for(const e of state.enemies){const old=previous.enemies.get(e.id);if(old&&e.hp<old.hp)hit=true;if(e.behavior==='windup'&&old?.behavior!=='windup')dash=true;}
         if(hit)cue('hit');if(dash)cue('dash');if(state.score>previous.score)cue('kill');
@@ -284,25 +293,25 @@
 
   const player = {
     id: "player-1", hunter: "warden", slot: 1, invulnerability: 0,
-    x: 112, y: 156, radius: 10, speed: 210,
+    x: 112, y: 156, radius: 10, speed: 235,
     aimX: 1, aimY: 0, moving: false
   };
   const leaveDialog=document.getElementById('leave-dialog');
-  function clearControls(){input.up=input.down=input.left=input.right=input.fire=false;}
+  function clearControls(){input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;}
   function openLeaveDialog(){if(leaveDialog.open)return;clearControls();leaveDialog.showModal();document.getElementById('stay-in-hunt').focus();}
   function closeLeaveDialog(){if(leaveDialog.open)leaveDialog.close();clearControls();canvas.focus();}
   leaveDialog.addEventListener('cancel',event=>{event.preventDefault();closeLeaveDialog();});
   document.getElementById('stay-in-hunt').addEventListener('click',closeLeaveDialog);
   document.getElementById('confirm-leave').addEventListener('click',()=>{closeLeaveDialog();network.leave();});
-  const input = { up: false, down: false, left: false, right: false, fire: false };
+  const input = { up: false, down: false, left: false, right: false, fire: false, charge:false, releaseSeq:0 };
   // Fullscreen includes the game, side panels, and confirmation dialogs.
   const arena=document.getElementById('play-arena'),fullscreenButton=document.getElementById('fullscreen-toggle'),fullscreenMessage=document.getElementById('fullscreen-message');
   fullscreenButton.addEventListener('click',async()=>{
-    input.up=input.down=input.left=input.right=input.fire=false;fullscreenMessage.textContent='';
+    input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;fullscreenMessage.textContent='';
     try{if(document.fullscreenElement)await document.exitFullscreen();else if(arena.requestFullscreen)await arena.requestFullscreen();else fullscreenMessage.textContent='Fullscreen is unavailable in this browser.';}
     catch{fullscreenMessage.textContent='Fullscreen could not open. Try opening the game in a browser tab.';}canvas.focus();
   });
-  document.addEventListener('fullscreenchange',()=>{const active=document.fullscreenElement===arena;fullscreenButton.textContent=active?'Exit fullscreen':'Enter fullscreen';fullscreenButton.setAttribute('aria-pressed',String(active));input.up=input.down=input.left=input.right=input.fire=false;canvas.focus();});
+  document.addEventListener('fullscreenchange',()=>{const active=document.fullscreenElement===arena;fullscreenButton.textContent=active?'Exit fullscreen':'Enter fullscreen';fullscreenButton.setAttribute('aria-pressed',String(active));input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;canvas.focus();});
   const mouse = { x: player.x + 100, y: player.y, inside: false };
   let runState="menu";
   // Seeded simulation random source; keep cosmetic effects independent of its sequence.
@@ -312,7 +321,7 @@
   function refreshReadyChoice() {document.getElementById("ready-choice").textContent=HUNTERS[player.hunter].name+" / "+LEVELS[levelIndex].name;}
   function showMenu() {
     if(network.session){openLeaveDialog();return;}
-    runState="menu";input.up=input.down=input.left=input.right=input.fire=false;
+    runState="menu";input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;
     document.body.classList.add("menu-mode");refreshReadyChoice();
   }
   function startGame() {
@@ -336,8 +345,8 @@
   // Combat entities are separate from map geometry, making later networking easier.
   // Shared data definitions keep type tuning separate from rendering and navigation.
   const ENEMY_TYPES = Object.freeze({
-    ghost: Object.freeze({ hp: 3, speed: 65, damage: 12, knockbackScale: 1, score: 100 }),
-    wraith: Object.freeze({ hp: 3, speed: 84, damage: 12, knockbackScale: 1, score: 150 }),
+    ghost: Object.freeze({ hp: 3, speed: 72, damage: 12, knockbackScale: 1, score: 100 }),
+    wraith: Object.freeze({ hp: 3, speed: 116, damage: 12, knockbackScale: 1, score: 150 }),
     brute: Object.freeze({ hp: 8, speed: 46, damage: 20, knockbackScale: 0.3, score: 250 }),
     boss: Object.freeze({ hp: 20, speed: 105, damage: 28, knockbackScale: 0.2, score: 1000 })
   });
@@ -580,7 +589,7 @@
         dashX: 0, dashY: 0
       };
     });
-    defeated=0;bullets=[];input.fire=false;pathRefresh=0;stage="wave";
+    defeated=0;bullets=[];input.fire=false;input.charge=false;pathRefresh=0;stage="wave";
     statusLabel.textContent="WAVE "+(waveIndex+1)+" / "+WAVES.length;updateHud();
   }
   function resetCombat(seed) {
@@ -589,8 +598,8 @@
     player.x = LEVELS[levelIndex].start.x; player.y = LEVELS[levelIndex].start.y;
     input.up=input.down=input.left=input.right=false;
     mouse.x=player.x+100;mouse.y=player.y;
-    player.hp = MAX_HP;
-    player.invulnerability = 0; input.fire = false;
+    player.hp = MAX_HP;player.chargeTime=0;player.chargeCooldown=0;player.lastReleaseSeq=input.releaseSeq||0;
+    player.invulnerability = 0; input.fire = false; input.charge=false;
     particles = []; trails = []; muzzle = null; score = 0; nextBulletId = 1;
     stage="wave";bossDelay=0;summonsUsed=0;summonTimer=1.2;nextEnemyId=1;finaleTimer=0;finaleOrigin=null;finaleSpawned=false;radiusPaths.clear();navigationMasks.clear();
     waveIndex=0;waveDelay=0;spawnWave();
@@ -638,7 +647,7 @@
   });
   window.addEventListener("keyup", (event) => setKey(event.key, false));
   window.addEventListener("blur", () => {
-    input.up = input.down = input.left = input.right = input.fire = false;
+    input.up = input.down = input.left = input.right = input.fire = false; input.charge=false;
   });
 
   function pointerPosition(event) {
@@ -656,21 +665,39 @@
   canvas.addEventListener("pointerdown", (event) => {
     const p = pointerPosition(event);
     mouse.x = p.x; mouse.y = p.y;
-    if (runState === "playing" && event.button === 0) { input.fire = true; canvas.setPointerCapture(event.pointerId); fireBullet(); }
+    if(runState === "playing" && event.button === 2){event.preventDefault();input.charge=true;canvas.setPointerCapture(event.pointerId);}
+    if (runState === "playing" && event.button === 0) { input.fire = true; canvas.setPointerCapture(event.pointerId); if(!network.session)fireBullet(); }
   });
 
+  canvas.addEventListener("contextmenu",e=>e.preventDefault());
+  window.addEventListener("pointerup",e=>{if(e.button===2&&input.charge){input.charge=false;input.releaseSeq++;}});
   window.addEventListener("pointerup", e => { if (e.button === 0) input.fire = false; });
-  canvas.addEventListener("pointercancel", () => { input.fire = false; });
-  canvas.addEventListener("lostpointercapture", () => { input.fire = false; });
+  canvas.addEventListener("pointercancel", () => { input.fire = false; input.charge=false; });
+  canvas.addEventListener("lostpointercapture", () => { input.fire = false; input.charge=false; });
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) input.up = input.down = input.left = input.right = input.fire = false;
+    if (document.hidden) input.up = input.down = input.left = input.right = input.fire = false; input.charge=false;
   });
   function resetPlayer() {
     resetCombat();
   }
 
+  function updateCharge(dt){
+    player.chargeCooldown=Math.max(0,(player.chargeCooldown||0)-dt);
+    if(player.hp<=0||gameOver||won||stage==='boss-intro'||stage==='wave-break'){player.chargeTime=0;player.lastReleaseSeq=input.releaseSeq||0;return;}
+    if(input.charge&&player.chargeCooldown<=0)player.chargeTime=Math.min(1.2,(player.chargeTime||0)+dt);
+    if((input.releaseSeq||0)>(player.lastReleaseSeq||0)){
+      player.lastReleaseSeq=input.releaseSeq;
+      if(player.chargeTime>=.35&&player.chargeCooldown<=0){
+        const dx=mouse.x-player.x,dy=mouse.y-player.y,l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l;
+        const x=player.x+ux*17,y=player.y+uy*17;
+        if(clearSight(player.x,player.y,x,y,6)){bullets.push({id:nextBulletId++,ownerId:player.id,x,y,vx:ux*650,vy:uy*650,radius:6,life:1.4,damage:player.chargeTime>=1?4:2,charged:true});muzzle={x,y,ux,uy,life:.12};player.chargeCooldown=1.25;shootTimer=Math.max(shootTimer,.25);}
+      }player.chargeTime=0;
+    }
+    if(!input.charge)player.chargeTime=0;
+  }
   function fireBullet() {
     if (runState !== "playing" || gameOver || won || (stage === "boss-intro" || stage === "wave-break") || shootTimer > 0) return;
+    if(input.charge)return;
     const dx = mouse.x - player.x;
     const dy = mouse.y - player.y;
     const len = Math.hypot(dx, dy) || 1;
@@ -721,7 +748,7 @@
     player.hp=Math.max(0,player.hp-(enemy.damage ?? ENEMY_TYPES[enemy.type].damage));
     player.invulnerability=COMBAT.invulnerability;damageFlash=0.22;
     burst(player.x,player.y,COLORS.wall,12);
-    if(player.hp<=0){gameOver=true;input.fire=false;statusLabel.textContent="YOU WERE CAUGHT";}
+    if(player.hp<=0){gameOver=true;input.fire=false;input.charge=false;statusLabel.textContent="YOU WERE CAUGHT";}
     updateHud();
   }
   function pointHitsWall(x, y) {
@@ -751,6 +778,7 @@
     return {x:pursuitX,y:pursuitY};
   }
   function updateCombat(dt) {
+    updateCharge(dt);
     if(runState !== "playing")return;
     shootTimer = Math.max(0, shootTimer - dt);
     damageFlash = Math.max(0, damageFlash - dt);
@@ -802,7 +830,7 @@
         const dx = waypoint.x - enemy.x, dy = waypoint.y - enemy.y;
         const distance = Math.hypot(dx, dy);
         if (distance > 2) {
-          const speedFactor = Math.min(1, Math.max(0.28, distance / 38));
+          const speedFactor = Math.min(1, Math.max(enemy.type === "wraith" ? .72 : .42, distance / 24));
           desiredX = dx / distance * enemy.speed * speedFactor;
           desiredY = dy / distance * enemy.speed * speedFactor;
         }
@@ -858,7 +886,7 @@
         bullet.x += stepX;
         bullet.y += stepY;
         trails.push({x:oldX,y:oldY,endX:bullet.x,endY:bullet.y,life:0.065});
-        if (pointHitsWall(bullet.x, bullet.y)) {
+        if (pointHitsWall(bullet.x, bullet.y) || (bullet.charged && walls.some(w=>circleHitsRect(bullet.x,bullet.y,bullet.radius,w)))) {
           burst(bullet.x,bullet.y,COLORS.wall,4);
           bullet.life = 0;
           break;
@@ -866,7 +894,7 @@
         for (const enemy of enemies) {
           if (!enemy.alive) continue;
           if (Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y) < bullet.radius + enemy.radius) {
-            enemy.hp -= 1;
+            enemy.hp -= bullet.damage || 1;
             if(enemy.type === "boss")updateBossEncounter(0);
             enemy.hitFlash = 0.12;
             const speed=Math.hypot(bullet.vx,bullet.vy)||1;
@@ -882,7 +910,7 @@
                 stage="ghost-cleanup";finaleOrigin={x:enemy.x,y:enemy.y};
                 statusLabel.textContent="CLEAR REMAINING GHOSTS";updateHud();
               } else if (stage === "wave" && defeated === WAVES[waveIndex].roster.length) {
-                bullets.forEach(b=>b.life=0);input.fire=false;
+                bullets.forEach(b=>b.life=0);input.fire=false;input.charge=false;
                 if(waveIndex<WAVES.length-1){
                   stage="wave-break";waveDelay=4;player.hp=Math.min(MAX_HP,player.hp+15);
                   statusLabel.textContent="WAVE CLEARED / +15 HP";
@@ -1117,13 +1145,20 @@
     // Barrel/tip marks forward regardless of body silhouette.
     c.shadowBlur=4;c.fillStyle=look.color;c.fillRect(3,-12,2.5,9);c.fillStyle=look.accent;c.fillRect(3,-13,2.5,2);
     c.restore();
-    if(marker){c.shadowBlur=0;c.globalAlpha=1;c.fillStyle=look.accent;c.font="bold 8px monospace";c.textAlign="center";c.fillText("P"+actor.slot,0,-19);}
+    if(marker){
+      const local=actor.id===player.id,slotColors=['#ffd166','#61cfff','#73f0b0','#ff91ad'],color=slotColors[(actor.slot||1)-1];
+      c.shadowBlur=0;c.globalAlpha=1;c.fillStyle='#08090f';c.fillRect(-25,Math.max(-39,4-actor.y),50,16);c.strokeStyle=color;c.lineWidth=2;c.strokeRect(-25,Math.max(-39,4-actor.y),50,16);
+      c.fillStyle=color;c.font='bold 10px monospace';c.textAlign='center';c.fillText('P'+(actor.slot||1)+(local?' YOU':''),0,Math.max(-27,16-actor.y));
+      c.fillStyle='#08090f';c.fillRect(-21,19,42,8);c.fillStyle=(actor.hp||0)<=35?'#ff625b':color;c.fillRect(-20,20,40*Math.max(0,actor.hp??100)/100,6);c.strokeStyle='#fff8';c.lineWidth=.8;c.strokeRect(-21,19,42,8);
+      if(actor.hp<=0){c.fillStyle='#fff';c.fillText('DOWN',0,40);}
+      if(actor.chargeTime>0){c.strokeStyle=color;c.lineWidth=3;c.beginPath();c.arc(0,0,20,-Math.PI/2,-Math.PI/2+Math.PI*2*actor.chargeTime/1.2);c.stroke();}
+    }
     c.restore();
   }
   function drawPlayer() {
     const look=HUNTERS[player.hunter];
     glowLine(player.x,player.y,player.x+player.aimX*35,player.y+player.aimY*35,look.color,5,1);
-    drawHunter(ctx,player,lastTime/1000);
+    drawHunter(ctx,network.session&&canOccupy(player.x+network.offsetX,player.y+network.offsetY)?{...player,x:player.x+network.offsetX,y:player.y+network.offsetY}:player,lastTime/1000);
     if(player.invulnerability>0){ctx.save();ctx.strokeStyle=look.color;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(player.x,player.y,18,0,Math.PI*2);ctx.stroke();ctx.restore();}
   }
   function initHunterPicker() {
@@ -1146,10 +1181,10 @@
       ctx.save();
       ctx.translate(bullet.x, bullet.y);
       ctx.rotate(Math.atan2(bullet.vy, bullet.vx));
-      ctx.fillStyle = COLORS.pink;
-      ctx.shadowColor = COLORS.pink;
-      ctx.shadowBlur = 14;
-      ctx.fillRect(-5, -2, 10, 4);
+      ctx.fillStyle = bullet.charged?'#ffd166':COLORS.pink;
+      ctx.shadowColor = ctx.fillStyle;
+      ctx.shadowBlur = bullet.charged?22:14;
+      ctx.fillRect(bullet.charged?-9:-5,bullet.charged?-4:-2,bullet.charged?18:10,bullet.charged?8:4);
       ctx.restore();
     }
 
@@ -1322,6 +1357,7 @@
     lastTime = timestamp;
     if(runState !== "playing"){sound.observe({active:false});requestAnimationFrame(frame);return;}
     if(network.session)network.animate(dt);else{update(dt);updateCombat(dt);}
+    document.getElementById('charge-label').textContent=player.chargeTime>0?'CHARGE: '+Math.round(Math.min(1,player.chargeTime)*100)+'%':player.chargeCooldown>0?'RECHARGE: '+player.chargeCooldown.toFixed(1)+'s':'CHARGE: READY';
     sound.observe({active:true,player,bullets,enemies,waveIndex,stage,score,won,gameOver});
     drawFloor();
     drawDoors();
@@ -1337,7 +1373,16 @@
   }
 
 
-  const network={session:null,stream:null,world:null,roster:[],revision:-1,seq:0,pending:false,hostId:null,readyState:false,peerPositions:new Map(),
+  const network={rtt:100,history:[],lastSnapshot:0,offsetX:0,offsetY:0,
+    reconcile(local,first){
+      const oldX=player.x,oldY=player.y;Object.assign(player,local);
+      if(first||local.hp<=0){this.history=[];this.offsetX=this.offsetY=0;return;}
+      const saved={...input},now=Date.now(),windowMs=Math.min(300,this.rtt);
+      for(const step of this.history){if(now-step.at>windowMs)continue;Object.assign(input,step.input);update(step.dt);}
+      Object.assign(input,saved);this.offsetX=Math.max(-24,Math.min(24,oldX-player.x));this.offsetY=Math.max(-24,Math.min(24,oldY-player.y));
+    },
+    async ping(){if(!this.session)return;const started=Date.now();try{const response=await fetch('/health',{cache:'no-store'});if(!response.ok)throw Error();this.rtt=this.rtt*.4+(Date.now()-started)*.6;document.getElementById('ping-label').textContent='PING: '+Math.round(this.rtt)+' ms RTT';document.getElementById('ping-label').style.color=this.rtt>220?'#ff987c':this.rtt>120?'#ffd166':'#73f0b0';}catch{document.getElementById('ping-label').textContent='PING: offline';}},
+    session:null,stream:null,world:null,roster:[],revision:-1,seq:0,pending:false,hostId:null,readyState:false,peerPositions:new Map(),
     notice(message){document.getElementById('room-message').textContent=message;},
     async request(path,data={},auth=true){
       const headers={'Content-Type':'application/json'};if(auth&&this.session)headers.Authorization='Bearer '+this.session.token;
@@ -1350,12 +1395,12 @@
         this.session=await this.request(create?'/api/rooms':'/api/rooms/'+code+'/join',{hunter:player.hunter},false);this.revision=-1;this.seq=0;sessionStorage.setItem('monster-rush-room',JSON.stringify(this.session));
         this.stream=new EventSource('/api/rooms/'+this.session.code+'/events?token='+encodeURIComponent(this.session.token));
         this.stream.onmessage=event=>{try{this.receive(JSON.parse(event.data));}catch(e){this.notice('Could not read room update. Leave and rejoin.');}};
-        this.stream.onerror=()=>{input.up=input.down=input.left=input.right=input.fire=false;this.notice('Connection interrupted. Reconnecting; controls stopped.');};
-        this.notice('Share room '+this.session.code+'. Choose your hunter and press Ready.');
+        this.stream.onerror=()=>{input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;this.notice('Connection interrupted. Reconnecting; controls stopped.');};
+        this.ping();this.notice('Share room '+this.session.code+'. Choose your hunter and press Ready.');
       }catch(e){this.notice(e.message);}finally{if(!this.session)button.disabled=false;}
     },
     receive(state){
-      if(!this.session)return;this.hostId=state.hostId;this.roster=state.members;
+      if(!this.session)return;this.lastSnapshot=Date.now();this.hostId=state.hostId;this.roster=state.members;
       const me=state.members.find(m=>m.id===this.session.id);if(!me){this.leave(false);this.notice('Session expired. Join again.');return;}
       this.readyState=me.ready;const active=state.state==='playing'&&!state.world?.won&&!state.world?.gameOver;
       document.getElementById('room-label').textContent='ROOM '+state.code+' / YOU: P'+me.slot+(state.hostId===me.id?' / HOST':'');
@@ -1366,18 +1411,21 @@
       document.getElementById('create-room').disabled=true;document.getElementById('join-room').disabled=true;document.getElementById('leave-room').hidden=false;
       if(state.state==='error'){this.notice('Room simulation stopped. Leave and create another room.');return;}
       if(!state.world)return;const world=state.world,local=world.players.find(p=>p.id===this.session.id);if(!local)return;
-      if(this.revision!==state.revision){this.revision=state.revision;sound.reset();enemies=[];this.world=null;this.peerPositions.clear();this.selectedHunter=null;damageFlash=0;input.fire=false;this.notice('Hunt started. Clear the encounter together.');canvas.focus();}
+      if(this.revision!==state.revision){this.revision=state.revision;this.history=[];this.offsetX=this.offsetY=0;sound.reset();enemies=[];this.world=null;this.peerPositions.clear();this.selectedHunter=null;damageFlash=0;input.fire=false;input.charge=false;this.notice('Hunt started. Clear the encounter together.');canvas.focus();}
       const first=!this.world,oldHp=player.hp;this.world=world;
       levelIndex=world.levelIndex;const level=LEVELS[levelIndex];rooms=level.rooms;walls=level.walls;enemyStarts=level.spawns;document.getElementById('location').textContent=level.name;
-      if(first)Object.assign(player,local);else{const x=player.x,y=player.y;Object.assign(player,local,{x,y});}if(world.won||world.gameOver)player.hunter=this.selectedHunter||me.hunter;if(local.hp<oldHp)damageFlash=.22;
+      this.reconcile(local,first);if(world.won||world.gameOver)player.hunter=this.selectedHunter||me.hunter;if(local.hp<oldHp)damageFlash=.22;
       const old=new Map(enemies.map(e=>[e.id,e]));enemies=world.enemies.map(e=>({...e,x:first?e.x:old.get(e.id)?.x??e.x,y:first?e.y:old.get(e.id)?.y??e.y}));
       bullets=world.bullets.map(b=>({...b}));particles=world.particles.map(p=>({...p}));trails=world.trails.map(t=>({...t}));muzzle=world.muzzle?{...world.muzzle}:null;
       waveIndex=world.waveIndex;waveDelay=world.waveDelay;stage=world.stage;score=world.score;won=world.won;gameOver=world.gameOver;summonsUsed=world.summonsUsed;finaleSpawned=world.finaleSpawned;
       runState='playing';document.body.classList.remove('menu-mode');document.body.classList.toggle('run-ended',won||gameOver);statusLabel.textContent=local.hp<=0&&!gameOver?'DOWN / SPECTATING':world.status;updateHud();
     },
     animate(dt){
-      if(!this.world)return;const blend=1-Math.exp(-24*dt),local=this.world.players.find(p=>p.id===this.session.id);
-      if(local){player.x+=(local.x-player.x)*blend;player.y+=(local.y-player.y)*blend;}
+      if(!this.world)return;const blend=1-Math.exp(-18*dt),local=this.world.players.find(p=>p.id===this.session.id);
+      if(Date.now()-this.lastSnapshot>1500){input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;document.getElementById('ping-label').textContent='CONNECTION STALLED';}
+      if(local&&player.hp>0&&local.connected&&!leaveDialog.open){update(dt);if(input.charge)player.chargeTime=Math.min(1.2,(player.chargeTime||0)+dt);else player.chargeTime=0;}
+      this.history.push({at:Date.now(),dt,input:{...input}});this.history=this.history.filter(step=>Date.now()-step.at<500);
+      this.offsetX*=Math.exp(-18*dt);this.offsetY*=Math.exp(-18*dt);
       const targets=new Map(this.world.enemies.map(e=>[e.id,e]));for(const e of enemies){const target=targets.get(e.id);if(target){e.x+=(target.x-e.x)*blend;e.y+=(target.y-e.y)*blend;}}
       for(const actor of this.world.players){const prev=this.peerPositions.get(actor.id)||actor;this.peerPositions.set(actor.id,{...actor,x:prev.x+(actor.x-prev.x)*blend,y:prev.y+(actor.y-prev.y)*blend});}
       damageFlash=Math.max(0,damageFlash-dt);updateEffects(dt);posLabel.textContent='X '+Math.round(player.x)+' / Y '+Math.round(player.y);
@@ -1389,13 +1437,14 @@
     async ready(value){if(!this.session)return;try{await this.request('/api/rooms/'+this.session.code+'/ready',{ready:value,hunter:this.selectedHunter||player.hunter});this.notice(value?'Ready. Waiting for host.':'Select hunter, then Ready.');}catch(e){this.notice(e.message);}},
     async start(){if(!this.session)return;try{await this.request('/api/rooms/'+this.session.code+'/start',{level:Number(document.getElementById('room-level').value)});}catch(e){this.notice(e.message);}},
     async leave(send=true){if(leaveDialog.open)leaveDialog.close();const session=this.session;if(!session)return;this.stream?.close();this.stream=null;if(send)try{await this.request('/api/rooms/'+session.code+'/leave');}catch{}
-      sessionStorage.removeItem('monster-rush-room');this.session=null;this.world=null;this.readyState=false;input.up=input.down=input.left=input.right=input.fire=false;runState='menu';document.body.classList.add('menu-mode');
+      sessionStorage.removeItem('monster-rush-room');this.session=null;this.world=null;this.readyState=false;input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;runState='menu';document.body.classList.add('menu-mode');
       for(const id of ['create-room','join-room'])document.getElementById(id).disabled=false;for(const id of ['room-ready','room-start'])document.getElementById(id).disabled=true;
       document.getElementById('leave-room').hidden=true;document.getElementById('room-label').textContent='Not connected';document.getElementById('room-roster').textContent='';this.notice('Left room. Create or join another hunt.');
     }
   };
   document.getElementById('create-room').addEventListener('click',()=>network.connect(true));document.getElementById('join-room').addEventListener('click',()=>network.connect(false));
   document.getElementById('leave-room').addEventListener('click',openLeaveDialog);document.getElementById('room-ready').addEventListener('click',()=>network.ready(!network.readyState));document.getElementById('room-start').addEventListener('click',()=>network.start());
+  setInterval(()=>network.ping(),3000);
   async function restoreRoom(){
     let saved;try{saved=JSON.parse(sessionStorage.getItem('monster-rush-room'));}catch{}if(!saved?.token||!saved?.code)return;
     network.session=saved;
@@ -1403,15 +1452,15 @@
       const resumed=await network.request('/api/rooms/'+saved.code+'/resume');network.seq=resumed.seq;
       network.stream=new EventSource('/api/rooms/'+saved.code+'/events?token='+encodeURIComponent(saved.token));
       network.stream.onmessage=e=>{try{network.receive(JSON.parse(e.data));}catch{network.notice('Could not read room update.');}};
-      network.stream.onerror=()=>{input.up=input.down=input.left=input.right=input.fire=false;network.notice('Reconnecting to your room...');};
+      network.stream.onerror=()=>{input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;network.notice('Reconnecting to your room...');};
       network.notice('Rejoined room '+saved.code);
     }catch(e){await network.leave(false);network.notice('Previous room expired. Create or join another.');}
   }
   setInterval(async()=>{
-    if(!network.session||network.pending||!network.world||won||gameOver)return;network.pending=true;
-    try{await network.request('/api/rooms/'+network.session.code+'/input',{seq:++network.seq,input:{up:input.up,down:input.down,left:input.left,right:input.right,fire:input.fire,aimX:mouse.x,aimY:mouse.y}});}
-    catch(e){network.notice(e.message);}finally{network.pending=false;}
-  },50);
+    if(!network.session||network.pending>=4||!network.world||won||gameOver)return;network.pending=(network.pending||0)+1;
+    try{await network.request('/api/rooms/'+network.session.code+'/input',{seq:++network.seq,input:{up:input.up,down:input.down,left:input.left,right:input.right,fire:input.fire,charge:input.charge,releaseSeq:input.releaseSeq,aimX:mouse.x,aimY:mouse.y}});}
+    catch(e){network.notice(e.message);}finally{network.pending=Math.max(0,network.pending-1);}
+  },33);
 
   // Initial mouse aim points right until the pointer enters the game canvas.
   selectLevel(0);
