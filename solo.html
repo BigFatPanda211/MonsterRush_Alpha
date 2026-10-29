@@ -101,6 +101,7 @@
     @media(max-width:700px){.game-menu .hunters{grid-template-columns:repeat(2,minmax(0,1fr));max-width:400px}.game-menu .hunter-card b{font-size:.72rem}.game-menu .hunter-card{padding:10px 8px 14px}}
     .hunting-grounds{width:min(100%,620px);margin:4px auto 0;border:1px solid #7b6040;border-radius:10px;background:#0c0b14;overflow:hidden}.hunting-grounds summary{display:flex;gap:14px;align-items:center;padding:15px 18px;cursor:pointer;list-style:none;color:#efdbb4}.hunting-grounds summary::-webkit-details-marker{display:none}.hunting-grounds summary:focus-visible{outline:2px solid #ffd166;outline-offset:-3px}.hunting-grounds small{display:block;font-size:.6rem;letter-spacing:.14em;color:#bba484;margin-bottom:6px}.hunting-grounds strong{font-family:Georgia,serif;font-size:1.15rem;letter-spacing:.04em}.hamburger-icon{display:grid;gap:4px;flex-shrink:0}.hamburger-icon i{display:block;width:21px;height:2px;background:#e8c58a}.ground-chevron{margin-left:auto;font-size:1.4rem}.hunting-grounds[open] .ground-chevron{transform:rotate(45deg)}.ground-options{border-top:1px solid #4b392b;padding:12px;display:grid;gap:8px}.ground-options p{margin:2px 5px 8px;color:#b5a7b9;font-size:.7rem;line-height:1.6}.ground-options button{text-align:left;padding:13px;display:grid;gap:6px;background:#17131e;border-color:#43374c;color:#c7bdcd;line-height:1.5}.ground-options button b{font-family:Georgia,serif;font-size:1.1rem;color:#efdbb4}.ground-options button>span:last-child{font-size:.7rem}.ground-chapter{font-size:.58rem;letter-spacing:.12em;color:#bfa173}.ground-options button[aria-pressed=true]{border-color:#e8c58a;background:#27202b}.ground-options button:disabled{cursor:default}
     .game-menu{grid-auto-rows:max-content}.hunting-grounds{height:max-content;min-height:max-content;align-self:start}
+    .mode-switch{display:flex;border:1px solid #665038;border-radius:7px;overflow:hidden;margin-left:auto}.game-toolbar .mode-switch button{margin:0;border:0;border-radius:0;padding:9px 14px;color:#c8b6c9;background:#100d17}.game-toolbar .mode-switch button[aria-pressed=true]{background:#3b2c24;color:#ffe1a3;box-shadow:inset 0 -2px #e8c58a}.game-toolbar #fullscreen-toggle{margin-left:0}body:not(.menu-mode) #game{cursor:none}@media(max-width:600px){.mode-switch{margin-left:0}.game-toolbar .mode-switch button{padding:8px 10px}}
   </style>
 </head>
 <body class="menu-mode">
@@ -113,7 +114,7 @@
 
 
 
-<section id="play-arena" class="play-arena" aria-label="Game and field guide"><div class="game-toolbar"><span>BLACKTHORN EXPEDITIONS</span><button id="fullscreen-toggle" aria-pressed="false">Enter fullscreen</button><span id="fullscreen-message" role="status"></span></div><aside class="controls-sidebar" aria-label="Controls and settings"><h2>FIELD CONTROLS</h2><section class="instructions">
+<section id="play-arena" class="play-arena" aria-label="Game and field guide"><div class="game-toolbar"><span>BLACKTHORN EXPEDITIONS</span><nav class="mode-switch" aria-label="Play mode"><button id="mode-solo" aria-pressed="true">Solo</button><button id="mode-multiplayer" aria-pressed="false">Multiplayer</button></nav><button id="fullscreen-toggle" aria-pressed="false">Enter fullscreen</button><span id="fullscreen-message" role="status"></span></div><aside class="controls-sidebar" aria-label="Controls and settings"><h2>FIELD CONTROLS</h2><section class="instructions">
       <div class="tip"><b>MOVEMENT</b><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to move. You cannot walk through walls.</div>
       <div class="tip"><b>AIM + SHOOT</b> Move the mouse to aim. Hold left mouse to fire. Hold right mouse to charge; release after 0.35-1.2s for a 2-4 damage bolt. Full charge: 1s. Recharge: 1.25s.</div>
       <div class="tip"><b>COMBAT</b> Ghosts pursue, Wraiths pause then dash, Brutes endure. Survive three rising waves, then defeat the Amalgam boss to win. Magenta Ghosts pursue; purple Wraiths dash; cyan Brutes endure. Press <kbd>R</kbd> to retry. After the boss, <kbd>N</kbd> advances to the next layout.</div>
@@ -285,6 +286,7 @@
     {x:750,y:440,w:90,h:10}, {x:830,y:450,w:10,h:48}
   ];
 
+  let pendingMode=null;
   const player = {
     id: "player-1", hunter: "warden", slot: 1, invulnerability: 0,
     x: 112, y: 156, radius: 10, speed: 235,
@@ -304,10 +306,11 @@
   const soloMenuDialog=document.getElementById('solo-menu-dialog');
   function clearSoloControls(){input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;}
   function openSoloMenu(){if(runState!=='playing'||soloMenuDialog.open)return;clearSoloControls();runState='paused';soloMenuDialog.showModal();document.getElementById('solo-resume').focus();}
-  function resumeSoloHunt(){if(!soloMenuDialog.open)return;soloMenuDialog.close();clearSoloControls();runState='playing';canvas.focus();}
+  function resumeSoloHunt(){if(!soloMenuDialog.open)return;pendingMode=null;document.getElementById('solo-menu-title').textContent='Hunt paused';document.getElementById('solo-confirm-menu').textContent='Return to selection';soloMenuDialog.close();clearSoloControls();runState='playing';canvas.focus();}
   soloMenuDialog.addEventListener('cancel',event=>{event.preventDefault();resumeSoloHunt();});
   document.getElementById('solo-resume').addEventListener('click',resumeSoloHunt);
-  document.getElementById('solo-confirm-menu').addEventListener('click',()=>{soloMenuDialog.close();showMenu();});
+  document.getElementById('solo-confirm-menu').addEventListener('click',()=>{const destination=pendingMode;pendingMode=null;soloMenuDialog.close();showMenu();if(destination)window.location.assign(destination);});
+  document.getElementById('mode-multiplayer').addEventListener('click',()=>{if(runState==='playing'){openSoloMenu();pendingMode='/';document.getElementById('solo-menu-title').textContent='Switch to multiplayer?';document.getElementById('solo-confirm-menu').textContent='End run and switch';}else window.location.assign('/');});
   // Seeded simulation random source; keep cosmetic effects independent of its sequence.
   let randomState=1;
   function random() {randomState|=0;randomState=(randomState+0x6D2B79F5)|0;let t=Math.imul(randomState^(randomState>>>15),1|randomState);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296;}
@@ -1344,6 +1347,20 @@
     }
   }
 
+  // Hunter-coloured rune sight; canvas coordinates stay correct in fullscreen.
+  function drawReticle(){
+    if(!mouse.inside||gameOver||won||player.hp<=0)return;
+    const color=HUNTERS[player.hunter].color,r=10+(input.fire?2:0),x=mouse.x,y=mouse.y;
+    ctx.save();ctx.translate(x,y);ctx.shadowColor=color;ctx.shadowBlur=8;
+    // Dark backing preserves contrast over candles, floors and enemy glows.
+    for(const [stroke,width] of [['#05070e',4],[color,1.3]]){ctx.strokeStyle=stroke;ctx.lineWidth=width;
+      for(let i=0;i<4;i++){const a=i*Math.PI/2;ctx.beginPath();ctx.arc(0,0,r,a+.22,a+1.05);ctx.stroke();ctx.beginPath();ctx.moveTo(Math.cos(a)*(r+3),Math.sin(a)*(r+3));ctx.lineTo(Math.cos(a)*(r+7),Math.sin(a)*(r+7));ctx.stroke();}
+      ctx.beginPath();ctx.moveTo(0,-3);ctx.lineTo(3,0);ctx.lineTo(0,3);ctx.lineTo(-3,0);ctx.closePath();ctx.stroke();
+    }
+    if(player.chargeTime>0){ctx.strokeStyle='#ffe1a3';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(0,0,r+10,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,player.chargeTime));ctx.stroke();}
+    ctx.fillStyle='#f4edcf';ctx.shadowBlur=0;ctx.fillRect(-.7,-.7,1.4,1.4);ctx.restore();
+  }
+
   function drawVignette() {
     const gradient = ctx.createRadialGradient(480, 300, 120, 480, 300, 520);
     gradient.addColorStop(0, "rgba(0,0,0,0)");
@@ -1370,6 +1387,7 @@
     drawEffects();
     drawDamageOverlay();
     drawVignette();
+    drawReticle();
     requestAnimationFrame(frame);
   }
 
