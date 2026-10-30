@@ -1801,7 +1801,7 @@
     network.session=saved;
     try{
       const resumed=await network.request('/api/rooms/'+saved.code+'/resume');network.seq=resumed.seq;
-      network.stream=new EventSource('/api/rooms/'+saved.code+'/events?token='+encodeURIComponent(saved.token));
+      network.stream=new EventSource(API_BASE+'/api/rooms/'+saved.code+'/events?token='+encodeURIComponent(saved.token));
       network.stream.onmessage=e=>{try{network.receive(JSON.parse(e.data));}catch{network.notice('Could not read room update.');}};
       network.stream.onerror=()=>{input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;network.notice('Reconnecting to your room...');};
       network.notice('Rejoined room '+saved.code);
