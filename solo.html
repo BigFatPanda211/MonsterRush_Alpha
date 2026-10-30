@@ -178,7 +178,7 @@
       </div>
     </section></div><aside class="enemy-sidebar" aria-label="Enemy types"><h2>KNOW YOUR ENEMY</h2><section class="bestiary" aria-label="Enemy visual guide">
       <div class="enemy-card"><canvas id="guide-ghost" width="160" height="90" aria-label="Ghost: rounded magenta shroud with cyan eyes"></canvas><b>01 / GHOST</b><span>STANDARD PURSUER / RELENTLESS</span></div>
-      <div class="enemy-card"><canvas id="guide-wraith" width="160" height="90" aria-label="Wraith: jagged purple spirit with cyan eyes"></canvas><b>02 / WRAITH</b><span>FAST FLANKER / PAUSE / DASH</span></div>
+      <div class="enemy-card"><canvas id="guide-wraith" width="160" height="90" aria-label="Wraith: hooded shadow with pale eyes"></canvas><b>02 / WRAITH</b><span>FAST FLANKER / PAUSE / DASH</span></div>
       <div class="enemy-card"><canvas id="guide-brute" width="160" height="90" aria-label="Brute: cyan armored head with magenta horns"></canvas><b>03 / BRUTE</b><span>HEAVY TANK / RESISTS KNOCKBACK</span></div>
     </section></aside><dialog id="solo-menu-dialog" aria-labelledby="solo-menu-title" aria-describedby="solo-menu-description"><h2 id="solo-menu-title">Hunt paused</h2><p id="solo-menu-description">Resume your hunt, or return to character and level selection. Returning to selection ends this run.</p><button id="solo-resume" autofocus>Resume hunt</button> <button id="solo-confirm-menu">Return to selection</button></dialog></section>
   </main>
@@ -1390,10 +1390,17 @@
     if(kind==='ghost'||kind==='wraith'){
       c.translate(0,Math.sin(lastTime/650+(e.phase||0))*.6);
       if(kind==='wraith'){
-        if(e.behavior==='dash'||e.behavior==='windup'){c.rotate(Math.atan2(e.dashY||e.vy||0,e.dashX||e.vx||1)+Math.PI/2);if(e.behavior==='dash')c.scale(.88,1.12);}
-        brushBody(c,kind,['#6d3298','#c183ef','#302143'],flash);
-        c.strokeStyle='rgba(222,169,255,.8)';c.lineWidth=.8;c.beginPath();c.moveTo(-2,-10);c.quadraticCurveTo(6,-4,4,6);c.moveTo(-6,5);c.lineTo(-8,10);c.stroke();
-        hollowEyes(c,-4);c.fillStyle='#c8a2ed';for(const x of [-3,3]){c.beginPath();c.ellipse(x,-4,.4,1.4,0,0,Math.PI*2);c.fill();}
+
+        // A shadowed hood and wind-swept folds, inspired by the Wraith sketch.
+        const flicker=Math.sin(lastTime/480+(e.phase||0));
+        c.fillStyle=flash?'#dcd2e6':'#18131e';c.strokeStyle=flash?'#f8edff':'#74517f';c.lineWidth=1;
+        c.beginPath();c.moveTo(-12,10);c.bezierCurveTo(-11,3,-12,-7,-3,-13);c.bezierCurveTo(4,-16,11,-7,11,-1);c.quadraticCurveTo(12,6,15,11+flicker);c.quadraticCurveTo(6,8,1,11);c.quadraticCurveTo(-6,13,-12,10);c.closePath();c.fill();c.stroke();
+        const cloak=c.createLinearGradient(-6,-11,9,11);cloak.addColorStop(0,flash?'#f6eaff':'#695472');cloak.addColorStop(.35,flash?'#d3c5da':'#302b39');cloak.addColorStop(.7,'#1d1b25');cloak.addColorStop(1,'#866a90');
+        c.fillStyle=cloak;c.beginPath();c.moveTo(-4,-12);c.bezierCurveTo(-10,-7,-9,2,-6,8);c.quadraticCurveTo(-3,12,0,8);c.bezierCurveTo(3,11,8,10,13,11+flicker);c.bezierCurveTo(5,7,1,1,1,-6);c.quadraticCurveTo(-1,-10,-4,-12);c.closePath();c.fill();
+        c.fillStyle=flash?'#42374b':'#0b0c12';c.beginPath();c.moveTo(-4,-10);c.quadraticCurveTo(-10,-5,-7,0);c.quadraticCurveTo(-5,5,-2,5);c.quadraticCurveTo(2,2,2,-4);c.quadraticCurveTo(1,-8,-4,-10);c.fill();
+        c.strokeStyle=flash?'#eee1fa':'rgba(193,149,211,.6)';c.lineWidth=.65;for(const [x,y] of [[-3,-11],[-1,-10],[2,-8]]){c.beginPath();c.moveTo(x,y);c.bezierCurveTo(x+2,-1,x+3,6,11,9+flicker);c.stroke();}
+        c.fillStyle=flash?'#fff':'#e0c9ef';c.shadowColor='#bd8fea';c.shadowBlur=3;for(const x of [-5,0]){c.beginPath();c.ellipse(x,-4,1.25,1.65,0,0,Math.PI*2);c.fill();}c.shadowBlur=0;
+        c.strokeStyle='rgba(213,190,226,.7)';c.lineWidth=.65;for(const x of [-5,0]){c.beginPath();c.moveTo(x,-2);c.quadraticCurveTo(x-1,1,x+.5,3);c.stroke();}
       }else{brushBody(c,kind,['#777977','#aba9a0','#45484c'],flash);hollowEyes(c,-3);}
      }else if(kind==='brute'){
       const walk=locomotionPose(e,lastTime/1000,true),step=walk.step;
@@ -1612,12 +1619,11 @@
         c.setLineDash([4,4]);c.beginPath();c.moveTo(14,0);c.lineTo(62,0);c.stroke();c.setLineDash([]);
         c.beginPath();c.moveTo(55,-5);c.lineTo(62,0);c.lineTo(55,5);c.stroke();
         c.beginPath();c.arc(0,0,16,-Math.PI/2,-Math.PI/2+Math.PI*2*progress);c.stroke();
-        c.save();c.scale(1.4,1.4);c.fillStyle="rgba(195,92,255,0.06)";
-        c.setLineDash([2,3]);polygon(c,WRAITH_OUTLINE);c.restore();
       } else if(enemy.behavior === "dash") {
+        // Ghosted copies trail along the dash direction but stay upright.
         for(let i=3;i>0;i--) {
-          c.globalAlpha=0.1+(3-i)*0.08;c.fillStyle=visual.fill;c.strokeStyle=visual.color;c.lineWidth=1;
-          c.save();c.translate(-i*10,0);polygon(c,WRAITH_OUTLINE);c.restore();
+          c.save();c.translate(-i*8,0);c.rotate(-angle);
+          c.globalAlpha=0.07+(3-i)*0.05;paintedEnemy(c,enemy,false);c.restore();
         }
       }
       c.restore();
@@ -1755,3 +1761,4 @@
 </script>
 </body>
 </html>
+
