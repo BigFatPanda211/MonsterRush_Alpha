@@ -21,8 +21,8 @@ function makeEngine(){
  replace('hp: config.hp+wave.hpBonus, maxHp: config.hp+wave.hpBonus','hp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty), maxHp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty)');
  const bridge=`
   let netActors=[],netActive=null,netClock=0,netCache=new Map(),netDifficulty=1;
-  function netCommit(){if(netActive)for(const k of ['x','y','aimX','aimY','moving','hp','invulnerability','chargeTime','chargeCooldown','lastReleaseSeq','abilityCooldown','abilityTime','lastAbilitySeq','pactHealing','attackTime','attackSide','attackSerial','attackDuration','attackKind','attackAngle','reviveTime','reviveTarget','reviveHp'])netActive[k]=player[k];}
-  function netHeal(){for(const a of netActors)if(a.connected&&a.hp>0)a.hp=Math.min(100,a.hp+15);if(netActive)player.hp=netActive.hp;}
+  function netCommit(){if(netActive)for(const k of ['x','y','aimX','aimY','moving','hp','maxHp','speed','invulnerability','chargeTime','chargeCooldown','lastReleaseSeq','abilityCooldown','abilityTime','lastAbilitySeq','pactHealing','attackTime','attackSide','attackSerial','attackDuration','attackKind','attackAngle','reviveTime','reviveTarget','reviveHp'])netActive[k]=player[k];}
+  function netHeal(){for(const a of netActors)if(a.connected&&a.hp>0)a.hp=Math.min(a.maxHp||100,a.hp+15);if(netActive)player.hp=netActive.hp;}
   function netUse(actor){netActive=actor;Object.assign(player,actor);}
   function netTarget(enemy){
     const live=netActors.filter(a=>a.connected&&a.hp>0);if(!live.length)return;
@@ -44,7 +44,7 @@ function makeEngine(){
         if(d<120 && radiusPaths.get(11)?.[i] && !walls.some(w=>circleHitsRect(p.x,p.y,10,w))&&netActors.every(a=>Math.hypot(a.x-p.x,a.y-p.y)>=28))candidates.push({...p,d});
       }
       candidates.sort((a,b)=>a.d-b.d);const p=candidates[0];if(!p)throw Error('No safe team spawn');
-      netActors.push({id:m.id,hunter:m.hunter,slot:m.slot,x:p.x,y:p.y,radius:10,speed:235,aimX:1,aimY:0,moving:false,hp:100,invulnerability:0,cooldown:0,chargeTime:0,chargeCooldown:0,lastReleaseSeq:0,connected:true});
+      const stats=MONSTER_CLASSES[m.hunter]||{hp:100,speed:235};netActors.push({id:m.id,hunter:m.hunter,slot:m.slot,x:p.x,y:p.y,radius:10,speed:stats.speed,maxHp:stats.hp,aimX:1,aimY:0,moving:false,hp:stats.hp,invulnerability:0,cooldown:0,chargeTime:0,chargeCooldown:0,lastReleaseSeq:0,connected:true});
     }
     for(const actor of netActors)resetClassState(actor);
     netUse(netActors[0]);buildPlayerPath(11);
