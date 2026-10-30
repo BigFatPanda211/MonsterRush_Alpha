@@ -24,6 +24,7 @@ function createGameServer({maxRooms=12}={}){
    if(req.method==='GET'&&['/shell.js','/config.js'].includes(url.pathname)){res.writeHead(200,{'Content-Type':'application/javascript; charset=utf-8','Cache-Control':'no-store'});return res.end(fs.readFileSync(path.join(__dirname,url.pathname.slice(1))));}
    if(req.method==='GET'&&['/','/solo'].includes(url.pathname)){res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'});return res.end(fs.readFileSync(path.join(__dirname,'index.html')));}
    if(req.method==='GET'&&url.pathname==='/classes.js'){res.writeHead(200,{'Content-Type':'application/javascript; charset=utf-8','Cache-Control':'no-store'});return res.end(fs.readFileSync(path.join(__dirname,'classes.js')));}
+   if(req.method==='GET'&&['/assets/bosses/gargoyle.png','/assets/bosses/sovereign.png','/assets/bosses/overlord.png','/assets/bosses/behemoth.png'].includes(url.pathname)){res.writeHead(200,{'Content-Type':'image/png','Cache-Control':'public, max-age=3600','X-Content-Type-Options':'nosniff'});return res.end(fs.readFileSync(path.join(__dirname,url.pathname.slice(1))));}
    if(req.method==='GET'&&url.pathname==='/health')return json(res,200,{ok:true});
    if(req.method==='GET'&&(url.pathname==='/client.html'||url.pathname==='/solo.html')){
     res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});return res.end(fs.readFileSync(path.join(__dirname,url.pathname==='/solo.html'?'solo.html':'client.html')));

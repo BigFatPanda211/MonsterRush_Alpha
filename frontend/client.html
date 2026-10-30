@@ -130,6 +130,7 @@
     @media(max-width:460px){.game-menu .stage-carousel{grid-template-columns:30px minmax(0,1fr) 30px;padding:7px;gap:4px}.stage-card{font-size:1rem}}
 
 </style>
+<style>.boss-preview{max-width:850px;margin:16px auto;color:#d2b995}.boss-preview summary{cursor:pointer;text-align:center;padding:9px;border:1px solid #79634d;border-radius:5px}.boss-preview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.boss-preview figure{margin:8px 0;background:#12111a;border:1px solid #473a42;text-align:center}.boss-preview canvas{width:100%;height:auto;aspect-ratio:4/3}.boss-preview figcaption{font:11px monospace;line-height:1.5;padding:5px;color:#d5c1a6}</style>
 </head>
 <body class="menu-mode">
   <main class="shell">
@@ -181,7 +182,7 @@
       </select>
       <button id="next-level" disabled>Next level / N</button>
       <span id="level-description">Tight rooms and winding doorways.</span>
-    </div><section id="hunting-grounds" class="hunting-grounds stage-carousel" aria-roledescription="carousel" aria-label="Choose your stage"><span id="hunting-ground-name" hidden>Moonlit Courtyard</span><span id="stage-position" hidden aria-live="polite" aria-atomic="true">01 / 04</span><button type="button" id="stage-prev" class="stage-arrow" aria-label="Previous stage">&#8592;</button><div class="carousel-viewport" id="stage-carousel-viewport" tabindex="0" aria-label="Choose stage using scroll or Left and Right arrow keys"><article class="stage-slide" data-stage-slide="0" role="group" aria-roledescription="slide" aria-label="1 of 4: Moonlit Courtyard"><button type="button" id="ground-0" class="stage-card" aria-label="Choose Lvl 1 : Moonlit Courtyard" aria-pressed="true">Lvl 1 : Moonlit Courtyard</button></article><article class="stage-slide" data-stage-slide="1" role="group" aria-roledescription="slide" aria-label="2 of 4: Shattered Archives"><button type="button" id="ground-1" class="stage-card" aria-label="Choose Lvl 2 : Shattered Archives" aria-pressed="false">Lvl 2 : Shattered Archives</button></article><article class="stage-slide" data-stage-slide="2" role="group" aria-roledescription="slide" aria-label="3 of 4: Blackthorn Manor"><button type="button" id="ground-2" class="stage-card" aria-label="Choose Lvl 3 : Blackthorn Manor" aria-pressed="false">Lvl 3 : Blackthorn Manor</button></article><article class="stage-slide" data-stage-slide="3" role="group" aria-roledescription="slide" aria-label="4 of 4: Haunted Graveyard"><button type="button" id="ground-3" class="stage-card" aria-label="Choose Lvl 4 : Haunted Graveyard" aria-pressed="false">Lvl 4 : Haunted Graveyard</button></article></div><button type="button" id="stage-next" class="stage-arrow" aria-label="Next stage">&#8594;</button><p id="ground-permission" hidden></p><nav hidden aria-label="Jump to a stage"><button type="button" id="stage-dot-0" aria-label="Show Moonlit Courtyard" aria-current="true">1</button><button type="button" id="stage-dot-1" aria-label="Show Shattered Archives" aria-current="false">2</button><button type="button" id="stage-dot-2" aria-label="Show Blackthorn Manor" aria-current="false">3</button><button type="button" id="stage-dot-3" aria-label="Show Haunted Graveyard" aria-current="false">4</button></nav></section></div><section class="game-frame" aria-label="Monster Rush game">
+    </div><details class="boss-preview"><summary>Preview the four boss designs</summary><div class="boss-preview-grid"><figure><canvas id="boss-art-0" width="200" height="150"></canvas><figcaption>MOONLIT COURTYARD<br>GARGOYLE SENTINEL</figcaption></figure><figure><canvas id="boss-art-1" width="200" height="150"></canvas><figcaption>SHATTERED ARCHIVES<br>ELDRITCH SOVEREIGN</figcaption></figure><figure><canvas id="boss-art-2" width="200" height="150"></canvas><figcaption>BLACKTHORN MANOR<br>ARCH-FIEND OVERLORD</figcaption></figure><figure><canvas id="boss-art-3" width="200" height="150"></canvas><figcaption>HAUNTED GRAVEYARD<br>HELLFIRE BEHEMOTH</figcaption></figure></div></details><section id="hunting-grounds" class="hunting-grounds stage-carousel" aria-roledescription="carousel" aria-label="Choose your stage"><span id="hunting-ground-name" hidden>Moonlit Courtyard</span><span id="stage-position" hidden aria-live="polite" aria-atomic="true">01 / 04</span><button type="button" id="stage-prev" class="stage-arrow" aria-label="Previous stage">&#8592;</button><div class="carousel-viewport" id="stage-carousel-viewport" tabindex="0" aria-label="Choose stage using scroll or Left and Right arrow keys"><article class="stage-slide" data-stage-slide="0" role="group" aria-roledescription="slide" aria-label="1 of 4: Moonlit Courtyard"><button type="button" id="ground-0" class="stage-card" aria-label="Choose Lvl 1 : Moonlit Courtyard" aria-pressed="true">Lvl 1 : Moonlit Courtyard</button></article><article class="stage-slide" data-stage-slide="1" role="group" aria-roledescription="slide" aria-label="2 of 4: Shattered Archives"><button type="button" id="ground-1" class="stage-card" aria-label="Choose Lvl 2 : Shattered Archives" aria-pressed="false">Lvl 2 : Shattered Archives</button></article><article class="stage-slide" data-stage-slide="2" role="group" aria-roledescription="slide" aria-label="3 of 4: Blackthorn Manor"><button type="button" id="ground-2" class="stage-card" aria-label="Choose Lvl 3 : Blackthorn Manor" aria-pressed="false">Lvl 3 : Blackthorn Manor</button></article><article class="stage-slide" data-stage-slide="3" role="group" aria-roledescription="slide" aria-label="4 of 4: Haunted Graveyard"><button type="button" id="ground-3" class="stage-card" aria-label="Choose Lvl 4 : Haunted Graveyard" aria-pressed="false">Lvl 4 : Haunted Graveyard</button></article></div><button type="button" id="stage-next" class="stage-arrow" aria-label="Next stage">&#8594;</button><p id="ground-permission" hidden></p><nav hidden aria-label="Jump to a stage"><button type="button" id="stage-dot-0" aria-label="Show Moonlit Courtyard" aria-current="true">1</button><button type="button" id="stage-dot-1" aria-label="Show Shattered Archives" aria-current="false">2</button><button type="button" id="stage-dot-2" aria-label="Show Blackthorn Manor" aria-current="false">3</button><button type="button" id="stage-dot-3" aria-label="Show Haunted Graveyard" aria-current="false">4</button></nav></section></div><section class="game-frame" aria-label="Monster Rush game">
       <canvas id="game" width="960" height="600" tabindex="0" aria-label="Game canvas. Move with WASD, aim with the mouse, and click to shoot."></canvas>
       <div class="hud">
         <span>LOCATION: <strong id="location">BLACKTHORN MANOR</strong></span>
@@ -572,6 +573,119 @@
     return clearSight(enemy.x,enemy.y,chosen.x,chosen.y,enemy.radius)?chosen:null;
   }
 
+  // Shared boss simulation: telegraphs and hazards are sent to all clients.
+  const BOSS_STATS=[{hp:120,speed:200},{hp:180,speed:220},{hp:250,speed:190},{hp:350,speed:170}];
+  let bossEffects=[];
+  let bossHeals=[];
+  function bossHurt(a,damage,source){
+    if(a.hp<=0||a.connected===false||a.invulnerability>0||gameOver||won)return;
+    a.hp=Math.max(0,a.hp-damage);a.invulnerability=.8;
+    if(a.id===player.id){player.hp=a.hp;player.invulnerability=a.invulnerability;damageFlash=.22;updateHud();}
+    burst(a.x,a.y,'#ff9b78',6);
+    if(a.hp<=0&&!classActors().some(p=>p.hp>0&&p.connected!==false)){gameOver=true;statusLabel.textContent='YOU WERE CAUGHT';}
+  }
+  function bossEffect(type,data){bossEffects.push({type,...data});}
+  function bossRay(x,y,angle,range=900){let px=x,py=y;for(let i=0;i<range;i+=4){const nx=px+Math.cos(angle)*4,ny=py+Math.sin(angle)*4;if(nx<28||nx>932||ny<28||ny>572||pointHitsWall(nx,ny))break;px=nx;py=ny;}return {x:px,y:py};}
+  function bossLineDistance(a,x1,y1,x2,y2){const dx=x2-x1,dy=y2-y1,l=dx*dx+dy*dy,t=l?Math.max(0,Math.min(1,((a.x-x1)*dx+(a.y-y1)*dy)/l)):0;return Math.hypot(a.x-(x1+dx*t),a.y-(y1+dy*t));}
+  function startBossAttack(b){
+    const pattern=[['rain','dive'],['shards','laser','well'],['cleave','lunge','spikes'],['ring','beam']][levelIndex];
+    b.move=pattern[(b.moveIndex||0)%pattern.length];b.moveIndex=(b.moveIndex||0)+1;b.behavior='boss-windup';b.behaviorTimer=b.move==='beam'?1.5:b.move==='laser'?1.25:1.0;
+    const dx=player.x-b.x,dy=player.y-b.y,l=Math.hypot(dx,dy)||1;b.dashX=dx/l;b.dashY=dy/l;b.targetX=player.x;b.targetY=player.y;b.facingX=b.dashX;b.facingY=b.dashY;
+    if(b.move==='rain'){
+      const pillars=[[130,82],[830,82],[130,518],[830,518]].map(([x,y])=>({x,y})).filter(p=>!walls.some(w=>circleHitsRect(p.x,p.y,14,w)));
+      if(pillars.length){const p=pillars.reduce((a,z)=>Math.hypot(z.x-player.x,z.y-player.y)>Math.hypot(a.x-player.x,a.y-player.y)?z:a);b.perchX=p.x;b.perchY=p.y;}b.perched=true;
+      for(let i=0;i<4;i++){const a=i*Math.PI/2;bossEffect('impact',{x:player.x+Math.cos(a)*35,y:player.y+Math.sin(a)*35,r:27,delay:1+i*.25,life:1+i*.25+.35,damage:14,color:"#ff6258"});}
+    }
+    if(b.move==='well')bossEffect('well',{x:player.x,y:player.y,r:115,delay:1,life:5});
+    if(b.move==='ring')bossEffect('ring',{x:b.x,y:b.y,delay:1,life:3,r:0,damage:20});
+    if(b.move==='spikes'){for(let i=1;i<=7;i++)bossEffect('impact',{x:b.x+b.dashX*i*36,y:b.y+b.dashY*i*36,r:19,delay:.75+i*.15,life:1.1+i*.15,damage:18,color:'#af72d1'});}
+    if(b.move==='cleave')bossEffect('cleave',{x:b.x,y:b.y,angle:Math.atan2(b.dashY,b.dashX),r:130,delay:1,life:1.25,damage:22});
+    if(b.move==='laser'||b.move==='beam'){const angle=Math.atan2(b.dashY,b.dashX);bossEffect('beam',{owner:b.id,x:b.x,y:b.y,angle,delay:b.behaviorTimer,life:b.behaviorTimer+(b.move==='beam'?2.4:.45),wide:b.move==='beam',damage:b.move==='beam'?22:16,split:b.move==='laser',splitDone:false});}
+  }
+  function bossIntent(b,dt,px,py){
+    if(levelIndex===1)b.orbitAngle=(b.orbitAngle||0)+dt*1.8;
+    b.behaviorTimer=Math.max(0,(b.behaviorTimer||0)-dt);b.abilityCooldown=Math.max(0,(b.abilityCooldown||0)-dt);
+    if(b.behavior==='boss-windup'&&b.behaviorTimer<=0){
+      if(b.move==='dive'||b.move==='lunge'){b.behavior='boss-charge';b.behaviorTimer=b.move==='dive'?.8:2.4;}
+      else if(b.move==='shards'){for(let i=0;i<4;i++){const a=i*Math.PI/2;bossEffect('shard',{x:b.x+Math.cos(a)*28,y:b.y+Math.sin(a)*28,vx:Math.cos(a)*120,vy:Math.sin(a)*120,life:3,damage:12});}b.behavior='boss-recovery';b.behaviorTimer=.7;}
+      else{b.behavior='boss-recovery';b.behaviorTimer=b.move==='rain'?2.1:b.move==='beam'?2.4:.8;}
+    }else if(b.behavior==='boss-charge'&&b.behaviorTimer<=0){b.behavior='boss-recovery';b.behaviorTimer=b.move==='dive'?3:1;b.perched=false;}
+    else if(b.behavior==='boss-recovery'&&b.behaviorTimer<=0){b.behavior='pursuit';b.abilityCooldown=1.3;b.perched=false;}
+    if((b.behavior==='pursuit'||!b.behavior)&&b.abilityCooldown<=0)startBossAttack(b);
+    if(b.behavior==='boss-windup'&&b.move==='rain'&&Number.isFinite(b.perchX)){const dx=b.perchX-b.x,dy=b.perchY-b.y,d=Math.hypot(dx,dy);if(d>5)return{x:dx/d*240,y:dy/d*240};}
+    if(b.behavior==='boss-charge')return{x:b.dashX*(b.move==='dive'?360:265),y:b.dashY*(b.move==='dive'?360:265)};
+    if(b.behavior!=='pursuit')return{x:0,y:0};
+    const l=Math.hypot(px,py);if(l>1){b.facingX=px/l;b.facingY=py/l;}return{x:px,y:py};
+  }
+  function updateBossEffects(dt){
+    if(stage!=='boss'){bossEffects=[];return;}
+    const boss=enemies.find(e=>e.alive&&e.type==='boss');if(!boss){bossEffects=[];return;}
+    if(levelIndex===3&&!boss.cataclysm&&boss.hp<=boss.maxHp*.5){boss.cataclysm=true;const cells=[];for(let y=40;y<560;y+=52)for(let x=40;x<920;x+=52)if(!walls.some(w=>circleHitsRect(x,y,20,w))&&Math.hypot(x-player.x,y-player.y)>85)cells.push({x,y});for(const p of shuffle(cells).slice(0,Math.floor(cells.length*.3)))bossEffect('magma',{x:p.x,y:p.y,r:24,delay:2,life:9999,damage:10});}
+    for(const e of bossEffects){e.life-=dt;e.delay=Math.max(0,(e.delay||0)-dt);if(e.type==='shard'){const dx=player.x-e.x,dy=player.y-e.y,l=Math.hypot(dx,dy)||1;e.vx+=dx/l*100*dt;e.vy+=dy/l*100*dt;const v=Math.hypot(e.vx,e.vy)||1;e.vx=e.vx/v*150;e.vy=e.vy/v*150;e.x+=e.vx*dt;e.y+=e.vy*dt;if(pointHitsWall(e.x,e.y))e.life=0;}
+      if(e.type==='beam'){if(!e.static){e.x=boss.x;e.y=boss.y;}if(e.wide&&e.delay===0){let target=Math.atan2(player.y-e.y,player.x-e.x),delta=Math.atan2(Math.sin(target-e.angle),Math.cos(target-e.angle));e.angle+=Math.max(-.45*dt,Math.min(.45*dt,delta));}const end=bossRay(e.x,e.y,e.angle);e.endX=end.x;e.endY=end.y;if(e.split&&e.delay===0&&!e.splitDone){e.splitDone=true;for(const d of [-1,0,1]){const a=e.angle+Math.PI+d*.55;bossEffect('beam',{x:end.x,y:end.y,angle:a,delay:.35,life:1.0,damage:12,static:true});}}}
+      if(e.delay>0)continue;e.activeAge=(e.activeAge||0)+dt;
+      for(const a of classActors()){if(a.hp<=0||a.connected===false)continue;const d=Math.hypot(a.x-e.x,a.y-e.y);
+        if(e.type==='well'&&d<e.r&&d>1){const pull=Math.min(55*dt,d);if(canOccupy(a.x+(e.x-a.x)/d*pull,a.y))a.x+=(e.x-a.x)/d*pull;if(canOccupy(a.x,a.y+(e.y-a.y)/d*pull))a.y+=(e.y-a.y)/d*pull;if(a.id===player.id){player.x=a.x;player.y=a.y;}}
+        if(e.type==='impact'&&d<e.r+a.radius)bossHurt(a,e.damage,e);
+        if(e.type==='magma'&&Math.abs(a.x-e.x)<e.r&&Math.abs(a.y-e.y)<e.r)bossHurt(a,e.damage,e);
+        if(e.type==='ring'){const radius=e.activeAge*105;if(Math.abs(d-radius)<12+a.radius)bossHurt(a,e.damage,e);}
+        if(e.type==='cleave'&&d<e.r+a.radius&&Math.cos(Math.atan2(a.y-e.y,a.x-e.x)-e.angle)>0)bossHurt(a,e.damage,e);
+        if(e.type==='shard'&&d<10+a.radius){bossHurt(a,e.damage,e);e.life=0;}
+        if(e.type==='beam'&&bossLineDistance(a,e.x,e.y,e.endX??e.x,e.endY??e.y)<(e.wide?15:5)+a.radius)bossHurt(a,e.damage,e);
+      }
+    }
+    bossEffects=bossEffects.filter(e=>e.life>0);
+  }
+  function drawBossEffects(){for(const e of bossEffects){ctx.save();const active=e.delay<=0;ctx.globalAlpha=active?.75:.45;ctx.lineWidth=active?2:1.5;ctx.strokeStyle=e.color||((e.type==='magma'||e.type==='ring'||e.wide)?'#ff713a':'#d99be9');ctx.fillStyle=ctx.strokeStyle;ctx.shadowColor=ctx.strokeStyle;ctx.shadowBlur=active?9:3;
+    if(e.type==='impact'||e.type==='well'){ctx.beginPath();ctx.arc(e.x,e.y,e.r,0,Math.PI*2);if(active&&e.type==='impact'){ctx.globalAlpha=.3;ctx.fill();}else ctx.stroke();}
+    else if(e.type==='magma'){ctx.globalAlpha=active?.46:.16;ctx.fillRect(e.x-e.r,e.y-e.r,e.r*2,e.r*2);ctx.globalAlpha=.7;ctx.strokeRect(e.x-e.r,e.y-e.r,e.r*2,e.r*2);}
+    else if(e.type==='ring'){ctx.beginPath();ctx.arc(e.x,e.y,active?Math.max(0,e.activeAge*105):28,0,Math.PI*2);ctx.lineWidth=active?8:2;ctx.stroke();}
+    else if(e.type==='cleave'){ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.arc(e.x,e.y,e.r,e.angle-Math.PI/2,e.angle+Math.PI/2);ctx.closePath();if(active){ctx.globalAlpha=.3;ctx.fill();}else ctx.stroke();}
+    else if(e.type==='shard'){ctx.beginPath();ctx.moveTo(e.x,e.y-8);ctx.lineTo(e.x+5,e.y);ctx.lineTo(e.x,e.y+8);ctx.lineTo(e.x-5,e.y);ctx.closePath();ctx.fill();}
+    else if(e.type==='beam'){ctx.lineWidth=active?(e.wide?24:5):2;ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.endX??e.x,e.endY??e.y);ctx.stroke();}ctx.restore();}}
+
+  // One reserved pickup for each hunter in this boss encounter.
+  function spawnBossHeals(actors,boss){
+    bossHeals=[];
+    for(const actor of actors){
+      if(actor.connected===false)continue;
+      const offsets=[[46,0],[-46,0],[0,46],[0,-46],[36,36],[-36,36],[36,-36],[-36,-36]];
+      const position=offsets.map(([dx,dy])=>({x:actor.x+dx,y:actor.y+dy})).find(p=>
+        p.x>40&&p.x<920&&p.y>40&&p.y<560&&
+        !walls.some(w=>circleHitsRect(p.x,p.y,10,w))&&
+        clearSight(actor.x,actor.y,p.x,p.y,8)&&
+        Math.hypot(p.x-boss.x,p.y-boss.y)>55&&
+        bossHeals.every(h=>Math.hypot(p.x-h.x,p.y-h.y)>30))||{x:actor.x,y:actor.y};
+      bossHeals.push({ownerId:actor.id,slot:actor.slot||1,x:position.x,y:position.y,used:false});
+    }
+  }
+  function updateBossHeals(){
+    if(stage!=='boss'||gameOver||won)return;
+    for(const heal of bossHeals){
+      if(heal.used)continue;
+      const actor=classActors().find(a=>a.id===heal.ownerId&&a.connected!==false);
+      if(!actor||actor.hp<=0||actor.hp>=actor.maxHp)continue;
+      if(Math.hypot(actor.x-heal.x,actor.y-heal.y)>actor.radius+13)continue;
+      const restored=Math.min(actor.maxHp-actor.hp,actor.maxHp*.35);
+      actor.hp+=restored;heal.used=true;
+      if(actor.id===player.id)player.hp=actor.hp;
+      burst(heal.x,heal.y,'#b1e8a4',16);updateHud();
+    }
+  }
+  function drawBossHeals(){
+    if(stage!=='boss'||gameOver||won)return;
+    for(const heal of bossHeals){
+      if(heal.used)continue;
+      const pulse=1+.08*Math.sin(lastTime*.004+heal.slot);
+      ctx.save();ctx.translate(heal.x,heal.y);ctx.scale(pulse,pulse);
+      ctx.fillStyle='rgba(8,19,15,.86)';ctx.strokeStyle='#b5dda9';ctx.lineWidth=1.4;
+      ctx.shadowColor='#8bdb9a';ctx.shadowBlur=11;
+      ctx.beginPath();ctx.arc(0,0,12,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#c3f0b5';ctx.fillRect(-1.6,-6,3.2,12);ctx.fillRect(-6,-1.6,12,3.2);
+      ctx.shadowBlur=0;ctx.fillStyle='#d3eec8';ctx.textAlign='center';ctx.font='bold 9px monospace';
+      ctx.fillText('P'+heal.slot+' HEAL',0,-17);ctx.restore();
+    }
+  }
   function spawnBoss() {
     // Choose a distant reachable cell; the larger collision radius gets its own path field.
     buildPlayerPath(14);
@@ -585,11 +699,11 @@
     if(distant.length)best=distant[Math.floor(random()*distant.length)];
     if(!best)best={x:590,y:150};
     if(graveyard()){const p=LEVELS[levelIndex].ports.filter(p=>Math.hypot(p.x-player.x,p.y-player.y)>120);if(p.length)best=p[Math.floor(random()*p.length)];}
-    const config=ENEMY_TYPES.boss;
-    enemies=[{id:nextEnemyId++,type:"boss",x:best.x,y:best.y,radius:14,hp:config.hp,maxHp:config.hp,
-      speed:config.speed,vx:0,vy:0,phase:0,alive:true,hitFlash:0,knockX:0,knockY:0,
+    const config=ENEMY_TYPES.boss,stats=BOSS_STATS[levelIndex],partySize=Math.max(1,Math.min(4,classActors().filter(a=>a.connected!==false).length)),bossHp=stats.hp*partySize/4;bossEffects=[];
+    enemies=[{id:nextEnemyId++,type:"boss",x:best.x,y:best.y,radius:14,hp:bossHp,maxHp:bossHp,
+      speed:stats.speed,vx:0,vy:0,phase:0,alive:true,hitFlash:0,knockX:0,knockY:0,
       behavior:"pursuit",behaviorTimer:0,abilityCooldown:1.5,dashX:0,dashY:0}];
-    bullets=[];stage="boss";statusLabel.textContent="THE AMALGAM";updateHud();
+    bullets=[];stage="boss";spawnBossHeals(classActors(),enemies[0]);statusLabel.textContent=BOSS_NAMES[levelIndex];updateHud();
   }
   function spawnReinforcement(type,origin,finale=false) {
     const paths=radiusPaths.get(11);if(!paths)return false;
@@ -627,32 +741,7 @@
     }
     updateHud();
   }
-  function updateBossEncounter(dt) {
-    if(stage === "boss") {
-      const boss=enemies.find(e=>e.alive&&e.type === "boss");
-      if(!boss)return;
-      if(graveyard()&&!boss.houseHealUsed&&boss.hp<=boss.maxHp*.9){boss.houseHealUsed=true;boss.healTime=1.5;const p=LEVELS[levelIndex].ports.slice().sort((a,b)=>Math.hypot(b.x-player.x,b.y-player.y)-Math.hypot(a.x-player.x,a.y-player.y))[0];boss.x=p.x;boss.y=p.y;boss.vx=boss.vy=0;boss.behavior="pursuit";statusLabel.textContent="THE CASTLE CALLS THE AMALGAM";burst(p.x,p.y,"#8affc1",24);}
-      summonTimer-=dt;
-      // Thresholds refer to cumulative health lost, not living Ghost count.
-      const target=boss.hp/boss.maxHp<=0.6?9:boss.hp/boss.maxHp<=0.8?6:summonTimer<=0?3:0;
-      releaseWraiths(target,graveyard()?LEVELS[levelIndex].ports[Math.floor(random()*4)]:boss);
-    } else if(stage === "ghost-cleanup") {
-      // Retry any pending threshold summons before allowing the finale.
-      releaseWraiths(9,finaleOrigin);
-      if(summonsUsed===9 && !enemies.some(e=>e.alive)) {
-        stage="last-gasp";finaleTimer=0.7;statusLabel.textContent="LESSER AMALGAM INCOMING!";updateHud();
-      }
-    } else if(stage === "last-gasp") {
-      releaseWraiths(9,finaleOrigin);
-      if(!finaleSpawned) {
-        finaleTimer-=dt;
-        if(finaleTimer<=0)finaleSpawned=spawnReinforcement("boss",finaleOrigin,true);
-      }
-      if(finaleSpawned && summonsUsed===9 && !enemies.some(e=>e.alive)) {
-        won=true;statusLabel.textContent="LEVEL CLEARED!";updateHud();
-      }
-    }
-  }
+  function updateBossEncounter(dt) {}
   function spawnWave() {
     const wave=WAVES[waveIndex];
     buildPlayerPath(11);
@@ -684,7 +773,7 @@
     statusLabel.textContent="WAVE "+(waveIndex+1)+" / "+WAVES.length;updateHud();
   }
   function resetCombat(seed) {
-    walkVisuals.clear();
+    walkVisuals.clear();bossVisuals.clear();bossEffects=[];bossHeals=[];
     randomState=(seed === undefined ? (Date.now() ^ Math.floor(Math.random()*4294967296)) : seed)>>>0;
     navigationDirections=shuffle([[1,0],[-1,0],[0,1],[0,-1]]);
     player.x = LEVELS[levelIndex].start.x; player.y = LEVELS[levelIndex].start.y;
@@ -714,7 +803,7 @@
     document.getElementById("health-warning").textContent=player.hp>0&&hpPercent<=critical?"CRITICAL":"";
     hpLabel.style.color=hpPercent<=critical?"#ff795f":"#e8c58a";
     defeatedLabel.textContent = String(enemies.filter(e=>e.alive).length);
-    document.getElementById("stage").textContent = stage === "wave" ? "WAVE "+(waveIndex+1)+" / "+WAVES.length : stage === "wave-break" ? "NEXT WAVE IN "+Math.ceil(waveDelay)+"s" : stage === "boss-intro" ? "BOSS INCOMING" : stage === "ghost-cleanup" ? "CLEAR REMAINING WRAITHS" : stage === "last-gasp" ? (finaleSpawned?"LESSER AMALGAM / CLEAR ALL":"LESSER AMALGAM INCOMING") : "THE AMALGAM / WRAITHS "+summonsUsed+" OF 9";
+    document.getElementById("stage").textContent = stage === "wave" ? "WAVE "+(waveIndex+1)+" / "+WAVES.length : stage === "wave-break" ? "NEXT WAVE IN "+Math.ceil(waveDelay)+"s" : stage === "boss-intro" ? "BOSS INCOMING" : stage === "ghost-cleanup" ? "CLEAR REMAINING WRAITHS" : stage === "last-gasp" ? (finaleSpawned?"LESSER BOSS / CLEAR ALL":"LESSER BOSS INCOMING") : BOSS_NAMES[levelIndex];
     document.getElementById("score").textContent = String(score);
   }
 
@@ -954,7 +1043,8 @@
   }
 
   function enemyIntent(enemy, dt, pursuitX, pursuitY) {
-    if (enemy.type !== "wraith" && enemy.type !== "boss") return {x:pursuitX, y:pursuitY};
+    if(enemy.type === "boss")return bossIntent(enemy,dt,pursuitX,pursuitY);
+    if (enemy.type !== "wraith") return {x:pursuitX, y:pursuitY};
     enemy.abilityCooldown = Math.max(0, enemy.abilityCooldown-dt);
     enemy.behaviorTimer = Math.max(0, enemy.behaviorTimer-dt);
     if (enemy.behavior === "windup" && enemy.behaviorTimer <= 0) {
@@ -997,6 +1087,8 @@
     }
     updateGraves(dt);
     updateBossEncounter(dt);
+    updateBossEffects(dt);
+    updateBossHeals();
     if(won)return;
     if (input.fire) fireBullet();
 
@@ -1055,7 +1147,7 @@
       const blend = 1 - Math.exp(-7 * dt);
       enemy.vx += (desiredX - enemy.vx) * blend;
       enemy.vy += (desiredY - enemy.vy) * blend;
-      if ((enemy.type === "wraith" || enemy.type === "boss") && enemy.behavior === "dash") {
+      if ((enemy.type === "wraith" && enemy.behavior === "dash") || (enemy.type === "boss" && enemy.behavior === "boss-charge")) {
         enemy.vx=desiredX; enemy.vy=desiredY;
       }
       const nextX = enemy.x + enemy.vx * dt;
@@ -1065,6 +1157,7 @@
       if (enemyCanOccupy(enemy.x, nextY)) enemy.y = nextY;
       else enemy.vy = 0;
 
+      if(enemy.type==="boss"&&enemy.behavior==="boss-charge"&&Math.hypot(enemy.x-oldEnemyX,enemy.y-oldEnemyY)<2){enemy.behavior="boss-recovery";enemy.behaviorTimer=enemy.move==="dive"?3:1;enemy.vx=enemy.vy=0;}
       wrapActor(enemy);
       const progress=Math.hypot(enemy.x-oldEnemyX,enemy.y-oldEnemyY);
       if(waypoint && enemy.behavior === "pursuit" && Math.hypot(enemy.x-player.x,enemy.y-player.y)>30 && progress<3*dt)enemy.stuckTime=(enemy.stuckTime||0)+dt;
@@ -1095,11 +1188,17 @@
           bullet.life = 0;
           break;
         }
+        // The Sovereign's four orbiting glass shards intercept ranged attacks.
+        const sovereign=levelIndex===1?enemies.find(e=>e.alive&&e.type==='boss'):null;
+        if(sovereign&&!bullet.melee){let blocked=false;for(let i=0;i<4;i++){const a=(sovereign.orbitAngle||0)+i*Math.PI/2;if(Math.hypot(bullet.x-(sovereign.x+Math.cos(a)*30),bullet.y-(sovereign.y+Math.sin(a)*30))<bullet.radius+7){blocked=true;break;}}if(blocked){burst(bullet.x,bullet.y,'#9be5f2',4);bullet.life=0;break;}}
         for (const enemy of enemies) {
           if (!enemy.alive || bullet.hitIds?.includes(enemy.id) || bullet.targetId!==undefined&&bullet.targetId!==enemy.id) continue;
           if (Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y) < bullet.radius + enemy.radius) {
-            onClassDamage(bullet,enemy);
-            enemy.hp -= bullet.damage || 1;
+            let hitDamage=bullet.damage||1;
+            if(enemy.type==='boss'&&levelIndex===0){const owner=classActors().find(a=>a.id===bullet.ownerId),sx=owner?owner.x-enemy.x:-bullet.vx,sy=owner?owner.y-enemy.y:-bullet.vy,sl=Math.hypot(sx,sy)||1,front=(sx*(enemy.facingX||1)+sy*(enemy.facingY||0))/sl;if(enemy.perched&&bullet.melee)hitDamage=0;else if(enemy.behavior==='pursuit'&&front>0)hitDamage*=.3;}
+
+            if(hitDamage>0)onClassDamage({...bullet,damage:hitDamage},enemy);
+            enemy.hp -= hitDamage;
             if(bullet.piercing){bullet.hitIds.push(enemy.id);if(bullet.hitIds.length>=(bullet.maxHits||3))bullet.life=0;}
             if(enemy.type === "boss")updateBossEncounter(0);
             enemy.hitFlash = 0.12;
@@ -1112,15 +1211,14 @@
               defeated += 1;
               score += ENEMY_TYPES[enemy.type].score;
               updateHud();
-              if (enemy.type === "boss" && !enemy.finale) {
-                stage="last-gasp";finaleTimer=.7;finaleOrigin={x:enemy.x,y:enemy.y};
-                statusLabel.textContent="CLEAR REMAINING WRAITHS";updateHud();
+              if (enemy.type === "boss") {
+                won=true;bossEffects=[];statusLabel.textContent="LEVEL CLEARED!";updateHud();
               } else if (stage === "wave" && defeated === WAVES[waveIndex].roster.length) {
                 bullets.forEach(b=>b.life=0);input.fire=false;input.charge=false;input.revive=false;
                 if(waveIndex<WAVES.length-1){
                   stage="wave-break";waveDelay=4;player.hp=Math.min(player.maxHp||MAX_HP,player.hp+15);
                   statusLabel.textContent="WAVE CLEARED / +15 HP";
-                } else {stage="boss-intro";bossDelay=2;statusLabel.textContent="THE AMALGAM AWAKENS";}
+                } else {stage="boss-intro";bossDelay=2;statusLabel.textContent=BOSS_NAMES[levelIndex]+" AWAKENS";}
                 updateHud();
               }
             }
@@ -1131,7 +1229,7 @@
     }
     if(stage === "last-gasp" && finaleSpawned && summonsUsed===9 && !enemies.some(e=>e.alive)){won=true;statusLabel.textContent="LEVEL CLEARED!";updateHud();}
     bullets = bullets.filter(b => b.life > 0 && b.x >= 0 && b.x <= WORLD.width && b.y >= 0 && b.y <= WORLD.height);
-    if (!gameOver && !won && stage !== "boss-intro" && stage !== "wave-break" && shootTimer <= 0) statusLabel.textContent = stage === "last-gasp" && !finaleSpawned ? "LESSER AMALGAM INCOMING!" : enemies.some(e => e.alive && e.behavior === "windup") ? "WRAITH WINDUP" : "FIGHT!";
+    if (!gameOver && !won && stage !== "boss-intro" && stage !== "wave-break" && shootTimer <= 0) statusLabel.textContent = stage === "last-gasp" && !finaleSpawned ? "LESSER BOSS INCOMING!" : enemies.some(e => e.alive && e.behavior === "windup") ? "WRAITH WINDUP" : "FIGHT!";
   }
 
   function circleHitsRect(cx, cy, radius, rect) {
@@ -1403,6 +1501,146 @@
   function hollowEyes(c,y=-3,narrow=false){c.save();c.shadowColor='#100f13';c.shadowBlur=1.4;for(const x of [-3,3]){c.fillStyle='#1b1c20';c.beginPath();c.ellipse(x,y,narrow?1.6:1.3,narrow?1.2:2.7,narrow?-.1:.08,0,Math.PI*2);c.fill();c.fillStyle='#080b10';c.beginPath();c.ellipse(x+.15,y+.2,.65,narrow?.6:2,0,0,Math.PI*2);c.fill();}c.restore();}
 
   function rockPlate(c,pts,light,flash){const g=c.createLinearGradient(-9,-10,10,10);g.addColorStop(0,flash?'#ddd8c8':light);g.addColorStop(1,'#333c3e');c.fillStyle=g;c.strokeStyle='#20282c';c.lineWidth=.9;polygon(c,pts);c.strokeStyle='rgba(192,188,156,.32)';c.lineWidth=.6;c.beginPath();c.moveTo(pts[0][0]+1,pts[0][1]+1);c.lineTo(pts[1][0]-1,pts[1][1]+1);c.stroke();}
+  const BOSS_SPRITES=typeof Image==='function'?['gargoyle','sovereign','overlord','behemoth'].map(name=>{const image=new Image();image.src='assets/bosses/'+name+'.png';return image;}):[];
+  const BOSS_NAMES=['GARGOYLE SENTINEL','ELDRITCH SOVEREIGN','ARCH-FIEND OVERLORD','HELLFIRE BEHEMOTH'];
+  // Presentation-only animation, blended between pursuit, warning, attack and recovery.
+  const bossVisuals=new Map();
+  function bossMotion(actor,index,time){
+    if(!actor||!actor.id)return {step:0,dirX:0,dirY:1,weight:0,windup:0,attack:0,breathe:0,float:0};
+    let state=bossVisuals.get(actor.id);
+    if(!state){state={windup:0,attack:0,time,phase:(actor.phase||0)};bossVisuals.set(actor.id,state);}
+    const dt=Math.max(0,Math.min(.08,time-state.time));state.time=time;
+    const walk=locomotionPose(actor,time,true),windup=actor.behavior==='boss-windup'?1:0,attack=actor.behavior==='boss-charge'||(actor.behavior==='boss-recovery'&&actor.behaviorTimer>.4)?1:0;
+    state.windup+=(windup-state.windup)*(1-Math.exp(-dt*5));state.attack+=(attack-state.attack)*(1-Math.exp(-dt*8));
+    const breathe=Math.sin(time*1.65+state.phase),float=Math.sin(time*2.05+state.phase);
+    return {step:walk.step,dirX:walk.dirX,dirY:walk.dirY,weight:walk.moving?1:0,windup:state.windup,attack:state.attack,breathe,float};
+  }
+  function drawBossAttackMotion(c,index,actor,motion){
+    if(!actor||!actor.move)return;
+    const charging=actor.behavior==='boss-windup',firing=actor.behavior==='boss-charge'||actor.behavior==='boss-recovery';
+    if(!charging&&!firing)return;
+    const t=lastTime/1000,angle=Math.atan2(actor.dashY||0,actor.dashX||1);
+    c.save();c.lineCap='round';c.lineJoin='round';
+    if(index===0&&actor.move==='rain'){
+      c.strokeStyle='#abcbd2';c.globalAlpha=charging?.45:.7;c.lineWidth=1.1;for(const side of [-1,1]){c.beginPath();c.moveTo(side*12,-6);c.quadraticCurveTo(side*(20+motion.windup*6),-15,side*(22+motion.windup*8),-23);c.stroke();}
+    }else if(index===1&&actor.move==='shards'){
+      c.strokeStyle='#a4eff7';c.shadowColor='#88d9f2';c.shadowBlur=5;c.lineWidth=1.2;c.globalAlpha=.45+.25*Math.sin(t*7);c.beginPath();c.arc(0,0,16+motion.windup*4,t*1.5,t*1.5+Math.PI*1.4);c.stroke();
+    }else if(index===1&&actor.move==='laser'){
+      c.strokeStyle='#b9f5ff';c.shadowColor='#76cbe9';c.shadowBlur=7;c.globalAlpha=charging?.35:.75;c.beginPath();c.arc(0,-6,2+motion.windup*3,0,Math.PI*2);c.stroke();
+    }else if(index===1&&actor.move==='well'){
+      c.strokeStyle='#bf92e9';c.globalAlpha=.55;c.lineWidth=1.2;for(let i=0;i<2;i++){c.beginPath();c.ellipse(0,12,10+i*4,3+i*2,t*.7+i,0,Math.PI*1.5);c.stroke();}
+    }else if(index===2&&actor.move==='cleave'){
+      c.rotate(angle);c.strokeStyle='#b0dee0';c.shadowColor='#7ad4d1';c.shadowBlur=6;c.lineWidth=firing?2.5:1;c.globalAlpha=firing?.85:.4;c.beginPath();c.arc(0,0,20+motion.attack*4,-1.3,1.3);c.stroke();
+    }else if(index===2&&actor.move==='lunge'){
+      c.rotate(angle);c.strokeStyle='#83a7a4';c.globalAlpha=.55;c.lineWidth=1.3;for(let i=0;i<3;i++){c.beginPath();c.moveTo(-22-i*3,-7+i*7);c.lineTo(-30-i*3,-7+i*7);c.stroke();}
+    }else if(index===2&&actor.move==='spikes'){
+      c.strokeStyle='#b486c6';c.globalAlpha=.65;c.lineWidth=1.3;for(const side of [-1,1]){c.beginPath();c.moveTo(side*5,13);c.lineTo(side*9,7);c.lineTo(side*11,14);c.stroke();}
+    }else if(index===3&&actor.move==='ring'){
+      c.strokeStyle='#ff9a4e';c.shadowColor='#ff7035';c.shadowBlur=6;c.globalAlpha=charging?.5:.8;c.lineWidth=1.4;for(const side of [-1,1]){c.beginPath();c.arc(side*17,11,3+motion.windup*2,0,Math.PI*2);c.stroke();}
+    }else if(index===3&&actor.move==='beam'){
+      c.fillStyle='#ffd47b';c.shadowColor='#ff792f';c.shadowBlur=10;c.globalAlpha=charging?.25+.25*motion.windup:.55;c.beginPath();c.ellipse(0,-1,5+motion.windup*2,3+motion.windup*2,0,0,Math.PI*2);c.fill();
+    }
+    c.restore();
+  }
+  function drawStageBoss(c,index,flash=false,actor=null){
+    c.save();c.lineJoin='round';c.lineCap='round';
+    const walk=bossMotion(actor,index,lastTime/1000),step=0;
+    // All four bosses use the same smooth glide. Attack anticipation still moves the body.
+    c.translate(walk.float*.35,-1+walk.float*.75+walk.windup*.45-walk.attack*.45);
+    c.rotate(walk.float*.012);c.scale(1+walk.breathe*.008,1-walk.windup*.025);
+    const sprite=BOSS_SPRITES[index];
+    if(sprite&&sprite.complete&&sprite.naturalWidth){
+      const sizes=[[46,48],[43,50],[40,49],[51,46]],w=sizes[index][0],h=sizes[index][1],x=-w/2,y=-h*.55;
+      c.save();if(flash)c.filter='brightness(1.8)';
+      if(index===0&&actor&&(walk.windup>.015||walk.attack>.015)){
+        // Split the source image into wings and torso. Each wing hinges independently.
+        const sw=sprite.naturalWidth,sh=sprite.naturalHeight,edge=.34,spread=Math.min(.38,walk.windup*.32+walk.attack*.16);
+        for(const side of [-1,1]){c.save();c.translate(side*w*.14,-h*.22);c.rotate(side*spread);c.translate(-side*w*.14,h*.22);const sx=side<0?0:sw*(1-edge),dx=side<0?x:x+w*(1-edge);c.drawImage(sprite,sx,0,sw*edge,sh,dx,y,w*edge,h);c.restore();}
+        c.drawImage(sprite,sw*edge,0,sw*(1-2*edge),sh,x+w*edge,y,w*(1-2*edge),h);
+        if(actor.behavior==='boss-charge'){c.save();c.strokeStyle='rgba(225,227,225,.8)';c.lineWidth=1.6;c.shadowColor='#c4eff3';c.shadowBlur=4;c.beginPath();c.arc(0,0,22,-.9,1.05);c.stroke();c.restore();}
+      }else if((index===1||index===2)&&actor&&(walk.windup>.015||walk.attack>.015)){
+        // Cloak wings and long arms separate from the center during each attack.
+        const sw=sprite.naturalWidth,sh=sprite.naturalHeight,edge=index===1?.30:.26,spread=index===1?walk.windup*.10:walk.windup*.10-walk.attack*.16;
+        for(const side of [-1,1]){c.save();c.translate(side*w*.17,-h*.15);c.rotate(side*spread);c.translate(-side*w*.17,h*.15);const sx=side<0?0:sw*(1-edge),dx=side<0?x:x+w*(1-edge);c.drawImage(sprite,sx,0,sw*edge,sh,dx,y,w*edge,h);c.restore();}
+        c.drawImage(sprite,sw*edge,0,sw*(1-2*edge),sh,x+w*edge,y,w*(1-2*edge),h);
+      }else if(index===3&&actor){
+        // Heavy fists lift before the slam while the legs plant independently.
+        const sw=sprite.naturalWidth,sh=sprite.naturalHeight,cut=.72,edge=.26;
+        for(const side of [-1,1]){const sx=side<0?0:sw*(1-edge),dx=side<0?x:x+w*(1-edge);c.save();c.translate(side*walk.windup*.8,-walk.windup*1.6+walk.attack*.7);c.rotate(-side*walk.windup*.04);c.drawImage(sprite,sx,0,sw*edge,sh*cut,dx,y,w*edge,h*cut);c.restore();}
+        c.drawImage(sprite,sw*edge,0,sw*(1-2*edge),sh*cut,x+w*edge,y,w*(1-2*edge),h*cut);
+        c.drawImage(sprite,0,sh*cut,sw,sh*(1-cut),x,y+h*cut,w,h*(1-cut));
+      }else c.drawImage(sprite,x,y,w,h);
+      c.restore();drawBossAttackMotion(c,index,actor,walk);c.restore();return;
+    }
+    const rock=(pts,color)=>{c.fillStyle=flash?'#e7ded8':color;c.strokeStyle='#151b20';c.lineWidth=.75;polygon(c,pts);};
+    const eyes=(color,y,x=3)=>{c.fillStyle=color;c.shadowColor=color;c.shadowBlur=3;for(const side of [-1,1]){c.beginPath();c.ellipse(side*x,y,1,.6,-side*.2,0,Math.PI*2);c.fill();}c.shadowBlur=0;};
+    if(index===0){
+      // Folded stone wings protect the gargoyle's compact body.
+      for(const side of [-1,1]){c.save();c.translate(side*(walk.breathe*.25+walk.windup*.55),-walk.windup*.3);c.rotate(side*(walk.breathe*.008+walk.windup*.035-walk.attack*.02));c.scale(side,1);rock([[1,-9],[7,-16],[11,-21],[14,-15],[15,-3],[13,8],[10,4],[8,-7],[5,-1]],'#46565d');rock([[2,-9],[8,-15],[12,-18],[11,-8],[8,0],[2,11],[0,3]],'#809398');c.strokeStyle='#52666b';c.lineWidth=.6;c.beginPath();c.moveTo(8,-12);c.lineTo(6,-1);c.lineTo(1,8);c.stroke();c.restore();}
+      rock([[-6,-5],[-5,-11],[0,-14],[5,-11],[6,-5],[4,4],[0,10],[-4,4]],'#53646b');rock([[-4,-10],[-2,-14],[2,-14],[4,-10],[3,-6],[0,-4],[-3,-6]],'#2b363e');eyes('#df78ff',-9,2);
+      for(const side of [-1,1]){c.save();const stride=step*side;c.translate(walk.dirX*stride*1.25,walk.dirY*stride*1.8-Math.max(0,stride)*1.5);c.scale(side,1);rock([[3,5],[7,4],[9,7],[8,11],[3,11]],'#687a7a');c.restore();}
+    }else if(index===1){
+      // Tall, slender sovereign framed by torn, bat-like royal wings.
+      for(const side of [-1,1]){c.save();c.translate(side*walk.float*.3,0);c.rotate(side*(walk.float*.015+walk.windup*.025));c.scale(side,1);rock([[4,-8],[10,-15],[14,-23],[18,-18],[19,2],[16,8],[14,3],[11,9],[9,2],[5,5]],'#3b364f');c.strokeStyle='#766b90';c.lineWidth=.55;c.beginPath();c.moveTo(14,-21);c.lineTo(10,-3);c.lineTo(6,5);c.moveTo(10,-3);c.lineTo(16,4);c.stroke();c.restore();}
+      rock([[-4,-8],[0,-12],[4,-8],[5,2],[3,11],[1,19],[0,12],[-2,19],[-4,10],[-5,2]],'#171922');rock([[-4,-8],[0,-10],[4,-8],[5,-3],[2,-2],[0,-5],[-2,-2],[-5,-3]],'#5a566d');
+      rock([[-2,-14],[0,-16],[2,-14],[2,-10],[0,-9],[-2,-10]],'#13151b');eyes('#dacff5',-12,1);
+    }else if(index===2){
+      // Towering horned fiend with broad torso, long arms and shadow base.
+      for(const side of [-1,1]){c.save();c.scale(side,1);rock([[2,-12],[6,-15],[12,-17],[15,-20],[14,-15],[10,-11],[5,-10]],'#667c80');rock([[6,-8],[12,-9],[15,-5],[15,2],[13,9],[11,12],[9,10],[10,2],[6,0]],'#25373c');c.restore();}
+      rock([[-8,-9],[-4,-12],[4,-12],[8,-9],[9,-3],[7,4],[4,7],[0,8],[-4,7],[-7,4],[-9,-3]],'#17272c');
+      for(const side of [-1,1]){c.save();c.scale(side,1);rock([[1,-6],[6,-7],[8,-4],[6,-1],[1,-1]],'#567479');rock([[1,0],[6,0],[5,3],[1,4]],'#536f72');c.restore();}
+      rock([[-5,5],[5,5],[6,11],[3,17],[1,14],[0,20],[-2,14],[-4,17],[-6,11]],'#252237');
+      rock([[-4,-12],[-2,-15],[2,-15],[4,-12],[3,-8],[0,-7],[-3,-8]],'#405659');eyes('#b6e5dc',-11,1.6);
+    }else{
+      // Wide volcanic construct with multiple eyes and a luminous chest maw.
+      for(const side of [-1,1]){const stride=step*side;c.save();c.translate(side*(stride*.48+walk.windup*.8-walk.attack*.35),walk.dirY*stride*.9-walk.windup*.7+walk.attack*.5);c.rotate(-side*(step*.055+walk.windup*.065-walk.attack*.04));c.scale(side,1);rock([[7,-8],[12,-10],[15,-7],[16,-2],[14,1],[10,2],[7,-1]],'#594a46');rock([[11,0],[16,-1],[18,3],[18,9],[16,11],[11,10],[9,6]],'#66524b');rock([[11,9],[16,9],[18,12],[17,15],[12,15],[10,13]],'#776057');c.restore();c.save();c.translate(walk.dirX*stride,walk.dirY*stride*1.2-Math.max(0,stride)*1.2);c.scale(side,1);rock([[3,8],[8,7],[10,11],[9,15],[4,15],[2,12]],'#594b46');c.restore();}
+      rock([[-11,-6],[-8,-12],[-3,-15],[3,-15],[9,-12],[11,-6],[10,3],[6,8],[0,10],[-6,8],[-10,3]],'#64504a');
+      rock([[-7,-4],[-3,-6],[3,-6],[7,-4],[6,3],[3,5],[-3,5],[-6,3]],'#301e20');
+      c.fillStyle=flash?'#fff7cf':'#ffc55d';c.shadowColor='#ff8b32';c.shadowBlur=9;polygon(c,[[-6,-2],[-4,-4],[-2,-2],[0,-5],[2,-2],[4,-4],[6,-2],[5,1],[3,3],[1,1],[-1,4],[-3,1],[-5,2]]);c.shadowBlur=0;
+      rock([[-5,-11],[-2,-14],[2,-14],[5,-11],[4,-7],[0,-6],[-4,-7]],'#725b52');eyes('#ffd371',-10,2);c.fillStyle='#ffc86a';for(const [x,y] of [[-7,-10],[7,-10],[-3,-14],[3,-14]]){c.beginPath();c.ellipse(x,y,.8,.5,0,0,Math.PI*2);c.fill();}
+      c.strokeStyle='#bb663e';c.lineWidth=.6;c.beginPath();c.moveTo(-8,4);c.lineTo(-7,6);c.lineTo(-8,8);c.moveTo(8,-8);c.lineTo(6,-7);c.stroke();
+    }
+    // Reference-specific front plates and material details.
+    if(index===0){
+      // Two long overlapping stone wing shields form the unmistakable central V.
+      for(const side of [-1,1]){c.save();c.translate(side*(walk.breathe*.25+walk.windup*.55),-walk.windup*.3);c.rotate(side*(walk.breathe*.008+walk.windup*.035-walk.attack*.02));c.scale(side,1);rock([[3,-10],[8,-15],[13,-20],[12,-10],[10,-3],[7,5],[1,14],[0,8],[2,1]],'#84969b');rock([[3,-8],[7,-11],[10,-15],[9,-7],[7,0],[1,11],[1,4]],'#a3b2b2');c.strokeStyle='#53696f';c.lineWidth=.6;c.beginPath();c.moveTo(9,-13);c.lineTo(7,-4);c.lineTo(1,9);c.moveTo(7,-8);c.lineTo(5,-3);c.stroke();c.restore();}
+      rock([[-3,-12],[-2,-15],[2,-15],[3,-12],[2,-8],[0,-7],[-2,-8]],'#202b35');eyes('#ee85ff',-11,1.3);
+      for(const side of [-1,1]){c.save();c.scale(side,1);c.strokeStyle='#b7c5bf';c.lineWidth=.5;for(let k=0;k<3;k++){c.beginPath();c.moveTo(4+k,9);c.lineTo(4.5+k,11);c.stroke();}c.restore();}
+    }else if(index===1){
+      // A hooded black face, layered collar and long torn royal mantle.
+      rock([[-3,-15],[-1,-17],[1,-17],[3,-15],[2,-11],[0,-10],[-2,-11]],'#11121a');eyes('#e5ddfb',-14,1);
+      for(const side of [-1,1]){c.save();c.scale(side,1);rock([[2,-10],[6,-9],[8,-7],[7,-5],[3,-6],[1,-8]],'#6c6880');rock([[2,-6],[5,-5],[5,4],[3,10],[1,8]],'#393045');c.strokeStyle='#8c83a4';c.lineWidth=.45;c.beginPath();c.moveTo(3,-9);c.lineTo(7,-7);c.moveTo(3,-7);c.lineTo(7,-5);c.moveTo(4,0);c.lineTo(3,7);c.stroke();c.restore();}
+      c.strokeStyle='#8976a1';c.lineWidth=.35;c.beginPath();c.moveTo(0,-4);c.lineTo(0,9);c.moveTo(-2,11);c.lineTo(-1,17);c.moveTo(2,11);c.lineTo(1,17);c.stroke();
+    }else if(index===2){
+      // Forward swept crown, plated chest and long clawed arms.
+      for(const side of [-1,1]){c.save();c.scale(side,1);rock([[2,-13],[5,-16],[10,-17],[14,-19],[16,-22],[15,-17],[12,-14],[7,-12],[4,-11]],'#637b7e');c.strokeStyle='#a8beb8';c.lineWidth=.45;c.beginPath();c.moveTo(4,-14);c.quadraticCurveTo(11,-15,15,-20);c.stroke();rock([[7,-5],[11,-7],[13,-5],[13,-1],[11,2],[8,1]],'#2a4044');rock([[10,3],[13,2],[14,6],[13,10],[11,12],[9,10]],'#223337');c.strokeStyle='#78918b';c.beginPath();c.moveTo(10,4);c.lineTo(12,5);c.lineTo(12,9);c.stroke();c.restore();}
+      for(const y of [-1,2,5]){rock([[-4,y],[-.5,y-.5],[0,y+1],[-2,y+2],[-4,y+1]],'#5e7d7c');rock([[4,y],[.5,y-.5],[0,y+1],[2,y+2],[4,y+1]],'#5a7978');}
+      rock([[-3,-13],[-1,-15],[1,-15],[3,-13],[2,-10],[0,-9],[-2,-10]],'#405c5b');eyes('#d0ebd6',-12,1);
+    }else{
+      // Boulder plates surround a jagged open chest maw; embers glow through gaps.
+      for(const side of [-1,1]){c.save();c.scale(side,1);rock([[6,-12],[10,-13],[13,-10],[12,-6],[9,-5],[6,-7]],'#735d55');rock([[11,-4],[15,-5],[17,-2],[16,2],[12,2],[10,0]],'#705951');rock([[12,3],[16,2],[18,5],[17,9],[13,10],[11,7]],'#79625a');c.strokeStyle='#bd8061';c.lineWidth=.5;c.beginPath();c.moveTo(8,-11);c.lineTo(11,-10);c.moveTo(12,-2);c.lineTo(15,-2);c.moveTo(13,5);c.lineTo(16,4);c.stroke();c.restore();}
+      c.strokeStyle='#1b1819';c.lineWidth=1; c.beginPath();c.moveTo(-7,-4);c.lineTo(-5,-6);c.lineTo(-3,-4);c.lineTo(-1,-6);c.lineTo(1,-4);c.lineTo(3,-6);c.lineTo(5,-4);c.lineTo(7,-3);c.moveTo(-6,3);c.lineTo(-4,5);c.lineTo(-2,3);c.lineTo(0,5);c.lineTo(2,3);c.lineTo(4,5);c.lineTo(6,3);c.stroke();
+      c.fillStyle='#ffe7a2';c.shadowColor='#ff8b32';c.shadowBlur=5;for(const [x,y] of [[-4,-2],[-2,-3],[0,-2],[2,-3],[4,-2],[-3,1],[0,2],[3,1]]){c.beginPath();c.moveTo(x-.7,y-.7);c.lineTo(x+.7,y-.7);c.lineTo(x,y+1);c.closePath();c.fill();}c.shadowBlur=0;
+      eyes('#ffdf91',-10,2);for(const [x,y] of [[-7,-10],[7,-10],[-3,-14],[3,-14]]){c.fillStyle='#f6d78c';c.beginPath();c.ellipse(x,y,.7,.45,0,0,Math.PI*2);c.fill();}
+    }
+    // Fine facets, seams and accents preserve each reference's distinct material.
+    c.lineWidth=.45;
+    if(index===0){
+      for(const side of [-1,1]){c.save();c.scale(side,1);c.strokeStyle=flash?'#fff':'#b6c7c8';c.beginPath();c.moveTo(11,-19);c.lineTo(9,-12);c.lineTo(6,-4);c.lineTo(1,7);c.moveTo(12,-16);c.lineTo(12,-7);c.lineTo(10,-1);c.moveTo(6,-8);c.lineTo(4,-3);c.lineTo(1,2);c.stroke();c.strokeStyle='#35464b';c.beginPath();c.moveTo(10,2);c.lineTo(6,4);c.moveTo(8,7);c.lineTo(4,9);c.stroke();c.restore();}
+      c.fillStyle='#35434a';c.beginPath();c.moveTo(-3,-5);c.lineTo(0,-3);c.lineTo(3,-5);c.lineTo(0,4);c.closePath();c.fill();
+    }else if(index===1){
+      for(const side of [-1,1]){c.save();c.scale(side,1);c.strokeStyle=flash?'#fff':'#81769d';c.beginPath();c.moveTo(14,-22);c.lineTo(12,-15);c.lineTo(10,-4);c.lineTo(6,3);c.moveTo(10,-4);c.lineTo(16,4);c.moveTo(12,-14);c.lineTo(18,-16);c.moveTo(6,5);c.lineTo(10,8);c.stroke();c.fillStyle='#5b5272';c.beginPath();c.moveTo(3,-6);c.lineTo(7,-4);c.lineTo(4,3);c.lineTo(3,11);c.lineTo(1,5);c.closePath();c.fill();c.restore();}
+      c.strokeStyle='#9687b4';c.beginPath();c.moveTo(-3,-7);c.lineTo(0,-5);c.lineTo(3,-7);c.stroke();
+      for(const [x,y] of [[-10,-3],[11,-2],[-7,10],[8,11]]){c.save();c.translate(x,y);c.rotate(.25);c.fillStyle='#a1cdd5';c.strokeStyle='#536f7a';polygon(c,[[0,-3],[1.4,-.5],[0,3],[-1.4,.5]]);c.restore();}
+    }else if(index===2){
+      for(const side of [-1,1]){c.save();c.scale(side,1);c.strokeStyle=flash?'#fff':'#8da6a3';c.beginPath();c.moveTo(4,-14);c.quadraticCurveTo(10,-15,14,-19);c.moveTo(7,-6);c.lineTo(11,-6);c.lineTo(13,-3);c.moveTo(12,2);c.lineTo(11,7);c.moveTo(1,2);c.lineTo(5,2);c.moveTo(1,5);c.lineTo(3,4);c.stroke();c.fillStyle='#172428';for(let i=0;i<3;i++){c.beginPath();c.moveTo(10+i,8);c.lineTo(11+i,12+i*.25);c.lineTo(10+i,10);c.fill();}c.restore();}
+      c.strokeStyle='#5a515e';c.beginPath();c.moveTo(-4,9);c.lineTo(-3,14);c.moveTo(4,9);c.lineTo(3,14);c.stroke();
+    }else{
+      for(const side of [-1,1]){c.save();c.scale(side,1);c.strokeStyle=flash?'#fff':'#a27c68';c.beginPath();c.moveTo(8,-8);c.lineTo(12,-8);c.lineTo(14,-6);c.moveTo(12,2);c.lineTo(15,2);c.lineTo(16,5);c.moveTo(12,11);c.lineTo(15,11);c.moveTo(4,10);c.lineTo(7,9);c.lineTo(8,12);c.stroke();c.strokeStyle='#352b2a';c.beginPath();c.moveTo(14,-6);c.lineTo(12,-4);c.lineTo(13,-2);c.moveTo(15,4);c.lineTo(13,6);c.lineTo(14,8);c.stroke();c.restore();}
+      c.strokeStyle='#f2a044';c.beginPath();c.moveTo(-5,-5);c.lineTo(-6,-7);c.moveTo(5,-5);c.lineTo(6,-7);c.moveTo(-4,5);c.lineTo(-3,7);c.moveTo(4,5);c.lineTo(3,7);c.stroke();
+    }
+    c.restore();
+  }
   function paintedEnemy(c,e,flash){
     const kind=e.type;c.save();c.shadowBlur=0;c.lineJoin='round';c.lineCap='round';
     c.fillStyle='rgba(0,0,0,.4)';c.beginPath();c.ellipse(0,11,kind==='boss'?13:10,3,0,0,Math.PI*2);c.fill();
@@ -1422,26 +1660,37 @@
         c.strokeStyle='rgba(213,190,226,.7)';c.lineWidth=.65;for(const x of [-5,0]){c.beginPath();c.moveTo(x,-2);c.quadraticCurveTo(x-1,1,x+.5,3);c.stroke();}
       }else{brushBody(c,kind,['#777977','#aba9a0','#45484c'],flash);hollowEyes(c,-3);}
      }else if(kind==='brute'){
+      // Broad stone silhouette, recessed face, layered boulders and huge fists.
       const walk=locomotionPose(e,lastTime/1000,true),step=walk.step;
-      for(const side of [-1,1]){c.save();c.translate(side*4+walk.dirX*step*side*1.4,8+walk.dirY*step*side*2);c.fillStyle='rgba(0,0,0,.4)';c.beginPath();c.ellipse(0,4,4,1.4,0,0,Math.PI*2);c.fill();c.translate(0,-Math.max(0,step*side)*2);rockPlate(c,[[-3,-1],[2,-2],[4,3],[2,5],[-3,5],[-4,2]],'#667268',flash);c.restore();}
-      c.translate(0,Math.abs(step)*1.05);c.scale(1,1-Math.abs(step)*.025);
-      // A squat, heavy stone construct: irregular boulders, fractures and moss.
-      rockPlate(c,[[-7,0],[-9,-5],[-5,-9],[4,-9],[9,-4],[8,5],[3,9],[-5,8]],'#858979',flash);
-      for(const side of [-1,1]){c.save();c.translate(0,-Math.max(0,step*side)*.35);c.scale(side,1);rockPlate(c,[[5,-5],[9,-8],[12,-5],[11,0],[13,5],[10,9],[6,7],[7,1]],'#727d72',flash);c.restore();}
-      rockPlate(c,[[-6,-9],[-3,-12],[4,-11],[7,-7],[5,-2],[-5,-2],[-7,-5]],'#979883',flash);
-      c.strokeStyle='#252e2e';c.lineWidth=1.8;c.beginPath();c.moveTo(-5,-7);c.lineTo(-1,-6);c.moveTo(2,-6);c.lineTo(5,-7);c.stroke();c.strokeStyle='#a5ae72';c.lineWidth=.7;c.beginPath();c.moveTo(-4,-6.6);c.lineTo(-2,-6.2);c.moveTo(2.5,-6.2);c.lineTo(4.5,-6.8);c.stroke();
-      c.strokeStyle='#27302e';c.lineWidth=.9;for(const pts of [[[-3,-10],[-1,-8],[-2,-5]],[[1,-1],[-2,2],[1,4],[-1,7]],[[9,-3],[7,-1],[10,2]]]){c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.stroke();}
-      c.fillStyle='#506346';for(const [x,y] of [[-8,-3],[5,3],[-3,6],[9,5]]){c.beginPath();c.ellipse(x,y,1.5,.8,-.4,0,Math.PI*2);c.fill();}
+      c.scale(1.8,1.8);c.translate(0,-1);
+      c.fillStyle='rgba(0,0,0,.4)';c.beginPath();c.ellipse(0,14,19,3,0,0,Math.PI*2);c.fill();
+      const plate=(pts,col)=>{c.fillStyle=flash?'#dadbd0':col;c.strokeStyle='#242e2d';c.lineWidth=.9;polygon(c,pts);};
+      // The legs take alternating planted steps; no increase in travel speed.
+      for(const side of [-1,1]){const stride=side*step;c.save();c.translate(side*5+walk.dirX*stride*1.5,9+walk.dirY*stride*1.7-Math.max(0,stride)*1.4);c.scale(side,1);plate([[-3,-2],[2,-3],[4,0],[4,4],[2,5],[-4,5],[-4,2]],'#68736a');c.restore();}
+      c.save();c.translate(0,Math.abs(step)*.45);c.rotate(step*.015);
+      plate([[-15,-5],[-13,-12],[-9,-16],[-3,-18],[4,-18],[10,-16],[14,-12],[16,-5],[14,4],[9,9],[4,11],[-6,10],[-12,7]],'#414d49');
+      // Crown stones form the tall arch above the small face.
+      plate([[-11,-13],[-8,-17],[-3,-18],[1,-16],[0,-12],[-5,-11]],'#79847a');
+      plate([[0,-17],[5,-17],[9,-15],[10,-11],[5,-10],[1,-12]],'#6d796f');
+      for(const side of [-1,1]){c.save();c.scale(side,1);plate([[8,-15],[12,-13],[15,-9],[14,-4],[10,-3],[7,-7]],'#778278');plate([[5,-9],[11,-7],[13,-3],[10,1],[4,0],[1,-3]],'#788379');c.restore();}
+      plate([[-9,-4],[-5,-9],[0,-8],[3,-4],[2,1],[-6,1],[-10,-1]],'#829084');
+      plate([[0,-8],[6,-9],[10,-5],[9,0],[3,2],[2,1],[3,-4]],'#78867b');
+      plate([[-7,3],[0,2],[7,3],[6,8],[3,10],[-4,9],[-8,6]],'#76847a');
+      c.strokeStyle='#394741';c.lineWidth=1;c.beginPath();c.moveTo(2,3);c.lineTo(0,5);c.lineTo(2,6);c.lineTo(.5,8);c.stroke();
+      // Arms pivot minimally with the stride; fists hang close to the ground.
+      for(const side of [-1,1]){c.save();c.translate(side*11,-9);c.rotate(-side*step*.055);c.scale(side,1);
+        plate([[-1,-5],[4,-7],[8,-5],[10,-1],[9,3],[5,5],[1,3],[-2,0]],'#879187');
+        plate([[5,3],[10,2],[13,5],[13,11],[11,13],[6,12],[4,8]],'#78857a');
+        plate([[5,11],[11,10],[13,12],[13,16],[10,18],[5,17],[3,15]],'#707d72');
+        plate([[5,12],[10,11],[11,14],[10,16],[5,16],[4,14]],'#89948a');
+        c.fillStyle='rgba(103,142,75,.7)';for(const [x,y] of [[3,-4],[7,-2],[8,5],[7,8],[6,13]]){c.beginPath();c.ellipse(x,y,.7,.45,-.4,0,Math.PI*2);c.fill();}c.restore();}
+      plate([[-2,-14],[1,-15],[4,-13],[4,-10],[2,-8],[-1,-9],[-3,-11]],'#98a396');
+      c.fillStyle='#27312e';c.beginPath();c.moveTo(-1.6,-12.2);c.lineTo(-.1,-11.7);c.lineTo(-.7,-11);c.closePath();c.fill();c.beginPath();c.moveTo(2.8,-12.2);c.lineTo(1.3,-11.7);c.lineTo(1.9,-11);c.closePath();c.fill();
+      c.fillStyle='#b8c99c';c.fillRect(-1.1,-11.8,.55,.45);c.fillRect(1.75,-11.8,.55,.45);
+      c.fillStyle='rgba(101,139,73,.65)';for(const [x,y] of [[-6,-15],[6,-14],[-7,-3],[5,-5],[-3,5],[4,7]]){c.beginPath();c.ellipse(x,y,.8,.45,-.35,0,Math.PI*2);c.fill();}
+      c.restore();
     }else{
-      // The Amalgam: Wraith shroud over a broad infernal body, crowned by horns.
-      brushBody(c,'boss',['#61333e','#936267','#292434'],flash);
-      for(const side of [-1,1]){c.save();c.scale(side,1);rockPlate(c,[[5,-4],[10,-6],[13,-1],[12,7],[7,9],[5,4]],'#68414a',flash);
-        c.fillStyle=flash?'#dfd2bb':'#a49378';c.strokeStyle='#33252d';c.lineWidth=.8;c.beginPath();c.moveTo(4,-7);c.bezierCurveTo(7,-10,11,-10,11,-16);c.bezierCurveTo(15,-11,10,-5,7,-3);c.closePath();c.fill();c.stroke();c.strokeStyle='#5c453d';c.lineWidth=.6;c.beginPath();c.moveTo(7,-7);c.quadraticCurveTo(11,-10,11,-13);c.stroke();c.restore();}
-      c.fillStyle=flash?'#c5aaa4':'#76515a';c.strokeStyle='#30232d';c.lineWidth=.9;polygon(c,[[-6,-8],[-2,-11],[3,-10],[7,-7],[5,-1],[2,4],[0,7],[-3,3],[-6,-2]]);
-      c.fillStyle='#25151f';polygon(c,[[-5,-6],[-1,-4],[-3,-2],[-5,-3]]);polygon(c,[[5,-6],[1,-4],[3,-2],[5,-3]]);
-      c.fillStyle='#f2aa69';for(const x of [-3.4,3.4]){c.beginPath();c.ellipse(x,-4,1.2,.6,x<0?.35:-.35,0,Math.PI*2);c.fill();}
-      c.fillStyle='#281c25';c.beginPath();c.moveTo(-3,0);c.lineTo(0,2);c.lineTo(3,0);c.lineTo(2,4);c.lineTo(-2,4);c.closePath();c.fill();c.fillStyle='#b6a18c';for(const x of [-2,1]){c.beginPath();c.moveTo(x,1);c.lineTo(x+.8,3);c.lineTo(x+1.3,1.6);c.closePath();c.fill();}
-      c.strokeStyle='#9c7c70';c.lineWidth=.7;c.beginPath();c.moveTo(-5,7);c.lineTo(-2,8);c.lineTo(0,10);c.lineTo(3,8);c.lineTo(6,9);c.stroke();
+      drawStageBoss(c,levelIndex,flash,e);
     }
     c.restore();
   }
@@ -1627,7 +1876,7 @@
     const flash=enemy.hitFlash>0, color=flash ? "#ffffff" : visual.color;
     const facing=Math.hypot(enemy.vx,enemy.vy)>1 ? Math.atan2(enemy.vy,enemy.vx) : Math.PI/2;
     c.save();c.translate(enemy.x,enemy.y);
-    if(enemy.type === "boss") c.scale(enemy.visualScale||1.65,enemy.visualScale||1.65);
+    if(enemy.type === "boss"){const bossScale=enemy.miniBoss?1.35:[2.2,2.15,2.25,2.35][levelIndex];c.scale(bossScale,bossScale);}
     // Wraith telegraphs use the locked simulation direction, never the current aim.
     if(enemy.type === "wraith" || enemy.type === "boss") {
       const angle=enemy.behavior === "windup" || enemy.behavior === "dash" ? Math.atan2(enemy.dashY,enemy.dashX) : facing;
@@ -1647,6 +1896,7 @@
       }
       c.restore();
     }
+    if(enemy.type==='boss'&&enemy.behavior==='boss-windup'&&(enemy.move==='dive'||enemy.move==='lunge')){c.save();c.strokeStyle='#ff9a76';c.globalAlpha=.65;c.lineWidth=2;c.setLineDash([5,5]);c.beginPath();c.moveTo(0,0);c.lineTo(enemy.dashX*190,enemy.dashY*190);c.stroke();c.restore();}
     c.strokeStyle=color;c.fillStyle=flash ? "#eaffff" : visual.fill;
     c.lineWidth=1.6;c.shadowColor=color;c.shadowBlur=flash ? 18 : 9;
     c.lineJoin="round";c.lineCap="round";
@@ -1654,15 +1904,12 @@
     c.restore();
     if(showHealth && enemy.type === "boss") {
       c.save();c.fillStyle="#c1b5ba";c.textAlign="center";c.font="bold 9px monospace";
-      c.fillText(enemy.miniBoss?"LESSER AMALGAM":"THE AMALGAM",enemy.x,enemy.y-(enemy.miniBoss?26:38));c.restore();
+      c.fillText(enemy.miniBoss?"LESSER "+BOSS_NAMES[levelIndex]:BOSS_NAMES[levelIndex],enemy.x,enemy.y-(enemy.miniBoss?42:[62,66,64,58][levelIndex]));c.restore();
     }
     if(showHealth) {
-      const width=enemy.type === "boss" ? 52 : 24, gap=1, pipWidth=(width-(enemy.maxHp-1)*gap)/enemy.maxHp;
       c.save();c.shadowBlur=0;
-      for(let i=0;i<enemy.maxHp;i++) {
-        c.fillStyle=i<enemy.hp ? visual.color : "#332b43";
-        c.fillRect(enemy.x-width/2+i*(pipWidth+gap),enemy.y-(enemy.type === "boss" ? 29 : 20),pipWidth,3);
-      }
+      if(enemy.type==='boss'){const width=84,y=enemy.y-[53,57,55,49][levelIndex];c.fillStyle='#332b43';c.fillRect(enemy.x-width/2,y,width,5);c.fillStyle=visual.color;c.fillRect(enemy.x-width/2,y,width*Math.max(0,Math.min(1,enemy.hp/enemy.maxHp)),5);}
+      else{const width=24,gap=1,pipWidth=(width-(enemy.maxHp-1)*gap)/enemy.maxHp;for(let i=0;i<enemy.maxHp;i++){c.fillStyle=i<enemy.hp?visual.color:'#332b43';c.fillRect(enemy.x-width/2+i*(pipWidth+gap),enemy.y-(enemy.type==='brute'?39:20),pipWidth,3);}}
       c.restore();
     }
   }
@@ -1670,7 +1917,7 @@
     for(const type of ["ghost","wraith","brute"]) {
       const guide=document.getElementById("guide-"+type), c=guide.getContext("2d");
       c.clearRect(0,0,guide.width,guide.height);
-      c.save();c.translate(80,45);c.scale(2.7,2.7);
+      c.save();c.translate(80,45);const guideScale=type==="brute"?1.15:2.7;c.scale(guideScale,guideScale);
       drawEnemy(c,{type,x:0,y:0,vx:1,vy:0,hitFlash:0,behavior:"pursuit",hp:ENEMY_TYPES[type].hp,maxHp:ENEMY_TYPES[type].hp},false);
       c.restore();
     }
@@ -1758,6 +2005,9 @@
     drawDoors();
     drawWalls();
     drawAtmosphere();
+    for(const boss of enemies)if(boss.alive&&boss.type==='boss'&&levelIndex===1){ctx.save();ctx.fillStyle='#8ad3df';ctx.strokeStyle='#d5f5f5';ctx.lineWidth=1;ctx.shadowColor='#80dff2';ctx.shadowBlur=6;for(let i=0;i<4;i++){const a=(boss.orbitAngle||0)+i*Math.PI/2,x=boss.x+Math.cos(a)*30,y=boss.y+Math.sin(a)*30;ctx.beginPath();ctx.moveTo(x,y-9);ctx.lineTo(x+5,y);ctx.lineTo(x,y+9);ctx.lineTo(x-5,y);ctx.closePath();ctx.fill();ctx.stroke();}ctx.restore();}
+    drawBossEffects();
+    drawBossHeals();
     drawClassEffects();
     drawBulletsAndEnemies();
     network.drawTeammates();
@@ -1815,6 +2065,8 @@
       this.reconcile(local,first);if(this.displayedClass!==player.hunter){this.displayedClass=player.hunter;refreshClassInfo();}if(world.won||world.gameOver)player.hunter=this.selectedHunter||me.hunter;if(local.hp<oldHp)damageFlash=.22;
       const old=new Map(enemies.map(e=>[e.id,e]));enemies=world.enemies.map(e=>({...e,x:first?e.x:old.get(e.id)?.x??e.x,y:first?e.y:old.get(e.id)?.y??e.y}));
       graveHazards=(world.graveHazards||[]).map(h=>({...h}));
+      bossEffects=(world.bossEffects||[]).map(e=>({...e}));
+      bossHeals=(world.bossHeals||[]).map(h=>({...h}));
       classEffects=(world.classEffects||[]).map(e=>({...e}));
       bullets=world.bullets.map(b=>({...b}));particles=world.particles.map(p=>({...p}));trails=world.trails.map(t=>({...t}));muzzle=world.muzzle?{...world.muzzle}:null;
       waveIndex=world.waveIndex;waveDelay=world.waveDelay;stage=world.stage;score=world.score;won=world.won;gameOver=world.gameOver;summonsUsed=world.summonsUsed;finaleSpawned=world.finaleSpawned;
@@ -1865,6 +2117,7 @@
   // Initial mouse aim points right until the pointer enters the game canvas.
   selectLevel(0);
   drawEnemyGuide();
+  function renderBossPreview(i){const art=document.getElementById('boss-art-'+i),c=art.getContext('2d');c.clearRect(0,0,art.width,art.height);c.save();c.translate(100,76);c.scale(2.7,2.7);drawStageBoss(c,i);c.restore();} for(let i=0;i<4;i++){renderBossPreview(i);if(BOSS_SPRITES[i])BOSS_SPRITES[i].addEventListener('load',()=>renderBossPreview(i));}
   initHunterPicker();
   initHunterCarousel();
   initStageCarousel();
@@ -1874,4 +2127,3 @@
 </script>
 </body>
 </html>
-

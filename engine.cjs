@@ -16,7 +16,7 @@ function makeEngine(){
  replace('if(distance>300)distant.push(point);','if(distance>300 && netActors.every(a=>!a.connected||a.hp<=0||Math.hypot(a.x-point.x,a.y-point.y)>180))distant.push(point);');
 
  replace('if(Math.hypot(point.x-player.x,point.y-player.y)>180)candidates.push(point);','if(Math.hypot(point.x-player.x,point.y-player.y)>180 && netActors.every(a=>!a.connected||a.hp<=0||Math.hypot(a.x-point.x,a.y-point.y)>140))candidates.push(point);');
- replace('player.hp=Math.min(MAX_HP,player.hp+15);','netHeal();');
+ replace('player.hp=Math.min(player.maxHp||MAX_HP,player.hp+15);','netHeal();');
  script=script.replaceAll('hp:config.hp,maxHp:config.hp','hp:Math.ceil(config.hp*netDifficulty),maxHp:Math.ceil(config.hp*netDifficulty)');
  replace('hp: config.hp+wave.hpBonus, maxHp: config.hp+wave.hpBonus','hp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty), maxHp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty)');
  const bridge=`
@@ -65,10 +65,10 @@ function makeEngine(){
     if(netActors.length&&netActors.every(a=>a.hp<=0||!commands.has(a.id))){gameOver=true;statusLabel.textContent='TEAM DEFEATED';}
   }
   globalThis.engine={start:netStart,tick:netTick,snapshot:()=>({levelIndex,waveIndex,waveDelay,stage,score,won,gameOver,summonsUsed,finaleSpawned,difficulty:netDifficulty,
-    graveHazards:graveHazards.map(h=>({...h})),status:statusLabel.textContent,players:netActors.map(a=>({...a})),enemies:enemies.filter(e=>e.alive).map(e=>({...e})),
+    bossEffects:bossEffects.map(h=>({...h})),bossHeals:bossHeals.map(h=>({...h})),graveHazards:graveHazards.map(h=>({...h})),status:statusLabel.textContent,players:netActors.map(a=>({...a})),enemies:enemies.filter(e=>e.alive).map(e=>({...e})),
     classEffects:classEffects.map(e=>({...e})),bullets:bullets.map(b=>({...b})),particles:particles.map(p=>({...p})),trails:trails.map(t=>({...t})),muzzle:muzzle?{...muzzle}:null}),
     debug:{get actors(){return netActors},get enemies(){return enemies},get bullets(){return bullets},get walls(){return walls},get graveHazards(){return graveHazards},updateGraves,circleHitsRect,clearSight,
-    setActor:(id,values)=>Object.assign(netActors.find(a=>a.id===id),values),spawnBoss,updateBossEncounter}};
+    setActor:(id,values)=>Object.assign(netActors.find(a=>a.id===id),values),spawnBoss,updateBossEncounter,updateBossHeals}};
  `;
  script=script.slice(0,script.indexOf('  // Initial mouse aim points'))+bridge+'\n})();';
  const labels={},context=new Proxy({}, {get:(o,k)=>o[k]??(()=>{}),set:(o,k,v)=>(o[k]=v,true)});

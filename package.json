@@ -1,1 +1,1 @@
-{"name":"monster-rush-shared-hunt","version":"0.1.0","private":true,"scripts":{"start":"node server.cjs","test":"node test.cjs"},"engines":{"node":">=20"}}
+{"name":"monster-rush-shared-hunt","version":"0.1.0","private":true,"scripts":{"start":"node server.cjs","test":"node boss-health-test.cjs && node boss-moves-test.cjs && node boss-animation-test.cjs && node boss-heal-test.cjs"},"engines":{"node":">=20"}}
