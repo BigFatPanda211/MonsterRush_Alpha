@@ -1,35 +1,29 @@
-# Monster Rush Alpha — Shared Hunt
+# Monster Rush Alpha
 
-Two-to-four-player cooperative browser game. Create a room, share its six-character code, choose hunters, ready up, and let the host start. Everyone must use the same hosted address. No downloads for joining players.
+Cooperative haunted-mansion arcade combat for 2–4 players, with an offline-capable solo mode.
 
-## Run locally
+Play: https://monster-rush-alpha.vercel.app/
+Solo: https://monster-rush-alpha.vercel.app/solo
+Multiplayer server: https://monster-rush-alpha.onrender.com
 
-Node.js 22 recommended. No runtime dependencies. Run `npm start` and open http://127.0.0.1:8080 in two browser tabs. Or double-click play.cmd. Keep the server running while playing. A localhost link cannot be used by a friend on another computer.
+## Current build
 
-## Gameplay
+Four levels: Moonlit Courtyard, Shattered Archives, Blackthorn Manor and Haunted Graveyard. Four classes: Warden (hammer/guard), Riftwalker (bow/dash), Hexkeeper (staff, grimoire, healing and revival), and Revenant (twin blades/Blood Pact). Dark illustrated characters, class-specific actions, a planted Brute gait, tapered Revenant slashes, hover/focus selection help and reticle-only aiming.
 
-Courtyard → Archives → Manor; three waves of 8/12/16, then boss, health-based Ghost summons and final Wraith. Shared score and authoritative enemy state; separate player health and weapons. No friendly fire. Dead hunters spectate until the next run; surviving teammates can finish. Everyone readies up again, then the host chooses/restarts a map. Survivors receive up to 15 HP between waves; dead hunters do not revive mid-run.
+Three rising waves lead to the Amalgam and nine Wraith reinforcements. A smaller, half-health Amalgam appears after the main boss dies; victory requires clearing every enemy. The Graveyard includes looping gates, grass, skeletal hazards, castle spawning and a one-time main-boss heal.
 
-Enemy HP scales with party size at run start: 1.5x for two, 2x for three, 2.5x for four, rounded up. Speeds and damage remain at solo Rising Dread tuning. The four hunters now have distinct weapons, charged attacks and Space abilities. Health (100) and movement speed (235) remain equal. See CLASS-GUIDE.md.
+## Controls
 
-Short connection interruptions allow reconnecting for ten seconds. Refreshing the same tab restores its session if still valid. Stale controls stop after 350ms. Lost hosts transfer ownership when leaving or after their grace period. Rooms reject new players during an active run; create a new room for a different team.
+WASD/arrows move. Left mouse attacks. Hold right mouse then release for a charged attack. Space uses the class ability. Hexkeeper can hold E near a fallen connected teammate for three uninterrupted seconds to revive them at 20 HP. Movement, damage, attacks, release, blocked sightlines or loss of range interrupt revival.
 
-## Hosting
+Esc opens the exit prompt; F toggles fullscreen/windowed. Escape-only Keyboard Lock is requested where supported; browsers may require permission or reserve Esc to leave fullscreen. The game preserves the exit prompt in that case.
 
-Deploy as one Node web service, not a static site. Build: `npm install --ignore-scripts`. Start: `node server.cjs`. Environment: HOST=0.0.0.0 and NODE_VERSION=22. The provider supplies PORT. Health endpoint: /health. A render.yaml is included for the standalone repository.
+## Hosting and local play
 
-One running instance owns in-memory rooms. Restart/redeploy clears them; there is no database or durable match recovery. Render free instances sleep when idle and may take about a minute to wake. This is a playtest alpha; latency/balance across continents needs real player testing.
+Vercel serves frontend/; Render runs the authoritative Node server. Root config.js is same-origin; prepare-frontend.cjs generates the explicit Render backend origin for static hosting. Preserve the configured CORS allowlist. Node.js 20+ is required for local multiplayer. Run npm start and open http://127.0.0.1:8080; /solo opens solo mode. All game runtime code has no external package dependencies.
 
-## Tests
+## Validation
 
-`node test.cjs`: two/four-player simulations on all maps, full waves/boss/finale, shared hit/score rules, per-player damage and team defeat, live HTTP/SSE protocol, room capacity/auth/host/readiness/sequence/disconnect rules.
+node test.cjs --simulation-only checks complete two/four-player encounters across all maps. Dedicated tests cover class combat, animations, graveyard gates/hazards, boss phases, authoritative revival and protocol input, menu/reticle controls, fullscreen and Escape handling. See RELEASE-V6.md for release coverage.
 
-`node client-test.cjs`: actual client room/ready/start/render-state/session-resume/leave logic using live HTTP/SSE with mocked DOM/Canvas. These are not a substitute for a real-browser playtest.
-
-Controls: WASD/arrows move, mouse aims, hold left mouse fires, Escape leaves room. R/N direct you to shared room controls rather than resetting only one client. Client interpolation smooths state at the cost of some visible input delay; prediction/lag compensation and revives are not implemented.
-
-Original approved solo Rising Dread remains available at /solo. Solo source is embedded read-only by the server adapter to preserve its authored game behavior. Net adapters change authority, target selection, scaling, team healing and snapshot ownership.
-
-`node classes-test.cjs` verifies class damage, shielding, piercing, slows, healing caps, no revive, wall separation and dash safety. `node test.cjs --simulation-only` runs the full encounter suite without opening network sockets. Keep classes.js next to the HTML files; the Node server serves it and the authoritative engine imports the same class rules.
-
-Public / and /solo now use index.html + shell.js so fullscreen survives mode changes. client.html and solo.html are the inner game documents. See VERCEL-FRONTEND.md for the prepared static frontend split and exact-origin backend configuration. Run node shell-test.cjs for shell persistence, routes and CORS checks.
+Original Canvas slash effects are inspired by jasontomlee's Slash FX; no sprite-pack files are included. See SLASH-REFERENCE.md.

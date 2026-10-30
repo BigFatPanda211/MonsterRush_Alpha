@@ -11,7 +11,7 @@ function makeEngine(){
  replace('    updateClass(dt);','    // Per-actor abilities are advanced in netTick.');
  replace('    updateCharge(dt);','    // Charge is advanced once per actor below.');
  replace('    player.invulnerability = Math.max(0, player.invulnerability-dt);','    // Protection is advanced separately for every network actor.');
- replace('if(player.hp<=0){gameOver=true;input.fire=false;input.charge=false;statusLabel.textContent="YOU WERE CAUGHT";}','if(player.hp<=0){input.fire=false;input.charge=false;}\n    netCommit();');
+ replace('if(player.hp<=0){gameOver=true;input.fire=false;input.charge=false;input.revive=false;statusLabel.textContent="YOU WERE CAUGHT";}','if(player.hp<=0){input.fire=false;input.charge=false;}\n    netCommit();');
  replace('const safe=p=>!walls.some','const safe=p=>!netActors.some(a=>a.connected&&a.hp>0&&Math.hypot(a.x-p.x,a.y-p.y)<(finale?40:100)) && !walls.some');
  replace('if(distance>300)distant.push(point);','if(distance>300 && netActors.every(a=>!a.connected||a.hp<=0||Math.hypot(a.x-point.x,a.y-point.y)>180))distant.push(point);');
 
@@ -21,7 +21,7 @@ function makeEngine(){
  replace('hp: config.hp+wave.hpBonus, maxHp: config.hp+wave.hpBonus','hp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty), maxHp: Math.ceil((config.hp+wave.hpBonus)*netDifficulty)');
  const bridge=`
   let netActors=[],netActive=null,netClock=0,netCache=new Map(),netDifficulty=1;
-  function netCommit(){if(netActive)for(const k of ['x','y','aimX','aimY','moving','hp','invulnerability','chargeTime','chargeCooldown','lastReleaseSeq','abilityCooldown','abilityTime','lastAbilitySeq','pactHealing','attackTime','attackSide','attackSerial','attackDuration','attackKind','attackAngle'])netActive[k]=player[k];}
+  function netCommit(){if(netActive)for(const k of ['x','y','aimX','aimY','moving','hp','invulnerability','chargeTime','chargeCooldown','lastReleaseSeq','abilityCooldown','abilityTime','lastAbilitySeq','pactHealing','attackTime','attackSide','attackSerial','attackDuration','attackKind','attackAngle','reviveTime','reviveTarget','reviveHp'])netActive[k]=player[k];}
   function netHeal(){for(const a of netActors)if(a.connected&&a.hp>0)a.hp=Math.min(100,a.hp+15);if(netActive)player.hp=netActive.hp;}
   function netUse(actor){netActive=actor;Object.assign(player,actor);}
   function netTarget(enemy){
@@ -51,11 +51,12 @@ function makeEngine(){
   }
   function netTick(dt,commands){
     netClock+=dt;netActors=netActors.filter(a=>commands.has(a.id));
+    for(const a of netActors)a.connected=!!commands.get(a.id)?.connected;
     for(const actor of netActors){
       const command=commands.get(actor.id);actor.connected=!!command?.connected;
       actor.invulnerability=Math.max(0,actor.invulnerability-dt);actor.cooldown=Math.max(0,actor.cooldown-dt);
       if(!actor.connected||actor.hp<=0||gameOver||won){actor.chargeTime=0;actor.abilityTime=0;continue;}
-      netUse(actor);Object.assign(input,command.input);Object.assign(mouse,{x:command.input.aimX,y:command.input.aimY});
+      netUse(actor);Object.assign(input,{revive:false},command.input);Object.assign(mouse,{x:command.input.aimX,y:command.input.aimY});
       update(dt);shootTimer=actor.cooldown;updateClass(dt);updateCharge(dt);if(input.fire)fireBullet();actor.cooldown=shootTimer;netCommit();
     }
     input.fire=false;input.charge=false;
@@ -76,3 +77,4 @@ function makeEngine(){
  vm.createContext(sandbox);vm.runInContext(script,sandbox,{timeout:10000});return sandbox.engine;
 }
 module.exports={makeEngine};
+

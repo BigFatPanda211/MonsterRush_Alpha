@@ -26,8 +26,8 @@ async function main(){
     if(wave<2){assert.equal(engine.snapshot().stage,'wave-break');assert.equal(engine.debug.actors[0].hp,75+15*wave);assert.equal(engine.debug.actors[1].hp,55+15*wave);engine.tick(4.01,cmd);assert.equal(engine.snapshot().stage,'wave');}
   }
   for(let i=0;i<61;i++)engine.tick(1/30,cmd);const boss=engine.debug.enemies.find(e=>e.alive&&e.type==='boss');assert(boss);assert.equal(boss.maxHp,Math.ceil(20*(1+.5*(teamSize-1))));
-  const hits=Math.ceil(boss.maxHp*.4);for(let i=0;i<hits;i++)strike(boss);assert.equal(engine.snapshot().summonsUsed,9);defeat(boss);assert.equal(engine.snapshot().stage,'ghost-cleanup');
-  for(const e of [...engine.debug.enemies])if(e.alive)defeat(e);for(let i=0;i<23;i++)engine.tick(1/30,cmd);const last=engine.debug.enemies.find(e=>e.alive&&e.finale);assert(last);defeat(last);assert(engine.snapshot().won);assert.equal(engine.snapshot().score,7500);
+  const hits=Math.ceil(boss.maxHp*.4);for(let i=0;i<hits;i++)strike(boss);assert.equal(engine.snapshot().summonsUsed,9);defeat(boss);assert.equal(engine.snapshot().stage,'last-gasp');
+  for(const e of [...engine.debug.enemies])if(e.alive)defeat(e);for(let i=0;i<23;i++)engine.tick(1/30,cmd);const last=engine.debug.enemies.find(e=>e.alive&&e.finale);assert(last);defeat(last);assert(engine.snapshot().won);assert.equal(engine.snapshot().score,8800);
   console.log('PASS '+teamSize+' players / map '+(level+1)+': shared weapons/deaths, three waves, team healing, scaled boss/summons and finale');
  }
  const engine=makeEngine();engine.start(members.slice(0,2),0,1);for(const e of engine.debug.enemies)e.alive=false;

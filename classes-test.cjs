@@ -19,7 +19,7 @@ function setup(hunter,other='riftwalker'){
  const t=setup('hexkeeper'),target=t.enemy(55);t.input.fire=true;t.tick(.12);assert.equal(target.hp,19);assert(target.slowTime>0);
  const h=setup('hexkeeper');h.e.debug.setActor('a',{hp:50});h.e.debug.setActor('b',{hp:50});h.input.abilitySeq=1;for(let i=0;i<120;i++)h.tick();const players=h.e.snapshot().players;assert(players.every(a=>Math.abs(a.hp-70)<.01));assert(h.e.snapshot().players[0].abilityCooldown>13);
  const dead=setup('hexkeeper');dead.e.debug.setActor('b',{hp:0});dead.input.abilitySeq=1;for(let i=0;i<20;i++)dead.tick();assert.equal(dead.e.snapshot().players[1].hp,0);
- const rune=setup('hexkeeper');const near=rune.enemy(100);rune.input.charge=true;for(let i=0;i<34;i++)rune.tick();rune.input.charge=false;rune.input.releaseSeq=1;rune.tick();assert(rune.e.snapshot().classEffects.some(e=>e.type==='rune'));assert.equal(near.hp,20);for(let i=0;i<21;i++)rune.tick();assert.equal(near.hp,17);console.log('PASS Hex slow, capped team healing, no revive, rune warning then delayed AoE damage.');
+ const rune=setup('hexkeeper');const near=rune.enemy(100);rune.input.charge=true;for(let i=0;i<34;i++)rune.tick();rune.input.charge=false;rune.input.releaseSeq=1;rune.tick();assert(rune.e.snapshot().classEffects.some(e=>e.type==='rune'));assert.equal(near.hp,20);for(let i=0;i<21;i++)rune.tick();assert.equal(near.hp,17);console.log('PASS Hex slow, capped Sanctuary healing without automatic revive, rune warning then delayed AoE damage.');
 }
 {
  const t=setup('revenant');t.e.debug.setActor('a',{hp:50});const target=t.enemy(35,0,100);t.input.abilitySeq=1;t.input.fire=true;for(let i=0;i<120;i++)t.tick();const a=t.e.snapshot().players[0];assert(target.hp<100);assert(a.hp>50&&a.hp<=62.01);assert(a.pactHealing<=12);

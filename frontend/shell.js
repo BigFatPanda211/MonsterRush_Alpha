@@ -6,7 +6,7 @@
  window.MONSTER_SHELL={
    switchMode(mode){const path=mode==='solo'?'/solo':'/';if(location.pathname!==path)history.pushState({mode},'',path);load(mode);},
    isFullscreen:()=>!!document.fullscreenElement,
-   async toggleFullscreen(){if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else throw Error('Fullscreen unavailable');sendState();}
+   async toggleFullscreen(){if(document.fullscreenElement){window.navigator?.keyboard?.unlock?.();await document.exitFullscreen();}else if(document.documentElement.requestFullscreen){await document.documentElement.requestFullscreen();try{await window.navigator?.keyboard?.lock?.(['Escape']);}catch{}}else throw Error('Fullscreen unavailable');sendState();}
  };
  frame.addEventListener('load',sendState);document.addEventListener('fullscreenchange',sendState);window.addEventListener('popstate',()=>load(modeFromPath()));load(modeFromPath());
 })();
