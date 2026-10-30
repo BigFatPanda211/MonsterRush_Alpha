@@ -1,0 +1,16 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
+for(const file of ['solo.html','client.html']){
+ const source=fs.readFileSync(__dirname+'/'+file,'utf8'),start=source.indexOf('  let hunterCarousel='),end=source.indexOf('  function initHunterPicker()',start),events={},attrs={},ids=['warden','riftwalker','hexkeeper','revenant'],selected=[];let now=1000;
+ const element=id=>({id,disabled:false,addEventListener:(name,fn)=>{events[id+':'+name]=fn},setAttribute:(k,v)=>{attrs[id+':'+k]=v}});
+ const viewport={...element('viewport'),clientWidth:800,scrollWidth:3200,scrollLeft:0,scrollTo({left}){this.scrollLeft=left;events['viewport:scroll']?.()},querySelectorAll:()=>slides};
+ const slides=ids.map((id,i)=>({...element('slide'+i),dataset:{hunterSlide:id},querySelector:()=>cards[i]})),cards=ids.map((id,i)=>({...element('card'+i),tabIndex:0}));
+ const elements={'hunter-carousel-viewport':viewport,'hunter-carousel':element('root'),'hunter-prev':element('prev'),'hunter-next':element('next'),'hunter-position':element('position')};for(let i=0;i<4;i++)elements['hunter-dot-'+i]=element('dot'+i);
+ const box={document:{getElementById:id=>elements[id]},window:{addEventListener:(k,fn)=>events['window:'+k]=fn,matchMedia:()=>({matches:false})},Date:{now:()=>now},player:{hunter:'warden'},chooseHunter:id=>{box.player.hunter=id;selected.push(id)}};vm.createContext(box);vm.runInContext(source.slice(start,end)+';initHunterCarousel();',box);
+ assert(elements['hunter-prev'].disabled);assert.equal(cards[0].tabIndex,0);assert.equal(attrs['slide1:aria-hidden'],'true');events['next:click']();assert.equal(box.player.hunter,'riftwalker');assert.equal(viewport.scrollLeft,800);assert.equal(elements['hunter-position'].textContent,'02 / 04');
+ events['root:keydown']({key:'End',preventDefault(){},stopPropagation(){}});assert.equal(box.player.hunter,'revenant');assert(elements['hunter-next'].disabled);events['root:keydown']({key:'Home',preventDefault(){},stopPropagation(){}});assert.equal(box.player.hunter,'warden');
+ events['viewport:wheel']({deltaY:80,deltaX:0,deltaMode:0,preventDefault(){}});assert.equal(box.player.hunter,'riftwalker');now+=400;events['viewport:wheel']({deltaY:80,deltaX:0,deltaMode:0,preventDefault(){}});assert.equal(box.player.hunter,'hexkeeper');
+ events['viewport:pointerdown']();viewport.scrollLeft=2400;events['viewport:scroll']();assert.equal(box.player.hunter,'revenant');assert.equal(attrs['dot3:aria-current'],'true');assert.equal(cards[3].tabIndex,0);assert.equal(cards[2].tabIndex,-1);
+ events['dot1:click']();assert.equal(box.player.hunter,'riftwalker');viewport.clientWidth=600;events['window:resize']();assert.equal(viewport.scrollLeft,600);
+ const count=selected.length;events['root:keydown']({key:'ArrowRight',target:{tagName:'INPUT'},preventDefault(){throw Error('Input intercepted')}});assert.equal(selected.length,count);
+ assert.equal((source.match(/class="hunter-details"/g)||[]).length,4);assert.equal((source.match(/<li><strong>/g)||[]).length,12);assert(!source.includes('role="tooltip"'));assert(source.includes('Hold E near a fallen ally'));console.log('PASS '+file+': buttons, keyboard/endpoints, wheel, scroll selection, dots, resize, input exclusion and persistent action descriptions.');
+}
