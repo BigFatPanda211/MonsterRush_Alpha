@@ -633,27 +633,32 @@
     else if(e.type==='shard'){ctx.beginPath();ctx.moveTo(e.x,e.y-8);ctx.lineTo(e.x+5,e.y);ctx.lineTo(e.x,e.y+8);ctx.lineTo(e.x-5,e.y);ctx.closePath();ctx.fill();}
     else if(e.type==='beam'){ctx.lineWidth=active?(e.wide?24:5):2;ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.endX??e.x,e.endY??e.y);ctx.stroke();}ctx.restore();}}
 
-  // One reserved pickup for each hunter in this boss encounter.
-  function spawnBossHeals(actors,boss){
-    bossHeals=[];
-    for(const actor of actors){
-      if(actor.connected===false)continue;
-      const offsets=[[46,0],[-46,0],[0,46],[0,-46],[36,36],[-36,36],[36,-36],[-36,-36]];
-      const position=offsets.map(([dx,dy])=>({x:actor.x+dx,y:actor.y+dy})).find(p=>
-        p.x>40&&p.x<920&&p.y>40&&p.y<560&&
-        !walls.some(w=>circleHitsRect(p.x,p.y,10,w))&&
-        clearSight(actor.x,actor.y,p.x,p.y,8)&&
-        Math.hypot(p.x-boss.x,p.y-boss.y)>55&&
-        bossHeals.every(h=>Math.hypot(p.x-h.x,p.y-h.y)>30))||{x:actor.x,y:actor.y};
-      bossHeals.push({ownerId:actor.id,slot:actor.slot||1,x:position.x,y:position.y,used:false});
-    }
+  // Each hunter earns one reserved pickup only after falling below half health.
+  function spawnBossHeals(actors){
+    bossHeals=actors.filter(actor=>actor.connected!==false).map(actor=>({
+      ownerId:actor.id,slot:actor.slot||1,spawned:false,used:false
+    }));
+  }
+  function placeBossHeal(heal,actor){
+    const boss=enemies.find(e=>e.alive&&e.type==='boss');
+    const offsets=[[46,0],[-46,0],[0,46],[0,-46],[36,36],[-36,36],[36,-36],[-36,-36]];
+    const position=offsets.map(([dx,dy])=>({x:actor.x+dx,y:actor.y+dy})).find(p=>
+      p.x>40&&p.x<920&&p.y>40&&p.y<560&&
+      !walls.some(w=>circleHitsRect(p.x,p.y,10,w))&&
+      clearSight(actor.x,actor.y,p.x,p.y,8)&&
+      (!boss||Math.hypot(p.x-boss.x,p.y-boss.y)>55)&&
+      bossHeals.every(h=>!h.spawned||Math.hypot(p.x-h.x,p.y-h.y)>30))||{x:actor.x,y:actor.y};
+    heal.x=position.x;heal.y=position.y;heal.spawned=true;
+    burst(heal.x,heal.y,'#b1e8a4',10);
   }
   function updateBossHeals(){
     if(stage!=='boss'||gameOver||won)return;
     for(const heal of bossHeals){
       if(heal.used)continue;
       const actor=classActors().find(a=>a.id===heal.ownerId&&a.connected!==false);
-      if(!actor||actor.hp<=0||actor.hp>=actor.maxHp)continue;
+      if(!actor||actor.hp<=0)continue;
+      if(!heal.spawned&&actor.hp<actor.maxHp*.5)placeBossHeal(heal,actor);
+      if(!heal.spawned||actor.hp>=actor.maxHp)continue;
       if(Math.hypot(actor.x-heal.x,actor.y-heal.y)>actor.radius+13)continue;
       const restored=Math.min(actor.maxHp-actor.hp,actor.maxHp*.35);
       actor.hp+=restored;heal.used=true;
@@ -664,7 +669,7 @@
   function drawBossHeals(){
     if(stage!=='boss'||gameOver||won)return;
     for(const heal of bossHeals){
-      if(heal.used)continue;
+      if(heal.used||!heal.spawned)continue;
       const pulse=1+.08*Math.sin(lastTime*.004+heal.slot);
       ctx.save();ctx.translate(heal.x,heal.y);ctx.scale(pulse,pulse);
       ctx.fillStyle='rgba(8,19,15,.86)';ctx.strokeStyle='#b5dda9';ctx.lineWidth=1.4;
@@ -692,7 +697,7 @@
     enemies=[{id:nextEnemyId++,type:"boss",x:best.x,y:best.y,radius:14,hp:bossHp,maxHp:bossHp,
       speed:stats.speed,vx:0,vy:0,phase:0,alive:true,hitFlash:0,knockX:0,knockY:0,
       behavior:"pursuit",behaviorTimer:0,abilityCooldown:1.5,dashX:0,dashY:0}];
-    bullets=[];stage="boss";spawnBossHeals(classActors(),enemies[0]);statusLabel.textContent=BOSS_NAMES[levelIndex];updateHud();
+    bullets=[];stage="boss";spawnBossHeals(classActors());statusLabel.textContent=BOSS_NAMES[levelIndex];updateHud();
   }
   function spawnReinforcement(type,origin,finale=false) {
     const paths=radiusPaths.get(11);if(!paths)return false;
