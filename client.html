@@ -138,6 +138,9 @@
     .instruction-grid strong,.instruction-grid small{display:block}.instruction-grid small{color:#c4b6b9}
     .key-art,.mouse-art{height:63px;display:grid;place-content:center;margin-bottom:8px}
     .key-art kbd{display:inline-block;padding:3px 7px;margin:2px;border:1px solid #aeb7c8;border-radius:4px;background:#273440;color:#fff}
+    .wasd-keys{display:flex;flex-direction:column;align-items:center;gap:3px}
+    .wasd-keys .key-row{display:flex;gap:4px}
+    .wasd-keys kbd{box-sizing:border-box;display:grid;place-items:center;width:29px;height:27px;margin:0;padding:0;border:2px solid #101820;border-radius:6px;background:#e4e6e4;color:#101820;font:bold 16px Arial,sans-serif;box-shadow:2px 3px 0 #65707c,3px 4px 0 #080d14}
     .key-art .space-key{padding:7px 35px}
     .mouse-art{width:76px;height:62px;margin:0 auto 8px;border:2px solid #c3d6e0;border-radius:24px 24px 30px 30px;grid-template-columns:1fr 1fr;overflow:hidden}
     .mouse-art span{height:29px;padding-top:9px;font-size:9px;border-bottom:1px solid #c3d6e0}.mouse-art span:first-child{border-right:1px solid #c3d6e0}
@@ -215,7 +218,7 @@
     <dialog id="start-instructions" class="start-instructions" aria-labelledby="instructions-title">
       <h2 id="instructions-title">BEFORE THE HUNT</h2>
       <div class="instruction-grid">
-        <div><div class="key-art"><kbd>W</kbd><br><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div><strong>W A S D for movement</strong></div>
+        <div><div class="key-art"><div class="wasd-keys" aria-hidden="true"><kbd>W</kbd><div class="key-row"><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div></div></div><strong>W A S D for movement</strong></div>
         <div><div class="mouse-art" aria-hidden="true"><span class="mouse-left">LEFT</span><span>RIGHT</span></div><strong>Left click for basic attack</strong><small>Hold for continuous shot</small></div>
         <div><div class="mouse-art" aria-hidden="true"><span>LEFT</span><span class="mouse-right">RIGHT</span></div><strong>Right click for charged attack</strong><small>Hold, then release</small></div>
         <div><div class="key-art"><kbd class="space-key">SPACE</kbd></div><strong>Space for special ability</strong></div>
