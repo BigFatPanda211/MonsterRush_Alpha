@@ -16,7 +16,7 @@ function browser(base,storage=new Map()){
 
 const a=browser('');const esc={key:'Escape',repeat:false,preventDefault(){}};
 (async()=>{
-a.client.startGame();assert.equal(a.element('start-instructions').open,true);a.callbacks['brief-ready:click']();assert.equal(a.client.state,'countdown');await waitFor(()=>a.client.state==='playing');
+a.client.startGame();assert.equal(a.element('start-instructions').open,true);a.callbacks['brief-back:click']();assert.equal(a.client.state,'menu');assert.equal(a.element('start-instructions').open,false);a.client.startGame();a.callbacks['brief-ready:click']();assert.equal(a.client.state,'countdown');await waitFor(()=>a.client.state==='playing');
 const before={x:a.client.player.x,y:a.client.player.y,hp:a.client.player.hp};
 a.client.input.up=true;a.client.input.fire=true;a.windowCallbacks.keydown(esc);assert.equal(a.client.state,'paused');assert.equal(a.element('solo-menu-dialog').open,true);assert.equal(a.client.input.fire,false);
 a.windowCallbacks.keydown({...esc,repeat:true});assert.equal(a.client.state,'paused');a.windowCallbacks.keydown({key:'w',preventDefault(){}});assert.equal(a.client.input.up,false);

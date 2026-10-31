@@ -142,9 +142,11 @@
     .wasd-keys .key-row{display:flex;gap:4px}
     .wasd-keys kbd{box-sizing:border-box;display:grid;place-items:center;width:29px;height:27px;margin:0;padding:0;border:2px solid #101820;border-radius:6px;background:#e4e6e4;color:#101820;font:bold 16px Arial,sans-serif;box-shadow:2px 3px 0 #65707c,3px 4px 0 #080d14}
     .key-art .space-key{padding:7px 35px}
-    .mouse-art{width:76px;height:62px;margin:0 auto 8px;border:2px solid #c3d6e0;border-radius:24px 24px 30px 30px;grid-template-columns:1fr 1fr;overflow:hidden}
-    .mouse-art span{height:29px;padding-top:9px;font-size:9px;border-bottom:1px solid #c3d6e0}.mouse-art span:first-child{border-right:1px solid #c3d6e0}
-    .mouse-left,.mouse-right{background:#934d61}
+    .mouse-art{position:relative;box-sizing:border-box;width:51px;height:63px;margin:0 auto 8px;border:3px solid #d6e0e4;border-radius:23px 23px 25px 25px;background:linear-gradient(#293844 45%,#151d28);overflow:hidden;box-shadow:0 3px 0 #070c13,0 0 12px #8fb7c033}
+    .mouse-art .mouse-button{position:absolute;top:0;width:50%;height:28px;border-bottom:2px solid #d6e0e4}.mouse-art .mouse-button:first-child{left:0;border-right:1px solid #d6e0e4}.mouse-art .mouse-button:nth-child(2){right:0}
+    .mouse-art::after{content:'';position:absolute;top:10px;left:calc(50% - 3px);width:6px;height:13px;border:1px solid #d6e0e4;border-radius:5px;background:#111a22}
+    .mouse-art.mouse-left .mouse-button:first-child,.mouse-art.mouse-right .mouse-button:nth-child(2){background:#bf7487;box-shadow:inset 0 0 12px #f3a2b4}
+    .start-instructions .brief-close{position:absolute;top:10px;right:12px;display:grid;place-items:center;width:34px;height:34px;margin:0;padding:0;border:1px solid #8f777a;border-radius:7px;background:#25232d;color:#f3e4dc;font-size:24px;line-height:1;cursor:pointer}.brief-close:hover,.brief-close:focus-visible{background:#7c4657;color:#fff}
     .start-instructions p{text-align:center;color:#d7c9ba}.start-instructions button{display:block;margin:auto;padding:10px 20px}
     #start-countdown:not([hidden]){position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#03050ad9;color:#f6dfb7;font:bold clamp(6rem,24vw,13rem) Georgia,serif;text-shadow:0 0 38px #e89d4b}
     @media(max-width:520px){.instruction-grid{grid-template-columns:1fr 1fr;gap:6px}.instruction-grid>div{padding:8px;font-size:.7rem;min-height:115px}.start-instructions{padding:12px}}
@@ -216,11 +218,12 @@
       <div class="enemy-card"><canvas id="guide-brute" width="160" height="90" aria-label="Brute: cyan armored head with magenta horns"></canvas><b>03 / BRUTE</b><span>HEAVY TANK / RESISTS KNOCKBACK</span></div>
     </section></aside><dialog id="leave-dialog" aria-labelledby="leave-title" aria-describedby="leave-description"><h2 id="leave-title">Leave this hunt?</h2><p id="leave-description">The multiplayer match keeps running. Leaving removes you from this room; your teammates can continue.</p><button id="stay-in-hunt" autofocus>Stay in hunt</button> <button id="confirm-leave">Leave room</button></dialog></section>
     <dialog id="start-instructions" class="start-instructions" aria-labelledby="instructions-title">
+      <button id="brief-back" class="brief-close" type="button" aria-label="Back to character selection" title="Back to character selection">×</button>
       <h2 id="instructions-title">BEFORE THE HUNT</h2>
       <div class="instruction-grid">
         <div><div class="key-art"><div class="wasd-keys" aria-hidden="true"><kbd>W</kbd><div class="key-row"><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div></div></div><strong>W A S D for movement</strong></div>
-        <div><div class="mouse-art" aria-hidden="true"><span class="mouse-left">LEFT</span><span>RIGHT</span></div><strong>Left click for basic attack</strong><small>Hold for continuous shot</small></div>
-        <div><div class="mouse-art" aria-hidden="true"><span>LEFT</span><span class="mouse-right">RIGHT</span></div><strong>Right click for charged attack</strong><small>Hold, then release</small></div>
+        <div><div class="mouse-art mouse-left" aria-hidden="true"><span class="mouse-button"></span><span class="mouse-button"></span></div><strong>Left click for basic attack</strong><small>Hold for continuous shot</small></div>
+        <div><div class="mouse-art mouse-right" aria-hidden="true"><span class="mouse-button"></span><span class="mouse-button"></span></div><strong>Right click for charged attack</strong><small>Hold, then release</small></div>
         <div><div class="key-art"><kbd class="space-key">SPACE</kbd></div><strong>Space for special ability</strong></div>
       </div>
       <p id="brief-status" role="status">Review the controls, then ready up.</p>
@@ -382,21 +385,22 @@
   const leaveDialog=document.getElementById('leave-dialog');
   function clearControls(){input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;}
   function openLeaveDialog(){if(leaveDialog.open)return;clearControls();leaveDialog.showModal();document.getElementById('stay-in-hunt').focus();}
-  function closeLeaveDialog(){pendingMode=null;document.getElementById('leave-title').textContent='Leave this hunt?';document.getElementById('confirm-leave').textContent='Leave room';if(leaveDialog.open)leaveDialog.close();clearControls();canvas.focus();}
+  function closeLeaveDialog(restore=true){pendingMode=null;document.getElementById('leave-title').textContent='Leave this hunt?';document.getElementById('confirm-leave').textContent='Leave room';if(leaveDialog.open)leaveDialog.close();clearControls();if(restore&&restoreFullscreenOnResume&&!isGameFullscreen())toggleGameFullscreen();else if(!restore)restoreFullscreenOnResume=false;canvas.focus();}
   leaveDialog.addEventListener('cancel',event=>{event.preventDefault();if(Date.now()<nativeExitPromptUntil)return;closeLeaveDialog();});
-  document.getElementById('stay-in-hunt').addEventListener('click',closeLeaveDialog);
-  document.getElementById('confirm-leave').addEventListener('click',async()=>{const destination=pendingMode;closeLeaveDialog();await network.leave();if(destination)navigateMode(destination);});
+  document.getElementById('stay-in-hunt').addEventListener('click',()=>closeLeaveDialog());
+  document.getElementById('confirm-leave').addEventListener('click',async()=>{const destination=pendingMode;closeLeaveDialog(false);await network.leave();if(destination)navigateMode(destination);});
   document.getElementById('mode-solo').addEventListener('click',()=>{if(network.session){openLeaveDialog();pendingMode='/solo';document.getElementById('leave-title').textContent='Switch to solo?';document.getElementById('confirm-leave').textContent='Leave room and switch';}else navigateMode('/solo');});
   const input = { up: false, down: false, left: false, right: false, fire: false, charge:false, revive:false, releaseSeq:0, abilitySeq:0 };
   // Fullscreen belongs to the persistent shell; modes replace only its child frame.
   function getShell(){try{return window.parent&&window.parent!==window?window.parent.MONSTER_SHELL||null:null;}catch{return null;}}
   function navigateMode(destination){const shell=getShell();if(shell)shell.switchMode(destination==='/solo'?'solo':'multiplayer');else window.location.assign(destination);}
   function isGameFullscreen(){return !!(getShell()?.isFullscreen()||document.fullscreenElement);}
-  let fullscreenActive=false,fullscreenExitByToggle=false,nativeExitPromptUntil=0;
-  function syncFullscreen(){const active=isGameFullscreen(),nativeExit=fullscreenActive&&!active&&!fullscreenExitByToggle;fullscreenActive=active;fullscreenExitByToggle=false;document.body.classList.toggle('shell-fullscreen',!!getShell()?.isFullscreen());fullscreenButton.textContent=active?'Exit fullscreen':'Enter fullscreen';fullscreenButton.setAttribute('aria-pressed',String(active));input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;canvas.focus();if(nativeExit&&typeof runState!=='undefined'&&runState==='playing'){nativeExitPromptUntil=Date.now()+350;if(typeof openSoloMenu==='function')openSoloMenu();else if(typeof openLeaveDialog==='function')openLeaveDialog();}}
+  let fullscreenActive=false,fullscreenExitByToggle=false,nativeExitPromptUntil=0,restoreFullscreenOnResume=false;
+  function syncFullscreen(){const active=isGameFullscreen(),nativeExit=fullscreenActive&&!active&&!fullscreenExitByToggle;fullscreenActive=active;fullscreenExitByToggle=false;document.body.classList.toggle('shell-fullscreen',!!getShell()?.isFullscreen());fullscreenButton.textContent=active?'Exit fullscreen':'Enter fullscreen';fullscreenButton.setAttribute('aria-pressed',String(active));input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;canvas.focus();if(nativeExit&&runState==='playing'){restoreFullscreenOnResume=true;nativeExitPromptUntil=Date.now()+350;openLeaveDialog();}}
 
   const arena=document.getElementById('play-arena'),fullscreenButton=document.getElementById('fullscreen-toggle'),fullscreenMessage=document.getElementById('fullscreen-message');
   async function toggleGameFullscreen(){
+    restoreFullscreenOnResume=false;
     fullscreenExitByToggle=isGameFullscreen();
     input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;fullscreenMessage.textContent='';
     try{if(getShell())await getShell().toggleFullscreen();else if(document.fullscreenElement){window.navigator?.keyboard?.unlock?.();await document.exitFullscreen();}else if(arena.requestFullscreen){await arena.requestFullscreen();try{await window.navigator?.keyboard?.lock?.(['Escape']);}catch{fullscreenMessage.textContent='This browser may still use Esc to leave fullscreen.';}}else fullscreenMessage.textContent='Fullscreen is unavailable in this browser.';}
@@ -425,8 +429,9 @@
 
   function refreshReadyChoice() {if(hunterCarousel)hunterCarousel.sync();refreshClassInfo();document.getElementById("ready-choice").textContent=HUNTERS[player.hunter].name+" / "+LEVELS[levelIndex].name;}
   const instructionsDialog=document.getElementById('start-instructions'),countdownDisplay=document.getElementById('start-countdown');
+  instructionsDialog.addEventListener('cancel',event=>event.preventDefault());
   let practiceAfterCountdown=false;
-  function showInstructions(){runState='briefing';document.getElementById('brief-ready').disabled=false;document.getElementById('brief-status').textContent='Review the controls, then ready up.';instructionsDialog.showModal();}
+  function showInstructions(){runState='briefing';document.getElementById('brief-ready').disabled=false;document.getElementById('brief-back').disabled=false;document.getElementById('brief-status').textContent='Review the controls, then ready up.';instructionsDialog.showModal();}
   function beginSoloCountdown(){instructionsDialog.close();document.body.classList.remove('menu-mode');runState='countdown';const endsAt=Date.now()+3000;countdownDisplay.hidden=false;
     const tick=()=>{const remaining=Math.ceil((endsAt-Date.now())/1000);if(remaining>0){countdownDisplay.textContent=String(remaining);setTimeout(tick,100);}else{countdownDisplay.hidden=true;resetCombat();if(practiceAfterCountdown)spawnBoss();practiceAfterCountdown=false;runState='playing';canvas.focus();}};tick();}
   function showMenu() {
@@ -2171,6 +2176,7 @@
   document.getElementById('create-room').addEventListener('click',()=>network.connect(true));document.getElementById('join-room').addEventListener('click',()=>network.connect(false));
   document.getElementById('leave-room').addEventListener('click',openLeaveDialog);document.getElementById('room-ready').addEventListener('click',()=>network.ready(!network.readyState));document.getElementById('room-start').addEventListener('click',()=>network.start());
   document.getElementById('brief-ready').addEventListener('click',()=>network.session?network.brief():beginSoloCountdown());
+  document.getElementById('brief-back').addEventListener('click',async()=>{if(!network.session){instructionsDialog.close();runState='menu';document.body.classList.add('menu-mode');return;}const button=document.getElementById('brief-back');button.disabled=true;try{await network.request('/api/rooms/'+network.session.code+'/cancel-start');}catch(error){button.disabled=false;network.notice(error.message);}});
   setInterval(()=>network.ping(),3000);
   async function restoreRoom(){
     let saved;try{saved=JSON.parse(sessionStorage.getItem('monster-rush-room'));}catch{}if(!saved?.token||!saved?.code)return;

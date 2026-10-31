@@ -38,7 +38,7 @@ function createGameServer({maxRooms=12}={}){
     let code;do{code=crypto.randomBytes(4).toString('hex').slice(0,6).toUpperCase();}while(rooms.has(code));
     const room={code,members:new Map(),state:'lobby',revision:0,engine:null,hostId:null,lastActive:Date.now()};const m=member(room,hunter);room.hostId=m.id;rooms.set(code,room);return json(res,201,{code,id:m.id,token:m.token});
    }
-   const match=url.pathname.match(/^\/api\/rooms\/([A-F0-9]{6})\/(join|events|input|select|ready|start|brief|leave|resume)$/);
+   const match=url.pathname.match(/^\/api\/rooms\/([A-F0-9]{6})\/(join|events|input|select|ready|start|brief|cancel-start|leave|resume)$/);
    if(!match)return json(res,404,{error:'Not found'});
    const room=rooms.get(match[1]);if(!room)return json(res,404,{error:'Room not found. Create or join another room.'});room.lastActive=Date.now();
    const action=match[2];
@@ -87,6 +87,12 @@ function createGameServer({maxRooms=12}={}){
    if(action==='brief'){
     if(room.state!=='briefing')return json(res,409,{error:'The control briefing is no longer active.'});m.briefed=true;
     const live=[...room.members.values()].filter(member=>member.connected);if(live.length>=2&&live.every(member=>member.briefed)){room.state='countdown';room.countdownEndsAt=Date.now()+3000;}
+    broadcast(room);return json(res,200,{ok:true});
+   }
+   if(action==='cancel-start'){
+    if(room.state!=='briefing')return json(res,409,{error:'The hunt is no longer at the briefing.'});
+    room.state='lobby';room.countdownEndsAt=null;
+    for(const member of room.members.values()){member.ready=false;member.briefed=false;}
     broadcast(room);return json(res,200,{ok:true});
    }
    if(action==='leave'){if(m.stream)m.stream.end();room.members.delete(m.id);if(room.hostId===m.id)room.hostId=room.members.keys().next().value;if(!room.members.size)rooms.delete(room.code);else broadcast(room);return json(res,200,{ok:true});}
