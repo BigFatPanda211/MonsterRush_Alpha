@@ -130,6 +130,21 @@
     .stage-arrow{padding:6px 8px;border:0;background:transparent;color:#dfc59a;font-size:1.35rem}.stage-arrow:disabled{opacity:.25;cursor:default}.stage-arrow:focus-visible{outline:2px solid #c6a974}.stage-carousel .carousel-viewport{scrollbar-width:none}.stage-carousel .carousel-viewport::-webkit-scrollbar{display:none}
     @media(max-width:460px){.game-menu .stage-carousel{grid-template-columns:30px minmax(0,1fr) 30px;padding:7px;gap:4px}.stage-card{font-size:1rem}}
 
+    .start-instructions{max-width:min(620px,94vw);background:#11131c;color:#f3f1ff;border:1px solid #c7a064;border-radius:14px;padding:24px;box-shadow:0 0 50px #000c}
+    .start-instructions::backdrop{background:#03050add}
+    .start-instructions h2{text-align:center;color:#f6dfb7;letter-spacing:.18em}
+    .instruction-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .instruction-grid>div{min-height:130px;padding:14px;border:1px solid #594a4c;background:#171d27;border-radius:8px;text-align:center}
+    .instruction-grid strong,.instruction-grid small{display:block}.instruction-grid small{color:#c4b6b9}
+    .key-art,.mouse-art{height:63px;display:grid;place-content:center;margin-bottom:8px}
+    .key-art kbd{display:inline-block;padding:3px 7px;margin:2px;border:1px solid #aeb7c8;border-radius:4px;background:#273440;color:#fff}
+    .key-art .space-key{padding:7px 35px}
+    .mouse-art{width:76px;height:62px;margin:0 auto 8px;border:2px solid #c3d6e0;border-radius:24px 24px 30px 30px;grid-template-columns:1fr 1fr;overflow:hidden}
+    .mouse-art span{height:29px;padding-top:9px;font-size:9px;border-bottom:1px solid #c3d6e0}.mouse-art span:first-child{border-right:1px solid #c3d6e0}
+    .mouse-left,.mouse-right{background:#934d61}
+    .start-instructions p{text-align:center;color:#d7c9ba}.start-instructions button{display:block;margin:auto;padding:10px 20px}
+    #start-countdown:not([hidden]){position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#03050ad9;color:#f6dfb7;font:bold clamp(6rem,24vw,13rem) Georgia,serif;text-shadow:0 0 38px #e89d4b}
+    @media(max-width:520px){.instruction-grid{grid-template-columns:1fr 1fr;gap:6px}.instruction-grid>div{padding:8px;font-size:.7rem;min-height:115px}.start-instructions{padding:12px}}
 </style>
 <style>.boss-preview{max-width:850px;margin:16px auto;color:#d2b995}.boss-preview summary{cursor:pointer;text-align:center;padding:9px;border:1px solid #79634d;border-radius:5px}.boss-preview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.boss-preview figure{margin:8px 0;background:#12111a;border:1px solid #473a42;text-align:center}.boss-preview canvas{width:100%;height:auto;aspect-ratio:4/3}.boss-preview figcaption{font:11px monospace;line-height:1.5;padding:5px;color:#d5c1a6}</style>
 </head>
@@ -197,6 +212,18 @@
       <div class="enemy-card"><canvas id="guide-wraith" width="160" height="90" aria-label="Wraith: hooded shadow with pale eyes"></canvas><b>02 / WRAITH</b><span>FAST FLANKER / PAUSE / DASH</span></div>
       <div class="enemy-card"><canvas id="guide-brute" width="160" height="90" aria-label="Brute: cyan armored head with magenta horns"></canvas><b>03 / BRUTE</b><span>HEAVY TANK / RESISTS KNOCKBACK</span></div>
     </section></aside><dialog id="leave-dialog" aria-labelledby="leave-title" aria-describedby="leave-description"><h2 id="leave-title">Leave this hunt?</h2><p id="leave-description">The multiplayer match keeps running. Leaving removes you from this room; your teammates can continue.</p><button id="stay-in-hunt" autofocus>Stay in hunt</button> <button id="confirm-leave">Leave room</button></dialog></section>
+    <dialog id="start-instructions" class="start-instructions" aria-labelledby="instructions-title">
+      <h2 id="instructions-title">BEFORE THE HUNT</h2>
+      <div class="instruction-grid">
+        <div><div class="key-art"><kbd>W</kbd><br><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div><strong>W A S D for movement</strong></div>
+        <div><div class="mouse-art" aria-hidden="true"><span class="mouse-left">LEFT</span><span>RIGHT</span></div><strong>Left click for basic attack</strong><small>Hold for continuous shot</small></div>
+        <div><div class="mouse-art" aria-hidden="true"><span>LEFT</span><span class="mouse-right">RIGHT</span></div><strong>Right click for charged attack</strong><small>Hold, then release</small></div>
+        <div><div class="key-art"><kbd class="space-key">SPACE</kbd></div><strong>Space for special ability</strong></div>
+      </div>
+      <p id="brief-status" role="status">Review the controls, then ready up.</p>
+      <button id="brief-ready" type="button">Ready for countdown</button>
+    </dialog>
+    <div id="start-countdown" hidden aria-live="assertive">3</div>
   </main>
 <script src="config.js"></script>
 <script src="classes.js"></script>
@@ -394,6 +421,11 @@
   });
 
   function refreshReadyChoice() {if(hunterCarousel)hunterCarousel.sync();refreshClassInfo();document.getElementById("ready-choice").textContent=HUNTERS[player.hunter].name+" / "+LEVELS[levelIndex].name;}
+  const instructionsDialog=document.getElementById('start-instructions'),countdownDisplay=document.getElementById('start-countdown');
+  let practiceAfterCountdown=false;
+  function showInstructions(){runState='briefing';document.getElementById('brief-ready').disabled=false;document.getElementById('brief-status').textContent='Review the controls, then ready up.';instructionsDialog.showModal();}
+  function beginSoloCountdown(){instructionsDialog.close();document.body.classList.remove('menu-mode');runState='countdown';const endsAt=Date.now()+3000;countdownDisplay.hidden=false;
+    const tick=()=>{const remaining=Math.ceil((endsAt-Date.now())/1000);if(remaining>0){countdownDisplay.textContent=String(remaining);setTimeout(tick,100);}else{countdownDisplay.hidden=true;resetCombat();if(practiceAfterCountdown)spawnBoss();practiceAfterCountdown=false;runState='playing';canvas.focus();}};tick();}
   function showMenu() {
     if(network.session){openLeaveDialog();return;}
     runState="menu";input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;
@@ -401,7 +433,7 @@
   }
   function startGame() {
     if(network.session){network.start();return;}
-    resetCombat();runState="playing";document.body.classList.remove("menu-mode");canvas.focus();
+    showInstructions();
   }
   document.getElementById("start-game").addEventListener("click",startGame);
   document.getElementById("return-menu").addEventListener("click",showMenu);
@@ -1490,19 +1522,17 @@
     for(const card of document.querySelectorAll(".hunter-card"))card.setAttribute("aria-pressed",String(card.dataset.hunter===id));
   }
   function refreshClassLocks(){
-    const others=network.session?network.roster.filter(m=>m.id!==network.session.id):[];
+    const others=network.session?network.roster.filter(m=>m.id!==network.session.id&&m.ready):[];
     for(const card of document.querySelectorAll('.hunter-card')){
       const owner=others.find(m=>m.hunter===card.dataset.hunter),lock=card.querySelector('.hunter-lock');
-      card.disabled=!!owner;
-      card.setAttribute('aria-label',owner?HUNTERS[card.dataset.hunter].name+' taken by P'+owner.slot:'Select '+HUNTERS[card.dataset.hunter].name);
-      if(lock)lock.textContent=owner?'TAKEN BY P'+owner.slot:'';
+      card.disabled=false;
+      card.setAttribute('aria-label',owner?'Preview '+HUNTERS[card.dataset.hunter].name+', reserved by P'+owner.slot:'Select '+HUNTERS[card.dataset.hunter].name);
+      if(lock)lock.textContent=owner?'RESERVED BY P'+owner.slot:'';
     }
   }
   function chooseHunter(id) {
     if(!HUNTERS[id])return;
     if(network.session){
-      const owner=network.roster.find(m=>m.id!==network.session.id&&m.hunter===id);
-      if(owner){network.notice(HUNTERS[id].name+' is taken by P'+owner.slot+'.');return;}
       if(network.world&&!network.world.won&&!network.world.gameOver)return;
       network.selectHunter(id);return;
     }
@@ -2067,7 +2097,7 @@
       if(this.session)return;const button=document.getElementById(create?'create-room':'join-room');button.disabled=true;
       try{
         const code=document.getElementById('room-code').value.trim().toUpperCase();if(!create&&!/^[A-F0-9]{6}$/.test(code))throw Error('Enter a six-character room code.');
-        this.session=await this.request(create?'/api/rooms':'/api/rooms/'+code+'/join',{hunter:player.hunter},false);this.revision=-1;this.seq=0;this.roster=[];this.selectedHunter=null;sessionStorage.setItem('monster-rush-room',JSON.stringify(this.session));
+        this.session=await this.request(create?'/api/rooms':'/api/rooms/'+code+'/join',{hunter:player.hunter},false);this.revision=-1;this.seq=0;this.roster=[];this.selectedHunter=player.hunter;sessionStorage.setItem('monster-rush-room',JSON.stringify(this.session));
         this.stream=new EventSource(API_BASE+'/api/rooms/'+this.session.code+'/events?token='+encodeURIComponent(this.session.token));
         this.stream.onmessage=event=>{try{this.receive(JSON.parse(event.data));}catch(e){this.notice('Could not read room update. Leave and rejoin.');}};
         this.stream.onerror=()=>{input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;this.notice('Connection interrupted. Reconnecting; controls stopped.');};
@@ -2078,15 +2108,25 @@
       if(!this.session)return;this.lastSnapshot=Date.now();this.hostId=state.hostId;this.roster=state.members;
       const me=state.members.find(m=>m.id===this.session.id);if(!me){this.leave(false);this.notice('Session expired. Join again.');return;}
       this.readyState=me.ready;const active=state.state==='playing'&&!state.world?.won&&!state.world?.gameOver;
-      if(!active&&!this.pickPending){this.selectedHunter=me.hunter;if(player.hunter!==me.hunter){applyHunterSelection(me.hunter);hunterCarousel?.sync();}}
+      if(!active&&me.ready){this.selectedHunter=me.hunter;if(player.hunter!==me.hunter){applyHunterSelection(me.hunter);hunterCarousel?.sync();}}
       refreshClassLocks();
       document.getElementById('room-label').textContent='ROOM '+state.code+' / YOU: P'+me.slot+(state.hostId===me.id?' / HOST':'');
-      document.getElementById('room-roster').textContent=state.members.map(m=>'P'+m.slot+' '+HUNTERS[m.hunter].name+' / '+(!m.connected?'RECONNECTING':active?'IN HUNT':m.ready?'READY':'CHOOSING')).join(' | ');
-      document.getElementById('room-ready').disabled=active||this.pickPending;document.getElementById('room-ready').textContent=me.ready?'Ready - cancel':'Ready';
-      document.getElementById('room-level').disabled=state.hostId!==me.id||active;refreshGroundMenu();
-      document.getElementById('room-start').disabled=state.hostId!==me.id||state.members.filter(m=>m.connected).length<2||state.members.some(m=>m.connected&&!m.ready)||new Set(state.members.filter(m=>m.connected).map(m=>m.hunter)).size!==state.members.filter(m=>m.connected).length||active;
+      document.getElementById('room-roster').textContent=state.members.map(m=>'P'+m.slot+' '+(m.ready||active?HUNTERS[m.hunter]?.name||'HUNTER':'BROWSING')+' / '+(!m.connected?'RECONNECTING':active?'IN HUNT':m.ready?'READY':'CHOOSING')).join(' | ');
+      document.getElementById('room-ready').disabled=state.state!=='lobby';document.getElementById('room-ready').textContent=me.ready?'Ready - cancel':'Ready';
+      document.getElementById('room-level').disabled=state.hostId!==me.id||state.state!=='lobby';refreshGroundMenu();
+      document.getElementById('room-start').disabled=state.state!=='lobby'||state.hostId!==me.id||state.members.filter(m=>m.connected).length<2||state.members.some(m=>m.connected&&!m.ready)||new Set(state.members.filter(m=>m.connected).map(m=>m.hunter)).size!==state.members.filter(m=>m.connected).length;
       document.getElementById('create-room').disabled=true;document.getElementById('join-room').disabled=true;document.getElementById('leave-room').hidden=false;
       if(state.state==='error'){this.notice('Room simulation stopped. Leave and create another room.');return;}
+      if(state.state==='briefing'){
+        countdownDisplay.hidden=true;this.world=null;runState='briefing';document.body.classList.add('menu-mode');
+        if(!instructionsDialog.open)showInstructions();return;
+      }
+      if(state.state==='countdown'){
+        if(instructionsDialog.open)instructionsDialog.close();this.world=null;runState='countdown';document.body.classList.remove('menu-mode');
+        countdownDisplay.hidden=false;countdownDisplay.textContent=String(Math.max(1,Math.ceil(state.countdownRemainingMs/1000)));return;
+      }
+      countdownDisplay.hidden=true;if(instructionsDialog.open)instructionsDialog.close();
+      if(state.state==='lobby'&&!state.world){this.world=null;runState='menu';document.body.classList.add('menu-mode');return;}
       if(!state.world)return;const world=state.world,local=world.players.find(p=>p.id===this.session.id);if(!local)return;
       if(this.revision!==state.revision){this.revision=state.revision;input.abilitySeq=0;this.history=[];this.offsetX=this.offsetY=0;attackVisuals.clear();walkVisuals.clear();sound.reset();enemies=[];this.world=null;this.peerPositions.clear();damageFlash=0;input.fire=false;input.charge=false;input.revive=false;this.notice('Hunt started. Clear the encounter together.');canvas.focus();}
       const first=!this.world,oldHp=player.hp;this.world=world;
@@ -2115,18 +2155,10 @@
       if(!this.world)return;for(const actor of this.peerPositions.values()){if(actor.id===this.session.id)continue;ctx.save();if(actor.hp<=0||!actor.connected)ctx.globalAlpha=.3;drawHunter(ctx,actor,lastTime/1000);ctx.restore();}
       if(player.hp<=0){ctx.save();ctx.fillStyle='#eee0ca';ctx.font='12px monospace';ctx.textAlign='center';ctx.fillText('You are down. Teammates can finish the hunt.',480,580);ctx.restore();}
     },
-    async selectHunter(id){
-      if(!this.session)return;
-      this.desiredHunter=id;if(this.pickPending)return;
-      this.pickPending=true;document.getElementById('room-ready').disabled=true;
-      try{while(this.desiredHunter&&this.session){
-        const target=this.desiredHunter,session=this.session;this.desiredHunter=null;
-        try{await this.request('/api/rooms/'+session.code+'/select',{hunter:target});if(this.session!==session)break;this.selectedHunter=target;applyHunterSelection(target);this.notice(HUNTERS[target].name+' reserved for you. Press Ready.');}
-        catch(e){if(this.session===session)this.notice(e.message);}
-      }}finally{this.pickPending=false;this.desiredHunter=null;document.getElementById('room-ready').disabled=!!this.world&&!this.world.won&&!this.world.gameOver;refreshClassLocks();}
-    },
-    async ready(value){if(!this.session||this.pickPending)return;try{await this.request('/api/rooms/'+this.session.code+'/ready',{ready:value});this.notice(value?'Ready. Waiting for host.':'Select hunter, then Ready.');}catch(e){this.notice(e.message);}},
+    selectHunter(id){if(!this.session)return;this.selectedHunter=id;applyHunterSelection(id);if(this.readyState)this.ready(false);this.notice('Previewing '+HUNTERS[id].name+'. Press Ready to reserve.');},
+    async ready(value){if(!this.session)return;try{await this.request('/api/rooms/'+this.session.code+'/ready',{ready:value,hunter:this.selectedHunter||player.hunter});this.notice(value?'Hunter reserved. Waiting for host.':'Choose a hunter, then Ready.');}catch(e){this.notice(e.message);}},
     async start(){if(!this.session)return;try{await this.request('/api/rooms/'+this.session.code+'/start',{level:Number(document.getElementById('room-level').value)});}catch(e){this.notice(e.message);}},
+    async brief(){if(!this.session)return;const button=document.getElementById('brief-ready');button.disabled=true;document.getElementById('brief-status').textContent='Waiting for the other players…';try{await this.request('/api/rooms/'+this.session.code+'/brief');}catch(e){button.disabled=false;document.getElementById('brief-status').textContent=e.message;}},
     async leave(send=true){if(leaveDialog.open)leaveDialog.close();const session=this.session;if(!session)return;this.stream?.close();this.stream=null;if(send)try{await this.request('/api/rooms/'+session.code+'/leave');}catch{}
       sessionStorage.removeItem('monster-rush-room');this.session=null;this.world=null;this.roster=[];this.selectedHunter=null;this.readyState=false;this.desiredHunter=null;input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;runState='menu';document.body.classList.add('menu-mode');
       for(const id of ['create-room','join-room'])document.getElementById(id).disabled=false;for(const id of ['room-ready','room-start'])document.getElementById(id).disabled=true;
@@ -2135,6 +2167,7 @@
   };
   document.getElementById('create-room').addEventListener('click',()=>network.connect(true));document.getElementById('join-room').addEventListener('click',()=>network.connect(false));
   document.getElementById('leave-room').addEventListener('click',openLeaveDialog);document.getElementById('room-ready').addEventListener('click',()=>network.ready(!network.readyState));document.getElementById('room-start').addEventListener('click',()=>network.start());
+  document.getElementById('brief-ready').addEventListener('click',()=>network.session?network.brief():beginSoloCountdown());
   setInterval(()=>network.ping(),3000);
   async function restoreRoom(){
     let saved;try{saved=JSON.parse(sessionStorage.getItem('monster-rush-room'));}catch{}if(!saved?.token||!saved?.code)return;

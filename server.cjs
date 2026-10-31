@@ -10,10 +10,10 @@ function createGameServer({maxRooms=12}={}){
  function requireMember(req,room){const token=(req.headers.authorization||'').replace(/^Bearer /,'');return [...room.members.values()].find(m=>m.token===token);}
  function sanitizeInput(value={}){const clean=emptyInput();for(const k of ['up','down','left','right','fire','charge','revive'])clean[k]=value[k]===true;for(const k of ['aimX','aimY'])clean[k]=typeof value[k]==='number'&&Number.isFinite(value[k])?Math.max(-2000,Math.min(3000,value[k])):clean[k];clean.releaseSeq=Number.isSafeInteger(value.releaseSeq)&&value.releaseSeq>=0?value.releaseSeq:0;clean.abilitySeq=Number.isSafeInteger(value.abilitySeq)&&value.abilitySeq>=0?value.abilitySeq:0;return clean;}
  function publicState(room){return {code:room.code,hostId:room.hostId,state:room.state,revision:room.revision,
-   members:[...room.members.values()].map(({id,hunter,slot,ready,connected})=>({id,hunter,slot,ready,connected})),world:room.state==='playing'?room.engine.snapshot():null};}
+   members:[...room.members.values()].map(({id,hunter,slot,ready,connected})=>({id,hunter,slot,ready,connected})),world:room.state==='playing'?room.engine.snapshot():null,countdownRemainingMs:room.state==='countdown'?Math.max(0,room.countdownEndsAt-Date.now()):null};}
  function broadcast(room){const data='data: '+JSON.stringify(publicState(room))+'\n\n';for(const m of room.members.values())if(m.stream&&!m.stream.writableNeedDrain)m.stream.write(data);}
  async function body(req){let raw='';for await(const chunk of req){raw+=chunk;if(raw.length>8192)throw Error('Request too large');}return raw?JSON.parse(raw):{};}
- function classOwner(room,hunter,exceptId){return [...room.members.values()].find(m=>m.id!==exceptId&&m.hunter===hunter);}
+ function classOwner(room,hunter,exceptId){return [...room.members.values()].find(m=>m.id!==exceptId&&m.ready&&m.hunter===hunter);}
  function freeHunter(room,preferred){return HUNTERS.includes(preferred)&&!classOwner(room,preferred)?preferred:HUNTERS.find(h=>!classOwner(room,h));}
  function member(room,hunter){const slot=[1,2,3,4].find(slot=>![...room.members.values()].some(m=>m.slot===slot));const id=crypto.randomUUID();const m={id,slot,hunter:freeHunter(room,hunter),token:crypto.randomBytes(24).toString('hex'),ready:false,connected:false,input:emptyInput(),seq:-1,lastInput:0,joined:Date.now(),lastSeen:Date.now(),stream:null};room.members.set(id,m);return m;}
  const server=http.createServer(async(req,res)=>{
@@ -38,7 +38,7 @@ function createGameServer({maxRooms=12}={}){
     let code;do{code=crypto.randomBytes(4).toString('hex').slice(0,6).toUpperCase();}while(rooms.has(code));
     const room={code,members:new Map(),state:'lobby',revision:0,engine:null,hostId:null,lastActive:Date.now()};const m=member(room,hunter);room.hostId=m.id;rooms.set(code,room);return json(res,201,{code,id:m.id,token:m.token});
    }
-   const match=url.pathname.match(/^\/api\/rooms\/([A-F0-9]{6})\/(join|events|input|select|ready|start|leave|resume)$/);
+   const match=url.pathname.match(/^\/api\/rooms\/([A-F0-9]{6})\/(join|events|input|select|ready|start|brief|leave|resume)$/);
    if(!match)return json(res,404,{error:'Not found'});
    const room=rooms.get(match[1]);if(!room)return json(res,404,{error:'Room not found. Create or join another room.'});room.lastActive=Date.now();
    const action=match[2];
@@ -62,30 +62,32 @@ function createGameServer({maxRooms=12}={}){
    }
    if(action==='select'){
     if(room.state==='playing'&&!room.engine.snapshot().won&&!room.engine.snapshot().gameOver)return json(res,409,{error:'Finish the current run first.'});
+    if(room.state!=='lobby')return json(res,409,{error:'Room is already starting.'});
     if(!HUNTERS.includes(data.hunter))return json(res,400,{error:'Choose a valid hunter.'});
-    const owner=classOwner(room,data.hunter,m.id);
-    if(owner)return json(res,409,{error:HUNTER_NAMES[data.hunter]+' is taken by P'+owner.slot+'.'});
     if(m.hunter!==data.hunter){m.hunter=data.hunter;m.ready=false;}
     broadcast(room);return json(res,200,{ok:true,hunter:m.hunter});
    }
    if(action==='ready'){
     if(room.state==='playing'&&!room.engine.snapshot().won&&!room.engine.snapshot().gameOver)return json(res,409,{error:'Finish the current run first.'});
-    if(data.hunter!==undefined){
-     if(!HUNTERS.includes(data.hunter))return json(res,400,{error:'Choose a valid hunter.'});
-     const owner=classOwner(room,data.hunter,m.id);
-     if(owner)return json(res,409,{error:HUNTER_NAMES[data.hunter]+' is taken by P'+owner.slot+'.'});
-     m.hunter=data.hunter;
-    }
-    m.ready=data.ready===true;broadcast(room);return json(res,200,{ok:true});
+    if(room.state==='playing'){room.state='lobby';room.engine=null;for(const member of room.members.values())member.ready=false;}
+    if(room.state!=='lobby')return json(res,409,{error:'Room is already starting.'});
+    if(data.ready===true){const hunter=data.hunter===undefined?m.hunter:data.hunter;if(!HUNTERS.includes(hunter))return json(res,400,{error:'Choose a hunter first.'});const owner=classOwner(room,hunter,m.id);if(owner)return json(res,409,{error:HUNTER_NAMES[hunter]+' is reserved by P'+owner.slot+'. Choose another hunter.'});m.hunter=hunter;m.ready=true;}
+    else m.ready=false;broadcast(room);return json(res,200,{ok:true});
    }
    if(action==='start'){
     if(room.hostId!==m.id)return json(res,403,{error:'Only the host can start.'});
     if(room.state==='playing'&&!room.engine.snapshot().won&&!room.engine.snapshot().gameOver)return json(res,409,{error:'Run is still active.'});
+    if(room.state!=='lobby')return json(res,409,{error:'Hunt is already starting.'});
     const live=[...room.members.values()].filter(m=>m.connected);
     if(live.length<2||live.some(m=>!m.ready))return json(res,409,{error:'At least two connected players must be ready.'});
     if(new Set(live.map(m=>m.hunter)).size!==live.length)return json(res,409,{error:'Each player needs a different hunter.'});
     if(!Number.isInteger(data.level)||data.level<0||data.level>3)return json(res,400,{error:'Choose a valid level.'});
-    room.engine=makeEngine();room.engine.start(live,data.level,crypto.randomBytes(4).readUInt32LE());room.state='playing';room.revision++;for(const m of room.members.values()){m.input=emptyInput();m.ready=false;}broadcast(room);return json(res,200,{ok:true});
+    room.level=data.level;room.seed=crypto.randomBytes(4).readUInt32LE();room.state='briefing';room.revision++;for(const m of room.members.values())m.briefed=false;broadcast(room);return json(res,200,{ok:true});
+   }
+   if(action==='brief'){
+    if(room.state!=='briefing')return json(res,409,{error:'The control briefing is no longer active.'});m.briefed=true;
+    const live=[...room.members.values()].filter(member=>member.connected);if(live.length>=2&&live.every(member=>member.briefed)){room.state='countdown';room.countdownEndsAt=Date.now()+3000;}
+    broadcast(room);return json(res,200,{ok:true});
    }
    if(action==='leave'){if(m.stream)m.stream.end();room.members.delete(m.id);if(room.hostId===m.id)room.hostId=room.members.keys().next().value;if(!room.members.size)rooms.delete(room.code);else broadcast(room);return json(res,200,{ok:true});}
    return json(res,404,{error:'Not found'});
@@ -96,6 +98,7 @@ function createGameServer({maxRooms=12}={}){
   for(const room of rooms.values()){
    for(const m of room.members.values())if(!m.connected&&now-m.lastSeen>10000){room.members.delete(m.id);if(room.hostId===m.id)room.hostId=room.members.keys().next().value;}
    if(!room.members.size){rooms.delete(room.code);continue;}
+   if(room.state==='countdown'&&now>=room.countdownEndsAt){const live=[...room.members.values()].filter(m=>m.connected);if(live.length>=2&&live.every(m=>m.ready&&m.briefed)){room.engine=makeEngine();room.engine.start(live,room.level,room.seed);room.state='playing';room.revision++;for(const m of room.members.values()){m.input=emptyInput();m.ready=false;}}else{room.state='lobby';for(const m of room.members.values()){m.ready=false;m.briefed=false;}}room.countdownEndsAt=null;}
    if(room.state==='playing'){
     const commands=new Map([...room.members.values()].map(m=>[m.id,{connected:m.connected,input:now-m.lastInput<350?m.input:emptyInput()}]));
     try{room.engine.tick(1/30,commands);}catch(e){room.state='error';process.stderr.write('Room simulation stopped: '+e.message+'\n');}

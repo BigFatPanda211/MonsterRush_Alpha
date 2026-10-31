@@ -1,8 +1,8 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const {createGameServer}=require('./server.cjs');
-const waitFor=fn=>new Promise((resolve,reject)=>{const start=Date.now(),timer=setInterval(()=>{try{if(fn()){clearInterval(timer);resolve();}else if(Date.now()-start>7000){clearInterval(timer);reject(Error('Client state timeout'));}}catch(e){clearInterval(timer);reject(e)}},10)});
+const waitFor=fn=>new Promise((resolve,reject)=>{const start=Date.now(),timer=setInterval(()=>{try{if(fn()){clearInterval(timer);resolve();}else if(Date.now()-start>7000){clearInterval(timer);reject(Error('Client state timeout: '+fn));}}catch(e){clearInterval(timer);reject(e)}},10)});
 function browser(base,storage=new Map()){
- const elements={},timers=[],callbacks={},windowCallbacks={},context=new Proxy({createRadialGradient:()=>({addColorStop:()=>{}})},{get:(o,k)=>o[k]??(()=>{}),set:(o,k,v)=>(o[k]=v,true)});
+ const elements={},timers=[],callbacks={},windowCallbacks={},context=new Proxy({createRadialGradient:()=>({addColorStop:()=>{}}),createLinearGradient:()=>({addColorStop:()=>{}})},{get:(o,k)=>o[k]??(()=>{}),set:(o,k,v)=>(o[k]=v,true)});
  function element(id){return elements[id]??={open:false,showModal(){this.open=true},close(){this.open=false},style:{setProperty:()=>{}},dataset:{},value:'0',textContent:'',addEventListener:(k,fn)=>{callbacks[id+':'+k]=fn},getContext:()=>context,focus:()=>{},setPointerCapture:()=>{},setAttribute:()=>{},width:960,height:600,getBoundingClientRect:()=>({left:0,top:0,width:960,height:600})};}
  const streams=[];
  class EventSource{
@@ -16,7 +16,11 @@ function browser(base,storage=new Map()){
 (async()=>{const app=createGameServer();await new Promise(r=>app.server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+app.server.address().port;const a=browser(base),b=browser(base);let reload;
  try{
   await a.client.network.connect(true);await waitFor(()=>a.client.network.roster.length===1);b.element('room-code').value=a.client.network.session.code;await b.client.network.connect(false);await waitFor(()=>b.client.network.roster.length===2);
-  await a.client.network.ready(true);await b.client.network.ready(true);await waitFor(()=>!a.elements['room-start'].disabled);await a.client.network.start();await waitFor(()=>a.client.network.world&&b.client.network.world);
+  await a.client.network.ready(true);await waitFor(()=>a.client.network.readyState);await b.client.network.ready(true);assert.equal(b.client.network.readyState,false,'the same hunter cannot be reserved twice');
+  b.client.chooseHunter('riftwalker');await b.client.network.ready(true);await waitFor(()=>!a.elements['room-start'].disabled);await a.client.network.start();
+  await waitFor(()=>a.element('start-instructions').open&&b.element('start-instructions').open);assert.equal(a.client.network.world,null,'combat waits for the control briefing');
+  await a.client.network.brief();await b.client.network.brief();await waitFor(()=>!a.element('start-countdown').hidden&&a.element('start-countdown').textContent==='3');
+  await waitFor(()=>a.client.network.world&&b.client.network.world);
   assert.equal(a.client.network.world.enemies.length,8);assert.equal(b.client.network.world.waveIndex,0);a.client.frame(1000);b.client.frame(1000);
   const saved=a.client.network.session.id;
   const esc={key:'Escape',repeat:false,preventDefault(){}};

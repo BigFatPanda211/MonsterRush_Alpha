@@ -122,6 +122,21 @@
     .stage-arrow{padding:6px 8px;border:0;background:transparent;color:#dfc59a;font-size:1.35rem}.stage-arrow:disabled{opacity:.25;cursor:default}.stage-arrow:focus-visible{outline:2px solid #c6a974}.stage-carousel .carousel-viewport{scrollbar-width:none}.stage-carousel .carousel-viewport::-webkit-scrollbar{display:none}
     @media(max-width:460px){.game-menu .stage-carousel{grid-template-columns:30px minmax(0,1fr) 30px;padding:7px;gap:4px}.stage-card{font-size:1rem}}
 
+    .start-instructions{max-width:min(620px,94vw);background:#11131c;color:#f3f1ff;border:1px solid #c7a064;border-radius:14px;padding:24px;box-shadow:0 0 50px #000c}
+    .start-instructions::backdrop{background:#03050add}
+    .start-instructions h2{text-align:center;color:#f6dfb7;letter-spacing:.18em}
+    .instruction-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .instruction-grid>div{min-height:130px;padding:14px;border:1px solid #594a4c;background:#171d27;border-radius:8px;text-align:center}
+    .instruction-grid strong,.instruction-grid small{display:block}.instruction-grid small{color:#c4b6b9}
+    .key-art,.mouse-art{height:63px;display:grid;place-content:center;margin-bottom:8px}
+    .key-art kbd{display:inline-block;padding:3px 7px;margin:2px;border:1px solid #aeb7c8;border-radius:4px;background:#273440;color:#fff}
+    .key-art .space-key{padding:7px 35px}
+    .mouse-art{width:76px;height:62px;margin:0 auto 8px;border:2px solid #c3d6e0;border-radius:24px 24px 30px 30px;grid-template-columns:1fr 1fr;overflow:hidden}
+    .mouse-art span{height:29px;padding-top:9px;font-size:9px;border-bottom:1px solid #c3d6e0}.mouse-art span:first-child{border-right:1px solid #c3d6e0}
+    .mouse-left,.mouse-right{background:#934d61}
+    .start-instructions p{text-align:center;color:#d7c9ba}.start-instructions button{display:block;margin:auto;padding:10px 20px}
+    #start-countdown:not([hidden]){position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#03050ad9;color:#f6dfb7;font:bold clamp(6rem,24vw,13rem) Georgia,serif;text-shadow:0 0 38px #e89d4b}
+    @media(max-width:520px){.instruction-grid{grid-template-columns:1fr 1fr;gap:6px}.instruction-grid>div{padding:8px;font-size:.7rem;min-height:115px}.start-instructions{padding:12px}}
 </style>
 <style>.boss-preview{max-width:850px;margin:16px auto;color:#d2b995}.boss-preview summary{cursor:pointer;text-align:center;padding:9px;border:1px solid #79634d;border-radius:5px}.boss-preview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.boss-preview figure{margin:8px 0;background:#12111a;border:1px solid #473a42;text-align:center}.boss-preview canvas{width:100%;height:auto;aspect-ratio:4/3}.boss-preview figcaption{font:11px monospace;line-height:1.5;padding:5px;color:#d5c1a6}</style>
 </head>
@@ -182,6 +197,18 @@
       <div class="enemy-card"><canvas id="guide-wraith" width="160" height="90" aria-label="Wraith: hooded shadow with pale eyes"></canvas><b>02 / WRAITH</b><span>FAST FLANKER / PAUSE / DASH</span></div>
       <div class="enemy-card"><canvas id="guide-brute" width="160" height="90" aria-label="Brute: cyan armored head with magenta horns"></canvas><b>03 / BRUTE</b><span>HEAVY TANK / RESISTS KNOCKBACK</span></div>
     </section></aside><dialog id="solo-menu-dialog" aria-labelledby="solo-menu-title" aria-describedby="solo-menu-description"><h2 id="solo-menu-title">Hunt paused</h2><p id="solo-menu-description">Resume your hunt, or return to character and level selection. Returning to selection ends this run.</p><button id="solo-resume" autofocus>Resume hunt</button> <button id="solo-confirm-menu">Return to selection</button></dialog></section>
+    <dialog id="start-instructions" class="start-instructions" aria-labelledby="instructions-title">
+      <h2 id="instructions-title">BEFORE THE HUNT</h2>
+      <div class="instruction-grid">
+        <div><div class="key-art"><kbd>W</kbd><br><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div><strong>W A S D for movement</strong></div>
+        <div><div class="mouse-art" aria-hidden="true"><span class="mouse-left">LEFT</span><span>RIGHT</span></div><strong>Left click for basic attack</strong><small>Hold for continuous shot</small></div>
+        <div><div class="mouse-art" aria-hidden="true"><span>LEFT</span><span class="mouse-right">RIGHT</span></div><strong>Right click for charged attack</strong><small>Hold, then release</small></div>
+        <div><div class="key-art"><kbd class="space-key">SPACE</kbd></div><strong>Space for special ability</strong></div>
+      </div>
+      <p id="brief-status" role="status">Review the controls, then ready up.</p>
+      <button id="brief-ready" type="button">Ready for countdown</button>
+    </dialog>
+    <div id="start-countdown" hidden aria-live="assertive">3</div>
   </main>
 <script src="config.js"></script>
 <script src="classes.js"></script>
@@ -379,15 +406,19 @@
   });
 
   function refreshReadyChoice() {if(hunterCarousel)hunterCarousel.sync();refreshClassInfo();document.getElementById("ready-choice").textContent=HUNTERS[player.hunter].name+" / "+LEVELS[levelIndex].name;}
+  const instructionsDialog=document.getElementById('start-instructions'),countdownDisplay=document.getElementById('start-countdown');
+  let practiceAfterCountdown=false;
+  function showInstructions(){runState='briefing';document.getElementById('brief-ready').disabled=false;document.getElementById('brief-status').textContent='Review the controls, then ready up.';instructionsDialog.showModal();}
+  function beginSoloCountdown(){instructionsDialog.close();document.body.classList.remove('menu-mode');runState='countdown';const endsAt=Date.now()+3000;countdownDisplay.hidden=false;
+    const tick=()=>{const remaining=Math.ceil((endsAt-Date.now())/1000);if(remaining>0){countdownDisplay.textContent=String(remaining);setTimeout(tick,100);}else{countdownDisplay.hidden=true;resetCombat();if(practiceAfterCountdown)spawnBoss();practiceAfterCountdown=false;runState='playing';canvas.focus();}};tick();}
+  document.getElementById('brief-ready').addEventListener('click',beginSoloCountdown);
   function showMenu() {
     runState="menu";input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;
     document.body.classList.add("menu-mode");refreshReadyChoice();
   }
-  function startGame() {
-    resetCombat();runState="playing";document.body.classList.remove("menu-mode");canvas.focus();
-  }
-  document.getElementById("start-game").addEventListener("click",startGame);
-  document.getElementById("practice-boss").addEventListener("click",()=>{startGame();spawnBoss();});
+  function startGame(practice=false) {practiceAfterCountdown=practice;showInstructions();}
+  document.getElementById("start-game").addEventListener("click",()=>startGame(false));
+  document.getElementById("practice-boss").addEventListener("click",()=>startGame(true));
   document.getElementById("return-menu").addEventListener("click",openSoloMenu);
   const MAX_HP = 100;
   const SHOOT_COOLDOWN = 0.18;

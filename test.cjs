@@ -33,7 +33,7 @@ async function main(){
  const engine=makeEngine();engine.start(members.slice(0,2),0,1);for(const e of engine.debug.enemies)e.alive=false;
  const p1=engine.debug.actors[0],p2=engine.debug.actors[1];
  engine.debug.enemies.push({id:88,type:'ghost',x:p1.x,y:p1.y,radius:11,hp:3,maxHp:3,speed:0,vx:0,vy:0,alive:true,hitFlash:0,knockX:0,knockY:0,behavior:'pursuit',decisionTimer:99,approachX:0,approachY:0});
- engine.tick(1/30,commands(members.slice(0,2)));assert.equal(p1.hp,88);assert.equal(p2.hp,100);engine.tick(1/30,commands(members.slice(0,2)));assert.equal(p1.hp,88);
+ const initialP1Hp=p1.hp,initialP2Hp=p2.hp;engine.tick(1/30,commands(members.slice(0,2)));assert.equal(p1.hp,initialP1Hp-12);assert.equal(p2.hp,initialP2Hp);engine.tick(1/30,commands(members.slice(0,2)));assert.equal(p1.hp,initialP1Hp-12);
  p1.hp=0;engine.tick(1/30,commands(members.slice(0,2)));assert(!engine.snapshot().gameOver);assert.equal(engine.snapshot().enemies[0].targetId,'p2');p2.hp=0;engine.tick(1/30,commands(members.slice(0,2)));assert(engine.snapshot().gameOver);
  console.log('PASS player-specific contact/invulnerability, survivor targeting and whole-team defeat');
  if(process.argv.includes('--simulation-only'))return;
@@ -47,12 +47,14 @@ async function main(){
   await waitFor(()=>one.latest?.members.length===2&&two.latest?.members.length===2);
   assert.equal((await post(route+'/start',{level:0},guest)).status,403);assert.equal((await post(route+'/start',{level:0},host)).status,409);
   await post(route+'/ready',{ready:true,hunter:'warden'},host);await post(route+'/ready',{ready:true,hunter:'riftwalker'},guest);
-  assert.equal((await post(route+'/start',{level:0},host)).status,200);await waitFor(()=>one.latest?.world&&two.latest?.world);
+  assert.equal((await post(route+'/start',{level:0},host)).status,200);await waitFor(()=>one.latest?.state==='briefing'&&two.latest?.state==='briefing');
+  assert.equal(one.latest.world,null);await post(route+'/brief',{},host);await post(route+'/brief',{},guest);await waitFor(()=>one.latest?.state==='countdown'&&two.latest?.state==='countdown');
+  await waitFor(()=>one.latest?.world&&two.latest?.world);
   assert.equal(one.latest.world.enemies.length,8);assert.equal(two.latest.world.enemies.length,8);assert.equal(one.latest.revision,two.latest.revision);
   const before=one.latest.world.players.find(a=>a.id===host.id).x;
   await post(route+'/input',{seq:1,input:{right:true,fire:true,aimX:250,aimY:150,x:999,hp:999}},host);
   await waitFor(()=>two.latest?.world.players.find(a=>a.id===host.id).x>before);
-  assert(two.latest.world.players.find(a=>a.id===host.id).hp<=100);assert(two.latest.world.players.find(a=>a.id===host.id).x<999);
+  const hostActor=two.latest.world.players.find(a=>a.id===host.id);assert(hostActor.hp<=hostActor.maxHp);assert(hostActor.x<999);
   await post(route+'/input',{seq:0,input:{left:true}},host);assert.equal(app.rooms.get(host.code).members.get(host.id).input.right,true);
   assert.equal((await post(route+'/input',{}, {...guest,token:'wrong'})).status,401);
   assert.equal((await post(route+'/join',{})).status,409);assert.equal((await post(route+'/resume',{},host)).data.seq,1);
