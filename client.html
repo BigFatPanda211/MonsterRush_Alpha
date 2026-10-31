@@ -117,6 +117,7 @@
     .carousel-toolbar,.carousel-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 18px}.carousel-toolbar{border-bottom:1px solid #3d3434}.carousel-eyebrow{font-size:.61rem;letter-spacing:.17em;color:#b89a70}.carousel-navigation{display:flex;align-items:center;gap:12px}.carousel-navigation button{font-size:1.25rem;padding:4px 12px;color:#dfc59a;background:#18151f;border:1px solid #685037}.carousel-navigation button:disabled{opacity:.25;cursor:default}#hunter-position{font-size:.7rem;color:#d4c4ad;white-space:nowrap;font-variant-numeric:tabular-nums}
     .carousel-viewport{display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:#82643f #11121c;min-width:0;outline-offset:-3px}.carousel-viewport:focus-visible{outline:2px solid #c6a974}.hunter-slide{flex:0 0 100%;min-width:0;box-sizing:border-box;scroll-snap-align:start;scroll-snap-stop:always;display:grid;grid-template-columns:minmax(180px,.8fr) minmax(0,1.25fr);align-items:center;gap:26px;padding:24px 28px;min-height:370px}
     .game-menu .hunter-slide .hunter-card{aspect-ratio:2/3;width:100%;max-width:250px;justify-self:center;padding:10px 10px 16px;z-index:0!important;background:radial-gradient(ellipse at 50% 40%,#ffffff0b,transparent 70%),#11121b}.game-menu .hunter-slide .hunter-card canvas{width:100%;height:auto;max-width:220px;aspect-ratio:11/13}.game-menu .hunter-slide .hunter-card b{font-size:.85rem}.game-menu .hunter-slide .hunter-card span{font-size:.65rem;min-height:0;color:#b6ab9d}.game-menu .hunter-slide .hunter-card[aria-pressed=true]{border-color:var(--hunter);box-shadow:inset 0 -2px var(--hunter)}
+    .hunter-card .hunter-lock{display:block;min-height:1.1em;color:#ffb98a;font:bold .62rem monospace;letter-spacing:.08em}.hunter-card:disabled{opacity:.68;cursor:not-allowed}.hunter-card:disabled canvas{filter:grayscale(.55)}
     .hunter-details{align-self:center;min-width:0;text-align:left}.game-menu .hunter-details h2{margin:0 0 5px;color:#f0dfc0;font:normal clamp(1.35rem,2.8vw,2rem) Georgia,serif;letter-spacing:.02em}.hunter-role{color:var(--hunter);font-size:.6rem;letter-spacing:.13em;margin:0 0 10px}.hunter-weapon{font-size:.75rem;color:#a99c91;margin:0 0 20px}.hunter-action-list{list-style:none;counter-reset:actions;display:grid;gap:16px;padding:0;margin:0}.hunter-action-list li{position:relative;padding-left:30px;counter-increment:actions}.hunter-action-list li:before{content:'0' counter(actions);position:absolute;left:0;top:1px;color:var(--hunter);font-size:.65rem}.hunter-action-list strong{display:flex;align-items:center;flex-wrap:wrap;gap:6px;color:#dfcfb8;font-size:.66rem;letter-spacing:.06em}.hunter-action-list kbd{font-size:.5rem;letter-spacing:.03em;padding:2px 4px;color:#bdb09e;border-color:#594837;background:#17151d}.hunter-action-list p{margin:6px 0 0;font-size:.73rem;line-height:1.65;color:#bcb3ac}.carousel-footer{border-top:1px solid #302b2e;padding-top:10px;padding-bottom:10px}.carousel-footer p{font-size:.6rem;color:#8f8278;margin:0}.carousel-dots{display:flex;gap:6px}.carousel-dots button{font-size:.6rem;padding:5px 8px;color:#9d8d7b;background:#18151d;border:1px solid #3f3530}.carousel-dots button[aria-current=true]{color:#f1ddb9;border-color:#ab8652;background:#30251f}.game-menu #class-preview{display:none}.game-menu .hunter-note{display:none!important}
     @media(max-width:640px){.hunter-slide{grid-template-columns:minmax(130px,.7fr) minmax(0,1fr);padding:16px;gap:16px}.hunter-action-list p{font-size:.68rem}.hunter-action-list{gap:12px}.game-menu .hunter-slide .hunter-card b{font-size:.68rem}.carousel-toolbar,.carousel-footer{padding-left:12px;padding-right:12px}.carousel-eyebrow{font-size:.5rem}.carousel-navigation{gap:8px}}
     @media(max-width:460px){.hunter-slide{grid-template-columns:1fr;padding:16px 22px;gap:18px}.game-menu .hunter-slide .hunter-card{max-width:170px;aspect-ratio:4/5}.game-menu .hunter-slide .hunter-card canvas{max-height:150px}.hunter-details{width:100%}.carousel-footer{align-items:flex-start;flex-direction:column;gap:8px}}
@@ -157,16 +158,16 @@
   <div class="carousel-toolbar"><span class="carousel-eyebrow">BLACKTHORN FIELD ROSTER</span><div class="carousel-navigation"><button type="button" id="hunter-prev" aria-label="Previous hunter">&#8592;</button><span id="hunter-position" aria-live="polite" aria-atomic="true">01 / 04</span><button type="button" id="hunter-next" aria-label="Next hunter">&#8594;</button></div></div>
   <div class="carousel-viewport" id="hunter-carousel-viewport" tabindex="0" aria-label="Scroll hunters, or use Left and Right arrow keys">
 <article class="hunter-slide" data-hunter-slide="warden" role="group" aria-roledescription="slide" aria-label="1 of 4: The Warden" style="--hunter:#FFBE3D">
-<button type="button" class="hunter-card" data-hunter="warden" aria-label="Select The Warden" aria-pressed="true" aria-describedby="hunter-info-warden"><canvas id="hunter-warden" width="220" height="260"></canvas><b>THE WARDEN</b><span>Shield &amp; hammer</span></button>
+<button type="button" class="hunter-card" data-hunter="warden" aria-label="Select The Warden" aria-pressed="true" aria-describedby="hunter-info-warden"><canvas id="hunter-warden" width="220" height="260"></canvas><b>THE WARDEN</b><span>Shield &amp; hammer</span><small class="hunter-lock"></small></button>
 <aside class="hunter-details" id="hunter-info-warden" aria-label="The Warden abilities"><p class="hunter-role">MELEE DEFENDER</p><h2>The Warden</h2><p class="hunter-weapon">Shield &amp; hammer</p><ol class="hunter-action-list"><li><strong>BASIC ATTACK <kbd>LEFT MOUSE</kbd></strong><p>Wide hammer sweep.</p></li><li><strong>CHARGED ATTACK <kbd>HOLD RIGHT / RELEASE</kbd></strong><p>Ground slam with heavy knockback.</p></li><li><strong>SPECIAL ABILITY <kbd>SPACE</kbd></strong><p>guard the front of nearby allies for 2.5s.</p></li></ol></aside></article>
 <article class="hunter-slide" data-hunter-slide="riftwalker" role="group" aria-roledescription="slide" aria-label="2 of 4: The Riftwalker" style="--hunter:#507CFF">
-<button type="button" class="hunter-card" data-hunter="riftwalker" aria-label="Select The Riftwalker" aria-pressed="false" aria-describedby="hunter-info-riftwalker"><canvas id="hunter-riftwalker" width="220" height="260"></canvas><b>THE RIFTWALKER</b><span>Spectral bow</span></button>
+<button type="button" class="hunter-card" data-hunter="riftwalker" aria-label="Select The Riftwalker" aria-pressed="false" aria-describedby="hunter-info-riftwalker"><canvas id="hunter-riftwalker" width="220" height="260"></canvas><b>THE RIFTWALKER</b><span>Spectral bow</span><small class="hunter-lock"></small></button>
 <aside class="hunter-details" id="hunter-info-riftwalker" aria-label="The Riftwalker abilities"><p class="hunter-role">RANGED SKIRMISHER</p><h2>The Riftwalker</h2><p class="hunter-weapon">Spectral bow</p><ol class="hunter-action-list"><li><strong>BASIC ATTACK <kbd>LEFT MOUSE</kbd></strong><p>Rapid spectral arrows.</p></li><li><strong>CHARGED ATTACK <kbd>HOLD RIGHT / RELEASE</kbd></strong><p>Fully charged piercing bolt; each enemy is hit once.</p></li><li><strong>SPECIAL ABILITY <kbd>SPACE</kbd></strong><p>dash up to 100 units; brief invulnerability.</p></li></ol></aside></article>
 <article class="hunter-slide" data-hunter-slide="hexkeeper" role="group" aria-roledescription="slide" aria-label="3 of 4: The Hexkeeper" style="--hunter:#43E6A0">
-<button type="button" class="hunter-card" data-hunter="hexkeeper" aria-label="Select The Hexkeeper" aria-pressed="false" aria-describedby="hunter-info-hexkeeper"><canvas id="hunter-hexkeeper" width="220" height="260"></canvas><b>THE HEXKEEPER</b><span>Staff &amp; grimoire</span></button>
+<button type="button" class="hunter-card" data-hunter="hexkeeper" aria-label="Select The Hexkeeper" aria-pressed="false" aria-describedby="hunter-info-hexkeeper"><canvas id="hunter-hexkeeper" width="220" height="260"></canvas><b>THE HEXKEEPER</b><span>Staff &amp; grimoire</span><small class="hunter-lock"></small></button>
 <aside class="hunter-details" id="hunter-info-hexkeeper" aria-label="The Hexkeeper abilities"><p class="hunter-role">RANGED SUPPORT</p><h2>The Hexkeeper</h2><p class="hunter-weapon">Staff &amp; grimoire</p><ol class="hunter-action-list"><li><strong>BASIC ATTACK <kbd>LEFT MOUSE</kbd></strong><p>Staff hex slows enemies.</p></li><li><strong>CHARGED ATTACK <kbd>HOLD RIGHT / RELEASE</kbd></strong><p>Place a warning rune that bursts after 0.65s.</p></li><li><strong>SPECIAL ABILITY <kbd>SPACE</kbd></strong><p>healing circle restores up to 20 HP over 4s. Hold E near a fallen ally for 3s to revive them at 20 HP; movement, damage or attacking interrupts.</p></li></ol></aside></article>
 <article class="hunter-slide" data-hunter-slide="revenant" role="group" aria-roledescription="slide" aria-label="4 of 4: The Revenant" style="--hunter:#FF795F">
-<button type="button" class="hunter-card" data-hunter="revenant" aria-label="Select The Revenant" aria-pressed="false" aria-describedby="hunter-info-revenant"><canvas id="hunter-revenant" width="220" height="260"></canvas><b>THE REVENANT</b><span>Twin crescent blades</span></button>
+<button type="button" class="hunter-card" data-hunter="revenant" aria-label="Select The Revenant" aria-pressed="false" aria-describedby="hunter-info-revenant"><canvas id="hunter-revenant" width="220" height="260"></canvas><b>THE REVENANT</b><span>Twin crescent blades</span><small class="hunter-lock"></small></button>
 <aside class="hunter-details" id="hunter-info-revenant" aria-label="The Revenant abilities"><p class="hunter-role">MELEE DUELIST</p><h2>The Revenant</h2><p class="hunter-weapon">Twin crescent blades</p><ol class="hunter-action-list"><li><strong>BASIC ATTACK <kbd>LEFT MOUSE</kbd></strong><p>Alternate quick slashes in front of you.</p></li><li><strong>CHARGED ATTACK <kbd>HOLD RIGHT / RELEASE</kbd></strong><p>Lunge, then cleave.</p></li><li><strong>SPECIAL ABILITY <kbd>SPACE</kbd></strong><p>for 4s, hits restore health, up to 12 HP.</p></li></ol></aside></article>
   </div><div class="carousel-footer"><p>Scroll to choose &#183; Arrow keys to browse</p><nav class="carousel-dots" aria-label="Jump to a hunter"><button type="button" id="hunter-dot-0" aria-label="Show The Warden" aria-current="true">01</button><button type="button" id="hunter-dot-1" aria-label="Show The Riftwalker" aria-current="false">02</button><button type="button" id="hunter-dot-2" aria-label="Show The Hexkeeper" aria-current="false">03</button><button type="button" id="hunter-dot-3" aria-label="Show The Revenant" aria-current="false">04</button></nav></div>
 </section>    <p class="hunter-note">Scroll to choose a hunter. Their actions stay visible beside them.</p><p id="class-preview" class="class-preview"></p>    <section class="room-panel" aria-label="Multiplayer room">
@@ -1483,12 +1484,29 @@
     hexkeeper: {name:"THE HEXKEEPER",color:"#43E6A0",accent:"#DAFFF0"},
     revenant: {name:"THE REVENANT",color:"#FF795F",accent:"#FFE0CC"}
   });
-  function chooseHunter(id) {
-    if(!HUNTERS[id])return;
+  function applyHunterSelection(id){
     player.hunter=id;player.maxHp=CLASS_RULES[id].hp;player.speed=CLASS_RULES[id].speed;refreshClassInfo();
-    if(network.session){network.selectedHunter=id;network.ready(false);}
     if(runState === "menu")refreshReadyChoice();
     for(const card of document.querySelectorAll(".hunter-card"))card.setAttribute("aria-pressed",String(card.dataset.hunter===id));
+  }
+  function refreshClassLocks(){
+    const others=network.session?network.roster.filter(m=>m.id!==network.session.id):[];
+    for(const card of document.querySelectorAll('.hunter-card')){
+      const owner=others.find(m=>m.hunter===card.dataset.hunter),lock=card.querySelector('.hunter-lock');
+      card.disabled=!!owner;
+      card.setAttribute('aria-label',owner?HUNTERS[card.dataset.hunter].name+' taken by P'+owner.slot:'Select '+HUNTERS[card.dataset.hunter].name);
+      if(lock)lock.textContent=owner?'TAKEN BY P'+owner.slot:'';
+    }
+  }
+  function chooseHunter(id) {
+    if(!HUNTERS[id])return;
+    if(network.session){
+      const owner=network.roster.find(m=>m.id!==network.session.id&&m.hunter===id);
+      if(owner){network.notice(HUNTERS[id].name+' is taken by P'+owner.slot+'.');return;}
+      if(network.world&&!network.world.won&&!network.world.gameOver)return;
+      network.selectHunter(id);return;
+    }
+    applyHunterSelection(id);
   }
   // Local art experiment: Canvas illustrations only; combat geometry is untouched.
   function paintedPath(c,kind){
@@ -2039,7 +2057,7 @@
       Object.assign(input,saved);this.offsetX=graveyard()&&Math.abs(oldX-player.x)>450?0:Math.max(-24,Math.min(24,oldX-player.x));this.offsetY=graveyard()&&Math.abs(oldY-player.y)>300?0:Math.max(-24,Math.min(24,oldY-player.y));
     },
     async ping(){if(!this.session)return;const started=Date.now();try{const response=await fetch(API_BASE+'/health',{cache:'no-store'});if(!response.ok)throw Error();this.rtt=this.rtt*.4+(Date.now()-started)*.6;document.getElementById('ping-label').textContent='PING: '+Math.round(this.rtt)+' ms RTT';document.getElementById('ping-label').style.color=this.rtt>220?'#ff987c':this.rtt>120?'#ffd166':'#73f0b0';}catch{document.getElementById('ping-label').textContent='PING: offline';}},
-    session:null,stream:null,world:null,roster:[],revision:-1,seq:0,pending:false,hostId:null,readyState:false,peerPositions:new Map(),
+    session:null,stream:null,world:null,roster:[],revision:-1,seq:0,pending:false,hostId:null,readyState:false,selectedHunter:null,pickPending:false,desiredHunter:null,peerPositions:new Map(),
     notice(message){document.getElementById('room-message').textContent=message;},
     async request(path,data={},auth=true){
       const headers={'Content-Type':'application/json'};if(auth&&this.session)headers.Authorization='Bearer '+this.session.token;
@@ -2049,7 +2067,7 @@
       if(this.session)return;const button=document.getElementById(create?'create-room':'join-room');button.disabled=true;
       try{
         const code=document.getElementById('room-code').value.trim().toUpperCase();if(!create&&!/^[A-F0-9]{6}$/.test(code))throw Error('Enter a six-character room code.');
-        this.session=await this.request(create?'/api/rooms':'/api/rooms/'+code+'/join',{hunter:player.hunter},false);this.revision=-1;this.seq=0;sessionStorage.setItem('monster-rush-room',JSON.stringify(this.session));
+        this.session=await this.request(create?'/api/rooms':'/api/rooms/'+code+'/join',{hunter:player.hunter},false);this.revision=-1;this.seq=0;this.roster=[];this.selectedHunter=null;sessionStorage.setItem('monster-rush-room',JSON.stringify(this.session));
         this.stream=new EventSource(API_BASE+'/api/rooms/'+this.session.code+'/events?token='+encodeURIComponent(this.session.token));
         this.stream.onmessage=event=>{try{this.receive(JSON.parse(event.data));}catch(e){this.notice('Could not read room update. Leave and rejoin.');}};
         this.stream.onerror=()=>{input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;this.notice('Connection interrupted. Reconnecting; controls stopped.');};
@@ -2060,15 +2078,17 @@
       if(!this.session)return;this.lastSnapshot=Date.now();this.hostId=state.hostId;this.roster=state.members;
       const me=state.members.find(m=>m.id===this.session.id);if(!me){this.leave(false);this.notice('Session expired. Join again.');return;}
       this.readyState=me.ready;const active=state.state==='playing'&&!state.world?.won&&!state.world?.gameOver;
+      if(!active&&!this.pickPending){this.selectedHunter=me.hunter;if(player.hunter!==me.hunter){applyHunterSelection(me.hunter);hunterCarousel?.sync();}}
+      refreshClassLocks();
       document.getElementById('room-label').textContent='ROOM '+state.code+' / YOU: P'+me.slot+(state.hostId===me.id?' / HOST':'');
       document.getElementById('room-roster').textContent=state.members.map(m=>'P'+m.slot+' '+HUNTERS[m.hunter].name+' / '+(!m.connected?'RECONNECTING':active?'IN HUNT':m.ready?'READY':'CHOOSING')).join(' | ');
-      document.getElementById('room-ready').disabled=active;document.getElementById('room-ready').textContent=me.ready?'Ready - cancel':'Ready';
+      document.getElementById('room-ready').disabled=active||this.pickPending;document.getElementById('room-ready').textContent=me.ready?'Ready - cancel':'Ready';
       document.getElementById('room-level').disabled=state.hostId!==me.id||active;refreshGroundMenu();
-      document.getElementById('room-start').disabled=state.hostId!==me.id||state.members.filter(m=>m.connected).length<2||state.members.some(m=>m.connected&&!m.ready)||active;
+      document.getElementById('room-start').disabled=state.hostId!==me.id||state.members.filter(m=>m.connected).length<2||state.members.some(m=>m.connected&&!m.ready)||new Set(state.members.filter(m=>m.connected).map(m=>m.hunter)).size!==state.members.filter(m=>m.connected).length||active;
       document.getElementById('create-room').disabled=true;document.getElementById('join-room').disabled=true;document.getElementById('leave-room').hidden=false;
       if(state.state==='error'){this.notice('Room simulation stopped. Leave and create another room.');return;}
       if(!state.world)return;const world=state.world,local=world.players.find(p=>p.id===this.session.id);if(!local)return;
-      if(this.revision!==state.revision){this.revision=state.revision;input.abilitySeq=0;this.history=[];this.offsetX=this.offsetY=0;attackVisuals.clear();walkVisuals.clear();sound.reset();enemies=[];this.world=null;this.peerPositions.clear();this.selectedHunter=null;damageFlash=0;input.fire=false;input.charge=false;input.revive=false;this.notice('Hunt started. Clear the encounter together.');canvas.focus();}
+      if(this.revision!==state.revision){this.revision=state.revision;input.abilitySeq=0;this.history=[];this.offsetX=this.offsetY=0;attackVisuals.clear();walkVisuals.clear();sound.reset();enemies=[];this.world=null;this.peerPositions.clear();damageFlash=0;input.fire=false;input.charge=false;input.revive=false;this.notice('Hunt started. Clear the encounter together.');canvas.focus();}
       const first=!this.world,oldHp=player.hp;this.world=world;
       levelIndex=world.levelIndex;const level=LEVELS[levelIndex];rooms=level.rooms;walls=level.walls;enemyStarts=level.spawns;document.getElementById('location').textContent=level.name;
       this.reconcile(local,first);if(this.displayedClass!==player.hunter){this.displayedClass=player.hunter;refreshClassInfo();}if(world.won||world.gameOver)player.hunter=this.selectedHunter||me.hunter;if(local.hp<oldHp)damageFlash=.22;
@@ -2095,12 +2115,22 @@
       if(!this.world)return;for(const actor of this.peerPositions.values()){if(actor.id===this.session.id)continue;ctx.save();if(actor.hp<=0||!actor.connected)ctx.globalAlpha=.3;drawHunter(ctx,actor,lastTime/1000);ctx.restore();}
       if(player.hp<=0){ctx.save();ctx.fillStyle='#eee0ca';ctx.font='12px monospace';ctx.textAlign='center';ctx.fillText('You are down. Teammates can finish the hunt.',480,580);ctx.restore();}
     },
-    async ready(value){if(!this.session)return;try{await this.request('/api/rooms/'+this.session.code+'/ready',{ready:value,hunter:this.selectedHunter||player.hunter});this.notice(value?'Ready. Waiting for host.':'Select hunter, then Ready.');}catch(e){this.notice(e.message);}},
+    async selectHunter(id){
+      if(!this.session)return;
+      this.desiredHunter=id;if(this.pickPending)return;
+      this.pickPending=true;document.getElementById('room-ready').disabled=true;
+      try{while(this.desiredHunter&&this.session){
+        const target=this.desiredHunter,session=this.session;this.desiredHunter=null;
+        try{await this.request('/api/rooms/'+session.code+'/select',{hunter:target});if(this.session!==session)break;this.selectedHunter=target;applyHunterSelection(target);this.notice(HUNTERS[target].name+' reserved for you. Press Ready.');}
+        catch(e){if(this.session===session)this.notice(e.message);}
+      }}finally{this.pickPending=false;this.desiredHunter=null;document.getElementById('room-ready').disabled=!!this.world&&!this.world.won&&!this.world.gameOver;refreshClassLocks();}
+    },
+    async ready(value){if(!this.session||this.pickPending)return;try{await this.request('/api/rooms/'+this.session.code+'/ready',{ready:value});this.notice(value?'Ready. Waiting for host.':'Select hunter, then Ready.');}catch(e){this.notice(e.message);}},
     async start(){if(!this.session)return;try{await this.request('/api/rooms/'+this.session.code+'/start',{level:Number(document.getElementById('room-level').value)});}catch(e){this.notice(e.message);}},
     async leave(send=true){if(leaveDialog.open)leaveDialog.close();const session=this.session;if(!session)return;this.stream?.close();this.stream=null;if(send)try{await this.request('/api/rooms/'+session.code+'/leave');}catch{}
-      sessionStorage.removeItem('monster-rush-room');this.session=null;this.world=null;this.readyState=false;input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;runState='menu';document.body.classList.add('menu-mode');
+      sessionStorage.removeItem('monster-rush-room');this.session=null;this.world=null;this.roster=[];this.selectedHunter=null;this.readyState=false;this.desiredHunter=null;input.up=input.down=input.left=input.right=input.fire=false;input.charge=false;input.revive=false;runState='menu';document.body.classList.add('menu-mode');
       for(const id of ['create-room','join-room'])document.getElementById(id).disabled=false;for(const id of ['room-ready','room-start'])document.getElementById(id).disabled=true;
-      document.getElementById('leave-room').hidden=true;document.getElementById('room-label').textContent='Not connected';document.getElementById('room-roster').textContent='';this.notice('Left room. Create or join another hunt.');
+      document.getElementById('leave-room').hidden=true;document.getElementById('room-label').textContent='Not connected';document.getElementById('room-roster').textContent='';refreshClassLocks();this.notice('Left room. Create or join another hunt.');
     }
   };
   document.getElementById('create-room').addEventListener('click',()=>network.connect(true));document.getElementById('join-room').addEventListener('click',()=>network.connect(false));
