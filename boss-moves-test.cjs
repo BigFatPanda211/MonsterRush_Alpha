@@ -5,7 +5,7 @@ const commands=new Map(members.map(m=>[m.id,{connected:true,input:{aimX:480,aimY
 const expected=[['rain','dive'],['shards','laser','well'],['cleave','lunge','spikes'],['ring','beam']];
 for(let level=0;level<4;level++){
  const engine=makeEngine();engine.start(members,level,123);engine.debug.spawnBoss();const boss=engine.debug.enemies[0];
- assert.equal(boss.hp,[120,180,250,350][level]/2);assert.equal(boss.speed,[200,220,190,170][level]);
+ assert.equal(boss.hp,[120,180,250,300][level]/2);assert.equal(boss.speed,[200,220,190,150][level]);
  const moves=new Set();for(let i=0;i<1500;i++){for(const a of engine.debug.actors){a.hp=a.maxHp;a.invulnerability=2;}engine.tick(1/30,commands);if(boss.move)moves.add(boss.move);assert.equal(engine.snapshot().enemies.filter(e=>e.type!=='boss').length,0,'boss minions must not spawn');}
  for(const move of expected[level])assert(moves.has(move),`level ${level} missing ${move}`);
  if(level===3){boss.hp=boss.maxHp/2;engine.tick(1/30,commands);assert(engine.snapshot().bossEffects.some(e=>e.type==='magma'),'cataclysm magma');}
